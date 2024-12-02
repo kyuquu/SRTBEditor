@@ -20,6 +20,10 @@ body {
     background: var(--color-bg);
 }
 
+a {
+    color: inherit;
+}
+
 button, .tb-input-label {
     position: relative;
     border: none;
@@ -178,7 +182,7 @@ button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.ta
     color: var(--color-bg);
     background: var(--color-main);
     z-index: 2;
-    transition: opacity 100ms ease-in-out;
+    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
 }
 
 .tab-buttons > button.tab-button-inactive {
