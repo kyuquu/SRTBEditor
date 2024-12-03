@@ -1,0 +1,30 @@
+{
+    "track-info": {
+        "artist": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "artistName"]
+        },
+        "feat-artist": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "featArtists"]
+        },
+        "title": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "title"]
+        },
+        "subtitle": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "subtitle"]
+        },
+        "track-label": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "trackLabel"]
+        },
+        "charter": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "charter"]
+        },
+        "description": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "description"]
+        },
+        "spotifyLink": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "spotifyLink"]
+        }
+    },
+    "track-data": [],
+    "clip-info": []
+}

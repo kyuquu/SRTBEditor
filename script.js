@@ -54,6 +54,8 @@ function downloadFile(filename, file) {
     document.body.removeChild(link);
 }
 
+
+
 function loadTemplate(filename) {
     const fileExtension = filename.split('.').pop().toLowerCase();
     fetch('./templates/' + filename)
@@ -61,11 +63,11 @@ function loadTemplate(filename) {
         .then((data) => {
             if(fileExtension === "json") {
                 loadChartData(data);
-                chartFilename.textContent = filename;
+                TBChartFilename.textContent = filename;
             } else if(fileExtension === "srtb") {
                 let json = convertToJSON(data);
                 loadChartData(json);
-                chartFilename.textContent = filename;
+                TBChartFilename.textContent = filename;
             } else {
                 console.log("attempted to load template with unrecognized extension: " + fileExtension);
             }
@@ -102,7 +104,7 @@ fileInput.onchange = () => {
                 loadChartData(e.target.result);
             }
 
-            chartFilename.textContent = file.name;
+            TBChartFilename.textContent = file.name;
         };
         reader.readAsText(file);
     }
