@@ -54,6 +54,25 @@ function downloadFile(filename, file) {
     document.body.removeChild(link);
 }
 
+function loadTemplate(filename) {
+    const fileExtension = filename.split('.').pop().toLowerCase();
+    fetch('./templates/' + filename)
+        .then(response => response.json())
+        .then((data) => {
+            if(fileExtension === "json") {
+                loadChartData(data);
+                chartFilename.textContent = filename;
+            } else if(fileExtension === "srtb") {
+                let json = convertToJSON(data);
+                loadChartData(json);
+                chartFilename.textContent = filename;
+            } else {
+                console.log('attempted to load template with unrecognized extension: ' + fileExtension)
+            }
+        });
+
+}
+
 
 
 // closes dropdown menus when you click off of them

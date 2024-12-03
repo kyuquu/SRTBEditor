@@ -19,10 +19,10 @@
     <div class="top-bar">
         <div class="tb-chart">
             <div>
-                <span id="tb-chart-title">Song Name</span>
-                <span id="tb-chart-artist">Song Artist</span>
+                <span id="tb-chart-title"></span>
+                <span id="tb-chart-artist"><i>No SRTB loaded</i></span>
             </div>
-            <div id="tb-chart-filename">spinshare_blahblahblah.srtb</div>
+            <div id="tb-chart-filename"><i>click NEW to get started</i></div>
         </div>
 
         <div class="tb-buttons">
@@ -37,7 +37,7 @@
                     <div>
                         <label for="tb-button-new-upload" class="tb-input-label">UPLOAD FILE</label>
                         <input type="file" accept=".srtb" id="tb-button-new-upload"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
-                        <button>CREATE NEW</button>
+                        <button onclick="loadTemplate('Custom.json')">CREATE NEW</button>
                     </div>
                 </div>
             </div>

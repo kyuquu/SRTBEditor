@@ -1,0 +1,488 @@
+{
+    "unityObjectValuesContainer": {
+        "values": [
+            {
+                "key": "TrackInfo",
+                "jsonKey": "SO_TrackInfo_TrackInfo",
+                "fullType": "TrackInfo"
+            },
+            {
+                "key": "TrackData_0",
+                "jsonKey": "SO_TrackData_TrackData_0",
+                "fullType": "TrackData"
+            },
+            {
+                "key": "TrackData_1",
+                "jsonKey": "SO_TrackData_TrackData_1",
+                "fullType": "TrackData"
+            },
+            {
+                "key": "TrackData_2",
+                "jsonKey": "SO_TrackData_TrackData_2",
+                "fullType": "TrackData"
+            },
+            {
+                "key": "TrackData_3",
+                "jsonKey": "SO_TrackData_TrackData_3",
+                "fullType": "TrackData"
+            },
+            {
+                "key": "TrackData_4",
+                "jsonKey": "SO_TrackData_TrackData_4",
+                "fullType": "TrackData"
+            },
+            {
+                "key": "ClipInfo_0",
+                "jsonKey": "SO_ClipInfo_ClipInfo_0",
+                "fullType": "ClipInfo"
+            }
+        ]
+    },
+    "largeStringValuesContainer": {
+        "values": [
+            {
+                "key": "SO_TrackInfo_TrackInfo",
+                "val": {
+                    "trackOrder": 0,
+                    "trackId": 0,
+                    "albumArtReference": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "backgroundColoring": {
+                        "id": ""
+                    },
+                    "fallbackBackgroundId": {
+                        "backgroundId": ""
+                    },
+                    "fallbackColoringBackgroundId": {
+                        "id": ""
+                    },
+                    "objectReplacements": [],
+                    "artistName": "",
+                    "featArtists": "",
+                    "title": "Custom",
+                    "subtitle": "",
+                    "trackLabel": "",
+                    "charter": "",
+                    "description": "",
+                    "titleOffsetY": 0,
+                    "spotifyLink": "",
+                    "difficulties": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "TrackData_0",
+                            "m_guid": "",
+                            "_active": false
+                        },
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "TrackData_1",
+                            "m_guid": "",
+                            "_active": false
+                        },
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "TrackData_2",
+                            "m_guid": "",
+                            "_active": true
+                        },
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "TrackData_3",
+                            "m_guid": "",
+                            "_active": false
+                        },
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "TrackData_4",
+                            "m_guid": "",
+                            "_active": false
+                        }
+                    ],
+                    "trackType": 1,
+                    "editorFunction": "",
+                    "allowCustomLeaderboardCreation": false
+                }
+            },
+            {
+                "key": "SO_TrackData_TrackData_0",
+                "val": {
+                    "revisionVersion": 0,
+                    "compatibilityVersion": 0,
+                    "noteSerializationFormat": 0,
+                    "difficultyRating": 0,
+                    "previewLoopBars": {
+                        "min": 4,
+                        "max": 12
+                    },
+                    "goBeatOffsetFromFirstNote": -4,
+                    "difficultyType": 2,
+                    "isTutorial": false,
+                    "tutorialTitleTranslation": {
+                        "key": ""
+                    },
+                    "clipInfoAssetReferences": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "ClipInfo_0",
+                            "m_guid": ""
+                        }
+                    ],
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "background": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsToUse": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsOverTime": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "splinePath": {
+                        "rid": -2
+                    },
+                    "splinePathData": {
+                        "instanceID": 0
+                    },
+                    "clipData": [],
+                    "notesCompressed": "",
+                    "notes": [],
+                    "binaryNotes": [],
+                    "lastEditedOnDate": "",
+                    "references": {
+                        "version": 2,
+                        "RefIds": [
+                            {
+                                "rid": -2,
+                                "type": {
+                                    "class": "",
+                                    "ns": "",
+                                    "asm": ""
+                                },
+                                "data": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "key": "SO_TrackData_TrackData_1",
+                "val": {
+                    "revisionVersion": 0,
+                    "compatibilityVersion": 0,
+                    "noteSerializationFormat": 0,
+                    "difficultyRating": 0,
+                    "previewLoopBars": {
+                        "min": 4,
+                        "max": 12
+                    },
+                    "goBeatOffsetFromFirstNote": -4,
+                    "difficultyType": 3,
+                    "isTutorial": false,
+                    "tutorialTitleTranslation": {
+                        "key": ""
+                    },
+                    "clipInfoAssetReferences": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "ClipInfo_0",
+                            "m_guid": ""
+                        }
+                    ],
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "background": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsToUse": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsOverTime": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "splinePath": {
+                        "rid": -2
+                    },
+                    "splinePathData": {
+                        "instanceID": 0
+                    },
+                    "clipData": [],
+                    "notesCompressed": "",
+                    "notes": [],
+                    "binaryNotes": [],
+                    "lastEditedOnDate": "",
+                    "references": {
+                        "version": 2,
+                        "RefIds": [
+                            {
+                                "rid": -2,
+                                "type": {
+                                    "class": "",
+                                    "ns": "",
+                                    "asm": ""
+                                },
+                                "data": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "key": "SO_TrackData_TrackData_2",
+                "val": {
+                    "revisionVersion": 0,
+                    "compatibilityVersion": 0,
+                    "noteSerializationFormat": 0,
+                    "difficultyRating": 0,
+                    "previewLoopBars": {
+                        "min": 4,
+                        "max": 12
+                    },
+                    "goBeatOffsetFromFirstNote": -4,
+                    "difficultyType": 4,
+                    "isTutorial": false,
+                    "tutorialTitleTranslation": {
+                        "key": ""
+                    },
+                    "clipInfoAssetReferences": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "ClipInfo_0",
+                            "m_guid": ""
+                        }
+                    ],
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "background": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsToUse": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsOverTime": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "splinePath": {
+                        "rid": -2
+                    },
+                    "splinePathData": {
+                        "instanceID": 0
+                    },
+                    "clipData": [],
+                    "notesCompressed": "",
+                    "notes": [],
+                    "binaryNotes": [],
+                    "lastEditedOnDate": "",
+                    "references": {
+                        "version": 2,
+                        "RefIds": [
+                            {
+                                "rid": -2,
+                                "type": {
+                                    "class": "",
+                                    "ns": "",
+                                    "asm": ""
+                                },
+                                "data": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "key": "SO_TrackData_TrackData_3",
+                "val": {
+                    "revisionVersion": 0,
+                    "compatibilityVersion": 0,
+                    "noteSerializationFormat": 0,
+                    "difficultyRating": 0,
+                    "previewLoopBars": {
+                        "min": 4,
+                        "max": 12
+                    },
+                    "goBeatOffsetFromFirstNote": -4,
+                    "difficultyType": 5,
+                    "isTutorial": false,
+                    "tutorialTitleTranslation": {
+                        "key": ""
+                    },
+                    "clipInfoAssetReferences": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "ClipInfo_0",
+                            "m_guid": ""
+                        }
+                    ],
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "background": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsToUse": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsOverTime": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "splinePath": {
+                        "rid": -2
+                    },
+                    "splinePathData": {
+                        "instanceID": 0
+                    },
+                    "clipData": [],
+                    "notesCompressed": "",
+                    "notes": [],
+                    "binaryNotes": [],
+                    "lastEditedOnDate": "",
+                    "references": {
+                        "version": 2,
+                        "RefIds": [
+                            {
+                                "rid": -2,
+                                "type": {
+                                    "class": "",
+                                    "ns": "",
+                                    "asm": ""
+                                },
+                                "data": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "key": "SO_TrackData_TrackData_4",
+                "val": {
+                    "revisionVersion": 0,
+                    "compatibilityVersion": 0,
+                    "noteSerializationFormat": 0,
+                    "difficultyRating": 0,
+                    "previewLoopBars": {
+                        "min": 4,
+                        "max": 12
+                    },
+                    "goBeatOffsetFromFirstNote": -4,
+                    "difficultyType": 6,
+                    "isTutorial": false,
+                    "tutorialTitleTranslation": {
+                        "key": ""
+                    },
+                    "clipInfoAssetReferences": [
+                        {
+                            "bundle": "CUSTOM",
+                            "assetName": "ClipInfo_0",
+                            "m_guid": ""
+                        }
+                    ],
+                    "backgroundId": {
+                        "backgroundId": ""
+                    },
+                    "background": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsToUse": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "groundSettingsOverTime": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    },
+                    "splinePath": {
+                        "rid": -2
+                    },
+                    "splinePathData": {
+                        "instanceID": 0
+                    },
+                    "clipData": [],
+                    "notesCompressed": "",
+                    "notes": [],
+                    "binaryNotes": [],
+                    "lastEditedOnDate": "",
+                    "references": {
+                        "version": 2,
+                        "RefIds": [
+                            {
+                                "rid": -2,
+                                "type": {
+                                    "class": "",
+                                    "ns": "",
+                                    "asm": ""
+                                },
+                                "data": {}
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "key": "SO_ClipInfo_ClipInfo_0",
+                "val": {
+                    "decibelOffset": 0,
+                    "timeSignatureMarkers": [
+                        {
+                            "startingBeat": 0,
+                            "ticksPerBar": 4,
+                            "tickDivisor": 4,
+                            "beatLengthType": 0,
+                            "beatLengthDotted": 0
+                        }
+                    ],
+                    "bpmMarkers": [
+                        {
+                            "beatLength": 1,
+                            "clipTime": 0,
+                            "type": 0
+                        }
+                    ],
+                    "cuePoints": [],
+                    "clipAssetReference": {
+                        "bundle": "",
+                        "assetName": "",
+                        "m_guid": ""
+                    }
+                }
+            }
+        ]
+    },
+    "clipInfoCount": 1
+}
