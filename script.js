@@ -54,6 +54,17 @@ function downloadFile(filename, file) {
     document.body.removeChild(link);
 }
 
+function loadTemplate(filename) {
+    
+    fetch('./templates/' + filename)
+        .then(response => response.json())
+        .then((data) => {
+            loadChartData(data);
+            chartFilename.textContent = filename;
+        });
+
+}
+
 
 
 // closes dropdown menus when you click off of them
