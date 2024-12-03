@@ -67,7 +67,7 @@ function loadTemplate(filename) {
                 loadChartData(json);
                 chartFilename.textContent = filename;
             } else {
-                console.log('attempted to load template with unrecognized extension: ' + fileExtension)
+                console.log("attempted to load template with unrecognized extension: " + fileExtension);
             }
         });
 
@@ -90,19 +90,23 @@ const fileInput = document.getElementById("tb-button-new-upload");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
     let fileExtension = file.name.split('.').pop().toLowerCase();
-    if (fileExtension === "srtb") {
+    if (["srtb", "json"].includes(fileExtension)) { // to do: allow .zip files to be imported
         const reader = new FileReader();
         reader.onload = (e) => {
-            let srtb = e.target.result;
-            let json = convertToJSON(JSON.parse(srtb));
-
-            loadChartData(json);
+            if (fileExtension === "srtb") {
+                let srtb = e.target.result;
+                let json = convertToJSON(JSON.parse(srtb));
+                loadChartData(json);
+            }
+            else if (fileExtension === "json") {
+                loadChartData(e.target.result);
+            }
 
             chartFilename.textContent = file.name;
         };
         reader.readAsText(file);
-    } // to do: allow .json and .zip files to be imported
+    }
     else {
-        console.log("file type invalid!");
+        console.log("attempted to load template with unrecognized extension: " + fileExtension);
     }
 }
