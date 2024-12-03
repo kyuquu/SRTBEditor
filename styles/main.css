@@ -113,8 +113,8 @@ button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.ta
 .tb-button > div > span:last-child {
     width: 1.25rem;
     height: 1.25rem;
-    --webkit-mask-image: url(icons/chevron-down.svg);
-    mask-image: url(icons/chevron-down.svg);
+    --webkit-mask-image: url(../icons/chevron-down.svg);
+    mask-image: url(../icons/chevron-down.svg);
     --webkit-mask-size: 1.25rem;
     mask-size: 1.25rem;
     background: var(--color-main);
