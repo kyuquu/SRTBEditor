@@ -63,7 +63,6 @@ function loadTemplate(filename) {
                 loadChartData(data);
                 chartFilename.textContent = filename;
             } else if(fileExtension === "srtb") {
-                console.log(data)
                 let json = convertToJSON(data);
                 loadChartData(json);
                 chartFilename.textContent = filename;
@@ -95,7 +94,6 @@ fileInput.onchange = () => {
         const reader = new FileReader();
         reader.onload = (e) => {
             let srtb = e.target.result;
-            console.log(srtb)
             let json = convertToJSON(JSON.parse(srtb));
 
             loadChartData(json);
