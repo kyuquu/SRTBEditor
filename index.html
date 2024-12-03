@@ -51,8 +51,8 @@
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
                     <div> <!-- note: save buttons silently fail if no chart has been uploaded -->
-                        <button onclick="downloadFile(chartFilename.textContent, JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
-                        <button onclick="downloadFile(chartFilename.textContent.slice(0, -4) + 'json', JSONEditor.value)">SAVE AS .JSON</button>
+                        <button onclick="downloadFile(TBChartFilename.textContent, JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
+                        <button onclick="downloadFile(TBChartFilename.textContent.slice(0, -4) + 'json', JSONEditor.value)">SAVE AS .JSON</button>
                         <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
                     </div>
                 </div>
