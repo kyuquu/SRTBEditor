@@ -6,6 +6,10 @@
     font-size: 16px;
 }
 
+* {
+    font-family: inherit;
+}
+
 body {
     display: flex;
     flex-direction: column;

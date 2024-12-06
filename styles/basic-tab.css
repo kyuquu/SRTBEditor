@@ -1,0 +1,43 @@
+#tab0 {
+    display: flex;
+}
+
+.bv1 {
+    flex: 2 1 0;
+}
+
+.bv0 {
+    flex: 1 2 0;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+.bv-item {
+    margin-bottom: 1.5rem;
+}
+
+.bv-item:last-child {
+    margin-bottom: 0;
+}
+
+.bv-item-name {
+    padding-bottom: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+input[type="text"].bv-item-value {
+    width: 18.5rem;
+    padding: 0.25rem;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 1.25rem;
+    transition: width 250ms ease-out;
+}
+
+input[type="text"].bv-item-value:focus {
+    width: 100%;
+}
