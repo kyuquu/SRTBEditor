@@ -248,7 +248,7 @@ input[type="checkbox"]:checked::before {
 }
 
 .tab-inactive {
-    display: none;
+    display: none !important;
 }
 
 #json-editor {
