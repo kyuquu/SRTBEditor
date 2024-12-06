@@ -50,7 +50,7 @@
                     </div>
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
-                    <div> <!-- note: save buttons silently fail if no chart has been uploaded -->
+                    <div>
                         <button onclick="downloadFile(TBFilename.textContent, JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
                         <button onclick="downloadFile(TBFilename.textContent.slice(0, -4) + 'json', JSONEditor.value)">SAVE AS .JSON</button>
                         <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
@@ -116,7 +116,7 @@
     </div>
 
     <div class="bottom-bar">
-        <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v0.2.0</a>
+        <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v0.2.1</a>
         <span>&#8226;</span>
         <span>Compatible with SRXD v1.4.1</span>
     </div>
