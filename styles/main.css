@@ -263,5 +263,11 @@ input[type="checkbox"]:checked::before {
 
 /* BOTTOM BAR */
 .bottom-bar {
-    text-align: right;
+    display: flex;
+    justify-content: right;
+    gap: 1ch;
+}
+
+.bottom-bar > span {
+    opacity: 50%;
 }
