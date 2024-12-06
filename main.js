@@ -45,30 +45,42 @@ function convertToSRTB(json) {
 
 
 function downloadFile(filename, file) {
-    let link = document.createElement("a");
-    link.setAttribute("href", "data:text/plain; charset=utf-8," + encodeURIComponent(file));
-    link.setAttribute("download", filename);
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (filename.split(".").slice(0, -1).join(".").length > 0) {
+        let link = document.createElement("a"); 
+        link.setAttribute("href", "data:text/plain; charset=utf-8," + encodeURIComponent(file));
+        link.setAttribute("download", filename);
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    else {
+        console.log("filename is too short");
+    }
 }
 
 
 
 function loadTemplate(filename) {
-    const fileExtension = filename.split('.').pop().toLowerCase();
+    const fileExtension = filename.split(".").pop().toLowerCase();
     fetch('./templates/' + filename)
         .then(response => response.json())
         .then((data) => {
-            if(fileExtension === "json") {
-                loadChartData(data);
-                TBChartFilename.textContent = filename;
-            } else if(fileExtension === "srtb") {
-                let json = convertToJSON(data);
-                loadChartData(json);
-                TBChartFilename.textContent = filename;
-            } else {
+            if(["srtb", "json"].includes(fileExtension)) {
+                if (fileExtension === "json") {
+                    loadChartData(data);
+                }
+                else if (fileExtension === "srtb") {
+                    let json = convertToJSON(data);
+                    loadChartData(json);
+                }
+
+                chartFilename = filename.split(".").slice(0, -1).join(".");
+                if (document.querySelector(".tb-button-container.disabled")) {
+                    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
+                }
+            }
+            else {
                 console.log("attempted to load template with unrecognized extension: " + fileExtension);
             }
         });
@@ -104,7 +116,10 @@ fileInput.onchange = () => {
                 loadChartData(e.target.result);
             }
 
-            TBChartFilename.textContent = file.name;
+            chartFilename = file.name.split(".").slice(0, -1).join(".");
+            if (document.querySelector(".tb-button-container.disabled")) {
+                document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
+            }
         };
         reader.readAsText(file);
     }

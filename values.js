@@ -3,10 +3,11 @@ let chartJSON;
 let trackInfo;
 let trackData;
 let clipData;
+let chartFilename;
 
-const TBChartTitle = document.getElementById("tb-chart-title");
-const TBChartArtist = document.getElementById("tb-chart-artist");
-const TBChartFilename = document.getElementById("tb-chart-filename");
+const TBTitle = document.getElementById("tb-title");
+const TBArtist = document.getElementById("tb-artist");
+const TBFilename = document.getElementById("tb-filename");
 
 const JSONEditor = document.getElementById("json-editor");
 
@@ -24,7 +25,7 @@ function getJSONValue(defaultValue, referenceArray) {
     return JSONValue;
 }
 
-function updateValue(valueName, value) {
+function updateBVValue(valueName, value) {
     if (document.getElementById(`bv-${valueName}`)) {
         let BVElement = document.getElementById(`bv-${valueName}`);
         if (typeof value === "string") {
@@ -52,12 +53,26 @@ function loadChartData(data) {
         let trackInfoKeys = Object.keys(trackInfo);
         for (let i = 0; i < trackInfoKeys.length; i++) {
             trackInfo[trackInfoKeys[i]]["value"] = getJSONValue(trackInfo[trackInfoKeys[i]]["default"], trackInfo[trackInfoKeys[i]]["reference"]);
-            updateValue(trackInfoKeys[i], trackInfo[trackInfoKeys[i]]["value"]);
+            updateBVValue(trackInfoKeys[i], trackInfo[trackInfoKeys[i]]["value"]);
         }
+
+        updateBVValue("filename", chartFilename);
     
-        TBChartTitle.textContent = trackInfo["title"]["value"];
-        TBChartArtist.textContent = trackInfo["artist"]["value"];
+        TBTitle.textContent = trackInfo["title"]["value"];
+        TBArtist.textContent = trackInfo["artist"]["value"];
+        TBFilename.textContent = chartFilename + ".srtb";
     
         JSONEditor.value = JSON.stringify(chartJSON, null, 4);
     });
+}
+
+let topBarValues = ["title", "artist", "filename"];
+for (let i = 0; i < topBarValues.length; i++) {
+    document.getElementById(`bv-${topBarValues[i]}`).onchange = (e) => {
+        if (chartJSON !== undefined) {
+            document.getElementById(`tb-${topBarValues[i]}`).textContent = topBarValues[i] === "filename"
+                ? e.target.value + ".srtb"
+                : e.target.value;
+        }
+    }
 }

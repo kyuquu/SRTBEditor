@@ -93,7 +93,7 @@ input[type="checkbox"]:checked::before {
     overflow: hidden;
 }
 
-.tb-chart > div, .tb-chart-filename {
+.tb-chart > div, .tb-filename {
     text-wrap: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -103,15 +103,15 @@ input[type="checkbox"]:checked::before {
     font-size: 3rem;
 }
 
-#tb-chart-title {
+#tb-title {
     font-weight: bold;
 }
 
-#tb-chart-artist, #tb-chart-filename {
+#tb-artist, #tb-filename {
     opacity: 50%;
 }
 
-#tb-chart-filename {
+#tb-filename {
     font-size: 1.5rem;
 }
 
@@ -122,6 +122,11 @@ input[type="checkbox"]:checked::before {
 
 .tb-button-container {
     position: relative;
+}
+
+.tb-button-container.disabled {
+    opacity: 50%;
+    pointer-events: none;
 }
 
 .tb-button {

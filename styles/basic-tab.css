@@ -45,6 +45,7 @@ input[type="text"].bv-item-value {
     box-sizing: border-box;
     outline: none;
     font-size: 1.25rem;
+    background: var(--color-main);
     transition: width 250ms ease-out;
 }
 
