@@ -20,10 +20,10 @@
     <div class="top-bar">
         <div class="tb-chart">
             <div>
-                <span id="tb-chart-title"></span>
-                <span id="tb-chart-artist"><i>No SRTB loaded</i></span>
+                <span id="tb-title"></span>
+                <span id="tb-artist"><i>No SRTB loaded</i></span>
             </div>
-            <div id="tb-chart-filename"><i>click NEW to get started</i></div>
+            <div id="tb-filename"><i>click NEW to get started</i></div>
         </div>
 
         <div class="tb-buttons">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tb-button-container">
+            <div class="tb-button-container disabled">
                 <button class="tb-button" id="tb-button-save" onclick="toggleDropdown('save')">
                     <div>
                         <span>SAVE</span>
@@ -50,9 +50,9 @@
                     </div>
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
-                    <div> <!-- note: save buttons silently fail if no chart has been uploaded -->
-                        <button onclick="downloadFile(TBChartFilename.textContent.split('.')[0] + '.srtb', JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
-                        <button onclick="downloadFile(TBChartFilename.textContent.split('.')[0] + '.json', JSONEditor.value)">SAVE AS .JSON</button>
+                    <div>
+                        <button onclick="downloadFile(TBFilename.textContent, JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
+                        <button onclick="downloadFile(TBFilename.textContent.slice(0, -4) + 'json', JSONEditor.value)">SAVE AS .JSON</button>
                         <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
                     </div>
                 </div>
@@ -70,31 +70,36 @@
                 <div class="bv bv0">
                     <div class="bv-item">
                         <div class="bv-item-name">Title</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-title"></input>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-title">
                     </div>
 
                     <div class="bv-item">
                         <div class="bv-item-name">Subtitle</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-subtitle"></input>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-subtitle">
                     </div>
 
                     <div class="bv-item">
                         <div class="bv-item-name">Artist</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-artist"></input>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-artist">
                     </div>
 
                     <div class="bv-item">
                         <div class="bv-item-name">Featured Artist</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-featured-artist"></input>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-featured-artist">
                     </div>
 
                     <div class="bv-item">
                         <div class="bv-item-name">Charter</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-charter"></input>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-charter">
+                    </div>
+
+                    <div class="bv-item">
+                        <div class="bv-item-name">Filename</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-filename">
                     </div>
 
                     <div class="bv-item inline">
-                        <input type="checkbox" class="bv-item-value" id="bv-allow-custom-leaderboards"></input>
+                        <input type="checkbox" class="bv-item-value" id="bv-allow-custom-leaderboards">
                         <div class="bv-item-name">Allow Leaderboard Creation</div>
                     </div>
                 </div>
@@ -111,7 +116,7 @@
     </div>
 
     <div class="bottom-bar">
-        <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v0.2.0</a>
+        <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v0.2.1</a>
         <span>&#8226;</span>
         <span>Compatible with SRXD v1.4.1</span>
     </div>
