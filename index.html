@@ -66,13 +66,45 @@
             <button onclick="switchToTab(1)" id="tab-button1" class="tab-button-inactive">Raw JSON View</button>
         </div>
         <div class="tabs">
-            <div class="tab" id="tab0">Basic view tab coming soon!</div>
+            <div class="tab" id="tab0">
+                <div class="bv bv0">
+                    <div class="bv-item">
+                        <div class="bv-item-name">Title</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-title"></input>
+                    </div>
+
+                    <div class="bv-item">
+                        <div class="bv-item-name">Subtitle</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-subtitle"></input>
+                    </div>
+
+                    <div class="bv-item">
+                        <div class="bv-item-name">Artist</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-artist"></input>
+                    </div>
+
+                    <div class="bv-item">
+                        <div class="bv-item-name">Featured Artist</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-featured-artist"></input>
+                    </div>
+
+                    <div class="bv-item">
+                        <div class="bv-item-name">Charter</div>
+                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-charter"></input>
+                    </div>
+                </div>
+
+                <div class="bv bv1">
+                    <div class="bv-"></div>
+                </div>
+            </div>
+
             <div class="tab tab-inactive" id="tab1">
                 <textarea spellcheck="false" id="json-editor"></textarea>
             </div>
         </div>
     </div>
 
-    <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank" class="bottom-bar">v0.1.2</a>
+    <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank" class="bottom-bar">v0.2.0</a>
 </body>
 </html>

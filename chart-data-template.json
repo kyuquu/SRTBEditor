@@ -1,28 +1,68 @@
 {
     "track-info": {
-        "artist": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "artistName"]
+        "album-art-reference" : {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "albumArtReference"],
+            "default": {
+                "bundle": "",
+                "assetName": "",
+                "m_guid": ""
+            }
         },
-        "feat-artist": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "featArtists"]
+        "background-id": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "backgroundId", "backgroundId"],
+            "default": ""
+        },
+        "background-coloring": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "backgroundColoring", "id"],
+            "default": ""
+        },
+        "fallback-background-id": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "fallbackBackgroundId", "backgroundId"],
+            "default": ""
+        },
+        "fallback-background-coloring": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "fallbackColoringBackgroundId", "id"],
+            "default": ""
+        },
+        "object-replacements": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "objectReplacements"],
+            "default": ""
+        },
+        "artist": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "artistName"],
+            "default": ""
+        },
+        "featured-artist": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "featArtists"],
+            "default": ""
         },
         "title": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "title"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "title"],
+            "default": "Custom"
         },
         "subtitle": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "subtitle"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "subtitle"],
+            "default": ""
         },
         "track-label": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "trackLabel"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "trackLabel"],
+            "default": ""
         },
         "charter": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "charter"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "charter"],
+            "default": ""
         },
         "description": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "description"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "description"],
+            "default": ""
         },
         "spotifyLink": {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "spotifyLink"]
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "spotifyLink"],
+            "default": ""
+        },
+        "allow-custom-leaderboards": {
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "allowCustomLeaderboardCreation"],
+            "default": false
         }
     },
     "track-data": [],
