@@ -27,7 +27,15 @@ function getJSONValue(defaultValue, referenceArray) {
 function updateValue(valueName, value) {
     if (document.getElementById(`bv-${valueName}`)) {
         let BVElement = document.getElementById(`bv-${valueName}`);
-        BVElement.value = value;
+        if (typeof value === "string") {
+            BVElement.value = value;
+        }
+        else if (typeof value === "boolean") {
+            BVElement.checked = value;
+        }
+        else {
+           console.log("data type not yet supported");
+        }
     }
 }
 

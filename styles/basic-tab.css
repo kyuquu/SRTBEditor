@@ -14,7 +14,13 @@
 }
 
 .bv-item {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.bv-item.inline {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
 }
 
 .bv-item:last-child {
@@ -25,6 +31,10 @@
     padding-bottom: 0.25rem;
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.bv-item.inline > .bv-item-name {
+    padding: 0;
 }
 
 input[type="text"].bv-item-value {
@@ -40,4 +50,8 @@ input[type="text"].bv-item-value {
 
 input[type="text"].bv-item-value:focus {
     width: 100%;
+}
+
+input[type="checkbox"].bv-item-value {
+    --checkbox-size: 12;
 }

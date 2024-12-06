@@ -43,13 +43,40 @@ button, .tb-input-label {
     transition: color 100ms ease-in-out, background 100ms ease-in-out;
 }
 
+button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.tab-button-inactive:hover {
+    color: var(--color-bg);
+    background: var(--color-main);
+}
+
 input[type="file"] {
     display: none;
 }
 
-button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.tab-button-inactive:hover {
-    color: var(--color-bg);
+input[type="checkbox"] {
+    --checkbox-size: 16;
+    display: grid;
+    place-content: center;
+    appearance: none;
+    cursor: pointer;
+    width: calc(var(--checkbox-size) * 0.125rem);
+    height: calc(var(--checkbox-size) * 0.125rem);
+    border: 0.125rem solid var(--color-main);
+    border-radius: 0.125rem;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: calc(var(--checkbox-size) * 0.125rem - 0.5rem);
+    height: calc(var(--checkbox-size) * 0.125rem - 0.5rem);
     background: var(--color-main);
+    transform: scale(0);
+    transition: 100ms transform ease-in-out;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
 }
 
 
