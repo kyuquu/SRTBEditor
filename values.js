@@ -12,17 +12,20 @@ const TBFilename = document.getElementById("tb-filename");
 const JSONEditor = document.getElementById("json-editor");
 
 function getJSONValue(defaultValue, referenceArray) {
+    return referenceArray.reduce((xs, x) => xs?.[x] ?? defaultValue, chartJSON);
+}
+
+function setJSONValue(value, referenceArray) {
     let JSONValue = chartJSON;
-    referenceLoop: for (let i = 0; i < referenceArray.length; i++) {
-        if (JSONValue[referenceArray[i]]) {
+    for (let i = 0; i < referenceArray.length - 1; i++) {
+        if (JSONValue[referenceArray[i]] !== undefined) {
             JSONValue = JSONValue[referenceArray[i]];
         }
-        else {
-            JSONValue = defaultValue;
-            break referenceLoop;
-        }
+        else return;
     }
-    return JSONValue;
+    if (JSONValue[referenceArray[referenceArray.length - 1]] !== undefined) {
+        JSONValue[referenceArray[referenceArray.length - 1]] = value;
+    }
 }
 
 function updateBVValue(valueName, value) {
@@ -40,6 +43,26 @@ function updateBVValue(valueName, value) {
     }
 }
 
+function updateJSONEditor() {
+    if (chartJSON !== undefined) {
+        let trackInfoKeys = Object.keys(trackInfo);
+        for (let i = 0; i < trackInfoKeys.length; i++) {
+            if (document.getElementById(`bv-${trackInfoKeys[i]}`)) {
+                let BVElement = document.getElementById(`bv-${trackInfoKeys[i]}`);
+                if (BVElement.type === "text") {
+                    trackInfo[trackInfoKeys[i]]["value"] = BVElement.value;
+                }
+                else if (BVElement.type === "checkbox") {
+                    trackInfo[trackInfoKeys[i]]["value"] = BVElement.checked;
+                }
+            }
+
+            setJSONValue(trackInfo[trackInfoKeys[i]]["value"], trackInfo[trackInfoKeys[i]]["reference"]);
+        }
+        JSONEditor.value = JSON.stringify(chartJSON, null, 4);
+    }
+}
+
 function loadChartData(data) {
     chartJSON = data;
 
@@ -50,10 +73,9 @@ function loadChartData(data) {
         trackData = data["track-data"];
         clipData = data["clip-data"];
 
-        let trackInfoKeys = Object.keys(trackInfo);
-        for (let i = 0; i < trackInfoKeys.length; i++) {
-            trackInfo[trackInfoKeys[i]]["value"] = getJSONValue(trackInfo[trackInfoKeys[i]]["default"], trackInfo[trackInfoKeys[i]]["reference"]);
-            updateBVValue(trackInfoKeys[i], trackInfo[trackInfoKeys[i]]["value"]);
+        for (let key in trackInfo) {
+            trackInfo[key]["value"] = getJSONValue(trackInfo[key]["default"], trackInfo[key]["reference"]);
+            updateBVValue(key, trackInfo[key]["value"]);
         }
     
         TBTitle.textContent = trackInfo["title"]["value"];

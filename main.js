@@ -5,6 +5,10 @@ function switchToTab(index) {
         document.getElementById(`tab${index}`).classList.remove("tab-inactive");
         document.getElementById(`tab${(index + 1) % 2}`).classList.add("tab-inactive");
     }
+
+    if (index === 1) {
+        updateJSONEditor();
+    }
 }
 
 function toggleDropdown(name) {
