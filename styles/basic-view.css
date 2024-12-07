@@ -2,6 +2,11 @@
     display: flex;
 }
 
+.bv.disabled * {
+    opacity: 50%;
+    pointer-events: none;
+}
+
 .bv1 {
     flex: 2 1 0;
 }
