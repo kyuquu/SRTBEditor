@@ -1,21 +1,23 @@
 let chartJSON;
 
+let chartFilename;
+
 let trackInfo;
 let trackData;
 let clipData;
-let chartFilename;
 
-const TBTitle = document.getElementById("tb-title");
-const TBArtist = document.getElementById("tb-artist");
-const TBFilename = document.getElementById("tb-filename");
+
 
 const JSONEditor = document.getElementById("json-editor");
 
-function getJSONValue(defaultValue, referenceArray) {
+function getJSONValue(property) {
+    let defaultValue = trackInfo[property]["default"];
+    let referenceArray = trackInfo[property]["reference"];
     return referenceArray.reduce((xs, x) => xs?.[x] ?? defaultValue, chartJSON);
 }
 
-function setJSONValue(value, referenceArray) {
+function updateJSONValue(property, value) {
+    let referenceArray = trackInfo[property]["reference"];
     let JSONValue = chartJSON;
     for (let i = 0; i < referenceArray.length - 1; i++) {
         if (JSONValue[referenceArray[i]] !== undefined) {
@@ -26,11 +28,53 @@ function setJSONValue(value, referenceArray) {
     if (JSONValue[referenceArray[referenceArray.length - 1]] !== undefined) {
         JSONValue[referenceArray[referenceArray.length - 1]] = value;
     }
+    JSONEditor.value = JSON.stringify(chartJSON, null, 4);
 }
 
-function updateBVValue(valueName, value) {
-    if (document.getElementById(`bv-${valueName}`)) {
-        let BVElement = document.getElementById(`bv-${valueName}`);
+
+
+const TBValues = [];
+const TBElements = document.getElementsByClassName("tb-value");
+for (let i = 0; i < TBElements.length; i++) {
+    let TBElement = TBElements[i];
+    let property = TBElement.id.slice(3);
+    TBValues.push(property);
+}
+
+function updateTBValue(property, value) {
+    if (TBValues.includes(property)) {
+        let TBElement = document.getElementById(`tb-${property}`);
+        TBElement.textContent = value;
+    };
+}
+
+
+
+const BVValues = [];
+const BVElements = document.getElementsByClassName("bv-item-value");
+for (let i = 0; i < BVElements.length; i++) {
+    let BVElement = BVElements[i];
+    let property = BVElement.id.slice(3);
+    BVValues.push(property);
+
+    BVElement.onchange = () => {
+        if (chartJSON !== undefined) {
+            let value;
+            if (BVElement.type === "text") {
+                value = BVElement.value;
+            }
+            else if (BVElement.type === "checkbox") {
+                value = BVElement.checked;
+            }
+            updateTBValue(property, value);
+            updateJSONValue(property, value);
+        }
+    }
+}
+
+function updateBVValue(property, value) {
+    if (BVValues.includes(property)) {
+        let BVElement = document.getElementById(`bv-${property}`);
         if (typeof value === "string") {
             BVElement.value = value;
         }
@@ -43,25 +87,7 @@ function updateBVValue(valueName, value) {
     }
 }
 
-function updateJSONEditor() {
-    if (chartJSON !== undefined) {
-        let trackInfoKeys = Object.keys(trackInfo);
-        for (let i = 0; i < trackInfoKeys.length; i++) {
-            if (document.getElementById(`bv-${trackInfoKeys[i]}`)) {
-                let BVElement = document.getElementById(`bv-${trackInfoKeys[i]}`);
-                if (BVElement.type === "text") {
-                    trackInfo[trackInfoKeys[i]]["value"] = BVElement.value;
-                }
-                else if (BVElement.type === "checkbox") {
-                    trackInfo[trackInfoKeys[i]]["value"] = BVElement.checked;
-                }
-            }
 
-            setJSONValue(trackInfo[trackInfoKeys[i]]["value"], trackInfo[trackInfoKeys[i]]["reference"]);
-        }
-        JSONEditor.value = JSON.stringify(chartJSON, null, 4);
-    }
-}
 
 function loadChartData(data) {
     chartJSON = data;
@@ -73,24 +99,12 @@ function loadChartData(data) {
         trackData = data["track-data"];
         clipData = data["clip-data"];
 
-        for (let key in trackInfo) {
-            trackInfo[key]["value"] = getJSONValue(trackInfo[key]["default"], trackInfo[key]["reference"]);
-            updateBVValue(key, trackInfo[key]["value"]);
+        for (let property in trackInfo) {
+            let value = getJSONValue(property);
+            updateTBValue(property, value);
+            updateBVValue(property, value);
         }
-    
-        TBTitle.textContent = trackInfo["title"]["value"];
-        TBArtist.textContent = trackInfo["artist"]["value"];
-        TBFilename.textContent = chartFilename;
     
         JSONEditor.value = JSON.stringify(chartJSON, null, 4);
     });
-}
-
-let topBarValues = ["title", "artist"];
-for (let i = 0; i < topBarValues.length; i++) {
-    document.getElementById(`bv-${topBarValues[i]}`).onchange = (e) => {
-        if (chartJSON !== undefined) {
-            document.getElementById(`tb-${topBarValues[i]}`).textContent = e.target.value;
-        }
-    }
 }

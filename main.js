@@ -5,10 +5,6 @@ function switchToTab(index) {
         document.getElementById(`tab${index}`).classList.remove("tab-inactive");
         document.getElementById(`tab${(index + 1) % 2}`).classList.add("tab-inactive");
     }
-
-    if (index === 1) {
-        updateJSONEditor();
-    }
 }
 
 function toggleDropdown(name) {
@@ -28,13 +24,13 @@ document.onclick = (e) => {
 }
 
 document.getElementById("tb-button-save-srtb").onclick = () => {
-    let filename = TBFilename.textContent.split(".").slice(0, -1).join(".") + ".srtb";
+    let filename = chartFilename.split(".").slice(0, -1).join(".") + ".srtb";
     let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value)));
     downloadFile(filename, srtb);
 }
 
 document.getElementById("tb-button-save-json").onclick = () => {
-    let filename = TBFilename.textContent.split(".").slice(0, -1).join(".") + ".json";
+    let filename = chartFilename.split(".").slice(0, -1).join(".") + ".json";
     let json = JSONEditor.value;
     downloadFile(filename, json);
 }
@@ -93,6 +89,8 @@ function loadTemplate(filename) {
                 }
 
                 chartFilename = filename;
+                updateTBValue("filename", chartFilename);
+
                 if (document.querySelector(".tb-button-container.disabled")) {
                     document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
                 }
@@ -121,6 +119,8 @@ fileInput.onchange = () => {
             }
 
             chartFilename = file.name;
+            updateTBValue("filename", chartFilename);
+
             if (document.querySelector(".tb-button-container.disabled")) {
                 document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
             }
