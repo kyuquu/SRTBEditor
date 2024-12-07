@@ -55,24 +55,20 @@ function loadChartData(data) {
             trackInfo[trackInfoKeys[i]]["value"] = getJSONValue(trackInfo[trackInfoKeys[i]]["default"], trackInfo[trackInfoKeys[i]]["reference"]);
             updateBVValue(trackInfoKeys[i], trackInfo[trackInfoKeys[i]]["value"]);
         }
-
-        updateBVValue("filename", chartFilename);
     
         TBTitle.textContent = trackInfo["title"]["value"];
         TBArtist.textContent = trackInfo["artist"]["value"];
-        TBFilename.textContent = chartFilename + ".srtb";
+        TBFilename.textContent = chartFilename;
     
         JSONEditor.value = JSON.stringify(chartJSON, null, 4);
     });
 }
 
-let topBarValues = ["title", "artist", "filename"];
+let topBarValues = ["title", "artist"];
 for (let i = 0; i < topBarValues.length; i++) {
     document.getElementById(`bv-${topBarValues[i]}`).onchange = (e) => {
         if (chartJSON !== undefined) {
-            document.getElementById(`tb-${topBarValues[i]}`).textContent = topBarValues[i] === "filename"
-                ? e.target.value + ".srtb"
-                : e.target.value;
+            document.getElementById(`tb-${topBarValues[i]}`).textContent = e.target.value;
         }
     }
 }

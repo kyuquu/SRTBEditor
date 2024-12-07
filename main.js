@@ -7,8 +7,6 @@ function toggleDropdown(name) {
     document.getElementById(`tb-button-${name}`).classList.toggle("tb-button-active");
 }
 
-
-
 function switchToTab(index) {
     if (document.getElementById(`tab-button${index}`).classList.contains("tab-button-inactive")) {
         document.getElementById(`tab-button${index}`).classList.remove("tab-button-inactive");
@@ -17,8 +15,6 @@ function switchToTab(index) {
         document.getElementById(`tab${(index + 1) % 2}`).classList.add("tab-inactive");
     }
 }
-
-
 
 function convertToJSON(srtb) {
     let data = srtb["largeStringValuesContainer"]["values"];
@@ -30,8 +26,6 @@ function convertToJSON(srtb) {
     return srtb;
 }
 
-
-
 function convertToSRTB(json) {
     let data = json["largeStringValuesContainer"]["values"];
 
@@ -41,8 +35,6 @@ function convertToSRTB(json) {
 
     return json;
 }
-
-
 
 function downloadFile(filename, file) {
     if (filename.split(".").slice(0, -1).join(".").length > 0) {
@@ -59,8 +51,6 @@ function downloadFile(filename, file) {
     }
 }
 
-
-
 function loadTemplate(filename) {
     const fileExtension = filename.split(".").pop().toLowerCase();
     fetch('./templates/' + filename)
@@ -75,7 +65,7 @@ function loadTemplate(filename) {
                     loadChartData(json);
                 }
 
-                chartFilename = filename.split(".").slice(0, -1).join(".");
+                chartFilename = filename;
                 if (document.querySelector(".tb-button-container.disabled")) {
                     document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
                 }
@@ -87,9 +77,6 @@ function loadTemplate(filename) {
 
 }
 
-
-
-// closes dropdown menus when you click off of them
 document.onclick = (e) => {
     if (document.querySelector(".tb-button-active") && !e.target.classList.contains("tb-button-active")) {
         document.querySelector(".tb-button-dropdown-active").classList.remove("tb-button-dropdown-active");
@@ -97,9 +84,18 @@ document.onclick = (e) => {
     }
 }
 
+document.getElementById("tb-button-save-srtb").onclick = () => {
+    let filename = TBFilename.textContent.split(".").slice(0, -1).join(".") + ".srtb";
+    let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value)));
+    downloadFile(filename, srtb);
+}
 
+document.getElementById("tb-button-save-json").onclick = () => {
+    let filename = TBFilename.textContent.split(".").slice(0, -1).join(".") + ".json";
+    let json = JSONEditor.value;
+    downloadFile(filename, json);
+}
 
-// controls what happens when you click "upload file" under "new"
 const fileInput = document.getElementById("tb-button-new-upload");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
@@ -116,7 +112,7 @@ fileInput.onchange = () => {
                 loadChartData(e.target.result);
             }
 
-            chartFilename = file.name.split(".").slice(0, -1).join(".");
+            chartFilename = file.name;
             if (document.querySelector(".tb-button-container.disabled")) {
                 document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
             }

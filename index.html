@@ -52,8 +52,8 @@
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
                     <div>
-                        <button onclick="downloadFile(TBFilename.textContent, JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value))))">SAVE AS .SRTB</button>
-                        <button onclick="downloadFile(TBFilename.textContent.slice(0, -4) + 'json', JSONEditor.value)">SAVE AS .JSON</button>
+                        <button id="tb-button-save-srtb">SAVE AS .SRTB</button>
+                        <button id="tb-button-save-json">SAVE AS .JSON</button>
                         <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
                     </div>
                 </div>
@@ -92,11 +92,6 @@
                     <div class="bv-item">
                         <div class="bv-item-name">Charter</div>
                         <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-charter">
-                    </div>
-
-                    <div class="bv-item">
-                        <div class="bv-item-name">Filename</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-filename">
                     </div>
 
                     <div class="bv-item inline">
