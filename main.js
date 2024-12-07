@@ -80,6 +80,10 @@ function loadTemplate(filename) {
         .then(response => response.json())
         .then((data) => {
             if(["srtb", "json"].includes(fileExtension)) {
+                if (chartJSON === undefined) {
+                    enableUserInput();
+                }
+
                 if (fileExtension === "json") {
                     loadChartData(data);
                 }
@@ -90,10 +94,6 @@ function loadTemplate(filename) {
 
                 chartFilename = filename;
                 updateTBValue("filename", chartFilename);
-
-                if (document.querySelector(".tb-button-container.disabled")) {
-                    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
-                }
             }
             else {
                 console.log("attempted to load template with unrecognized extension: " + fileExtension);
@@ -102,6 +102,18 @@ function loadTemplate(filename) {
 
 }
 
+
+
+function enableUserInput() {
+    console.log("awawawa");
+    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
+    document.querySelector(".bv0").classList.remove("disabled");
+    document.querySelector(".bv1").classList.remove("disabled");
+    document.getElementById("json-editor").disabled = false;
+}
+
+
+
 const fileInput = document.getElementById("tb-button-new-upload");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
@@ -109,6 +121,10 @@ fileInput.onchange = () => {
     if (["srtb", "json"].includes(fileExtension)) { // to do: allow .zip files to be imported
         const reader = new FileReader();
         reader.onload = (e) => {
+            if (chartJSON === undefined) {
+                enableUserInput();
+            }
+            
             if (fileExtension === "srtb") {
                 let srtb = e.target.result;
                 let json = convertToJSON(JSON.parse(srtb));
@@ -120,10 +136,6 @@ fileInput.onchange = () => {
 
             chartFilename = file.name;
             updateTBValue("filename", chartFilename);
-
-            if (document.querySelector(".tb-button-container.disabled")) {
-                document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
-            }
         };
         reader.readAsText(file);
     }

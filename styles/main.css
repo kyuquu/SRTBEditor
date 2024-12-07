@@ -248,7 +248,7 @@ input[type="checkbox"]:checked::before {
 }
 
 .tab-inactive {
-    display: none;
+    display: none !important;
 }
 
 #json-editor {
@@ -262,6 +262,10 @@ input[type="checkbox"]:checked::before {
     color: var(--color-main);
     background: var(--color-bg);
     resize: none;
+}
+
+#json-editor:disabled {
+    opacity: 50%;
 }
 
 
