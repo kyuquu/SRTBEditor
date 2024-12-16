@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/basic-view.css">
+    <link rel="stylesheet" href="styles/json-view.css">
 
     <script defer src="main.js" type="text/javascript"></script>
     <script defer src="values.js" type="text/javascript"></script>
@@ -106,20 +107,27 @@
             </div>
 
             <div class="tab tab-inactive" id="tab1">
-                <div id="json-editor" class="disabled">
-                    <div id="editor"></div>
+                <div class="jv disabled">
+                    <div id="json-editor">
+                        <div id="editor"></div>
+    
+                        <!-- scripts for Ace -->
+                        <script src="libraries/ace-builds-1.5.0/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+                        <script>
+                            var JSONEditor = ace.edit("editor");
+                            JSONEditor.setTheme("ace/theme/dracula");
+                            JSONEditor.session.setMode("ace/mode/json");
+                            JSONEditor.setOptions({
+                                fixedWidthGutter: true,
+                                showPrintMargin: false
+                            });
+                        </script>
+                    </div>
 
-                    <!-- scripts for Ace -->
-                    <script src="libraries/ace-builds-1.5.0/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-                    <script>
-                        var JSONEditor = ace.edit("editor");
-                        JSONEditor.setTheme("ace/theme/dracula");
-                        JSONEditor.session.setMode("ace/mode/json");
-                        JSONEditor.setOptions({
-                            fixedWidthGutter: true,
-                            showPrintMargin: false
-                        });
-                    </script>
+                    <div class="jv-buttons">
+                        <button class="jv-button" id="jv-button-save" onclick="">SAVE CHANGES</button>
+                        <button class="jv-button" id="jv-button-discard" onclick="">DISCARD CHANGES</button>
+                    </div>
                 </div>
             </div>
         </div>

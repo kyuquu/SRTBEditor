@@ -111,7 +111,7 @@ function enableUserInput() {
     document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
-    document.getElementById("json-editor").classList.remove("disabled");
+    document.querySelector(".jv").classList.remove("disabled");
 }
 
 

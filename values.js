@@ -35,6 +35,26 @@ function updateJSONEditor(json) {
     JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
 }
 
+function validateJSON(json) {
+    try {
+        let obj = JSON.parse(json);
+        if (obj && typeof obj === "object") {
+            return obj;
+        }
+    } catch (e) {
+        return false;
+    }
+}
+
+JSONEditor.session.on("change", () => {
+    if (validateJSON(JSONEditor.getValue()) !== false) {
+        document.getElementById("jv-button-save").classList.remove("disabled");
+    }
+    else {
+        document.getElementById("jv-button-save").classList.add("disabled");
+    }
+});
+
 
 
 const TBValues = [];
