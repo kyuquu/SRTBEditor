@@ -241,10 +241,14 @@ input[type="checkbox"]:checked::before {
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 1rem;
     border: 0.5rem solid var(--color-main);
     border-radius: 1rem;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+#tab0 {
+    padding: 1rem;
 }
 
 .tab-inactive {
@@ -252,20 +256,23 @@ input[type="checkbox"]:checked::before {
 }
 
 #json-editor {
+    position: relative;
     width: 100%;
     height: 100%;
-    border: none;
-    outline: none;
-    box-sizing: border-box;
-    font-size: 1rem;
-    font-family: monospace;
-    color: var(--color-main);
-    background: var(--color-bg);
-    resize: none;
 }
 
-#json-editor:disabled {
+#json-editor.disabled {
     opacity: 50%;
+    pointer-events: none;
+}
+
+#editor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    font-size: 1rem;
 }
 
 

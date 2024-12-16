@@ -8,8 +8,6 @@ let clipData;
 
 
 
-const JSONEditor = document.getElementById("json-editor");
-
 function getJSONValue(property) {
     let defaultValue = trackInfo[property]["default"];
     let referenceArray = trackInfo[property]["reference"];
@@ -28,7 +26,13 @@ function updateJSONValue(property, value) {
     if (JSONValue[referenceArray[referenceArray.length - 1]] !== undefined) {
         JSONValue[referenceArray[referenceArray.length - 1]] = value;
     }
-    JSONEditor.value = JSON.stringify(chartJSON, null, 4);
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
+}
+
+function updateJSONEditor(json) {
+    let cursorPos = JSONEditor.selection.getCursor();
+    JSONEditor.session.setValue(json);
+    JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
 }
 
 
@@ -105,6 +109,6 @@ function loadChartData(data) {
             updateBVValue(property, value);
         }
     
-        JSONEditor.value = JSON.stringify(chartJSON, null, 4);
+        updateJSONEditor(JSON.stringify(chartJSON, null, 4));
     });
 }

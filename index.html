@@ -106,7 +106,21 @@
             </div>
 
             <div class="tab tab-inactive" id="tab1">
-                <textarea spellcheck="false" id="json-editor" disabled></textarea>
+                <div id="json-editor" class="disabled">
+                    <div id="editor"></div>
+
+                    <!-- scripts for Ace -->
+                    <script src="libraries/ace-builds-1.5.0/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+                    <script>
+                        var JSONEditor = ace.edit("editor");
+                        JSONEditor.setTheme("ace/theme/dracula");
+                        JSONEditor.session.setMode("ace/mode/json");
+                        JSONEditor.setOptions({
+                            fixedWidthGutter: true,
+                            showPrintMargin: false
+                        });
+                    </script>
+                </div>
             </div>
         </div>
     </div>
