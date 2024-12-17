@@ -99,7 +99,7 @@ function loadTemplate(filename) {
                 updateTBValue("filename", chartFilename);
             }
             else {
-                console.log("attempted to load template with unrecognized extension: " + fileExtension);
+                window.alert(`Unrecognized file extension: .${fileExtension}`);
             }
         });
 
@@ -140,6 +140,6 @@ fileInput.onchange = () => {
         reader.readAsText(file);
     }
     else {
-        console.log("attempted to load file with unrecognized extension: " + fileExtension);
+        window.alert(`Unrecognized file extension: .${fileExtension}`);
     }
 }
