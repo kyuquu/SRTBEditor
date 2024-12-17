@@ -101,6 +101,7 @@ input[type="checkbox"]:checked::before {
 
 .tb-chart > div:first-child {
     font-size: 3rem;
+    height: 3.625rem;
 }
 
 #tb-title {
