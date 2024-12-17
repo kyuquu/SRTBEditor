@@ -107,15 +107,6 @@ function loadTemplate(filename) {
 
 
 
-function enableUserInput() {
-    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
-    document.querySelector(".bv0").classList.remove("disabled");
-    document.querySelector(".bv1").classList.remove("disabled");
-    document.querySelector(".jv").classList.remove("disabled");
-}
-
-
-
 const fileInput = document.getElementById("tb-button-new-upload");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
@@ -123,17 +114,24 @@ fileInput.onchange = () => {
     if (["srtb", "json"].includes(fileExtension)) { // to do: allow .zip files to be imported
         const reader = new FileReader();
         reader.onload = (e) => {
-            if (chartJSON === undefined) {
-                enableUserInput();
-            }
-            
             if (fileExtension === "srtb") {
-                let srtb = e.target.result;
-                let json = convertToJSON(JSON.parse(srtb));
-                loadChartData(json);
+                try {
+                    let srtb = e.target.result;
+                    let json = convertToJSON(JSON.parse(srtb));
+                    loadChartData(json);
+                }
+                catch (e) {
+                    window.alert(`Invalid .srtb\n\n${e}`);
+                }
             }
             else if (fileExtension === "json") {
-                loadChartData(e.target.result);
+                try {
+                    let json = JSON.parse(e.target.result);
+                    loadChartData(json);
+                }
+                catch (e) {
+                    window.alert(`Invalid .json\n\n${e}`);
+                }
             }
 
             chartFilename = file.name;
@@ -142,6 +140,6 @@ fileInput.onchange = () => {
         reader.readAsText(file);
     }
     else {
-        console.log("attempted to load template with unrecognized extension: " + fileExtension);
+        console.log("attempted to load file with unrecognized extension: " + fileExtension);
     }
 }

@@ -95,6 +95,7 @@ function updateEditorButtons(JSONIfValid) {
     }
     else {
         JSONEditorSave.classList.add("disabled");
+        JSONEditorDiscard.classList.remove("disabled");
     }
 }
 
@@ -169,6 +170,13 @@ function updateBVValue(property, value) {
 
 
 
+function enableUserInput() {
+    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
+    document.querySelector(".bv0").classList.remove("disabled");
+    document.querySelector(".bv1").classList.remove("disabled");
+    document.querySelector(".jv").classList.remove("disabled");
+}
+
 function loadChartData(data) {
     chartJSON = data;
 
@@ -186,5 +194,9 @@ function loadChartData(data) {
         }
     
         updateJSONEditor(JSON.stringify(chartJSON, null, 4));
+
+        if (chartJSON === undefined) {
+            enableUserInput();
+        }
     });
 }
