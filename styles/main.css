@@ -40,7 +40,7 @@ button, .tb-input-label {
     background: var(--color-bg);
     cursor: pointer;
     z-index: 1;
-    transition: color 100ms ease-in-out, background 100ms ease-in-out;
+    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
 }
 
 button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.tab-button-inactive:hover {
@@ -101,6 +101,7 @@ input[type="checkbox"]:checked::before {
 
 .tb-chart > div:first-child {
     font-size: 3rem;
+    height: 3.625rem;
 }
 
 #tb-title {
@@ -245,27 +246,11 @@ input[type="checkbox"]:checked::before {
     border: 0.5rem solid var(--color-main);
     border-radius: 1rem;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .tab-inactive {
     display: none !important;
-}
-
-#json-editor {
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    box-sizing: border-box;
-    font-size: 1rem;
-    font-family: monospace;
-    color: var(--color-main);
-    background: var(--color-bg);
-    resize: none;
-}
-
-#json-editor:disabled {
-    opacity: 50%;
 }
 
 

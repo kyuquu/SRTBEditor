@@ -6,9 +6,10 @@ let trackInfo;
 let trackData;
 let clipData;
 
+const JSONEditorSave = document.getElementById("jv-button-save");
+const JSONEditorDiscard = document.getElementById("jv-button-discard");
 
 
-const JSONEditor = document.getElementById("json-editor");
 
 function getJSONValue(property) {
     let defaultValue = trackInfo[property]["default"];
@@ -28,8 +29,87 @@ function updateJSONValue(property, value) {
     if (JSONValue[referenceArray[referenceArray.length - 1]] !== undefined) {
         JSONValue[referenceArray[referenceArray.length - 1]] = value;
     }
-    JSONEditor.value = JSON.stringify(chartJSON, null, 4);
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }
+
+function updateJSONEditor(json) {
+    let cursorPos = JSONEditor.selection.getCursor();
+    JSONEditor.session.setValue(json);
+    JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
+
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
+}
+
+function validateJSON(json) {
+    try {
+        let obj = JSON.parse(json);
+        if (obj && typeof obj === "object") {
+            return obj;
+        }
+    } catch (e) {
+        return false;
+    }
+}
+
+
+
+let editorTimeout;
+let editorTimeoutLength = 500;
+
+function saveEditorChanges() {
+    chartJSON = JSON.parse(JSONEditor.getValue());
+
+    for (let property in trackInfo) {
+        let value = getJSONValue(property);
+        updateTBValue(property, value);
+        updateBVValue(property, value);
+    }
+
+    JSONEditor.focus();
+
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
+}
+
+function discardEditorChanges() {
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
+
+    JSONEditor.focus();
+
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
+}
+
+function updateEditorButtons(JSONIfValid) {
+    if (JSONIfValid !== false) {
+        JSONEditorSave.classList.remove("disabled");
+
+        if (JSON.stringify(JSONIfValid) === JSON.stringify(chartJSON)) {
+            JSONEditorSave.classList.add("disabled");
+            JSONEditorDiscard.classList.add("disabled");
+        }
+        else {
+            JSONEditorDiscard.classList.remove("disabled");
+        }
+    }
+    else {
+        JSONEditorSave.classList.add("disabled");
+    }
+}
+
+JSONEditor.session.on("change", () => {
+    if (editorTimeout) {
+        clearTimeout(editorTimeout)
+    }
+
+    editorTimeout = setTimeout(() => {
+        updateEditorButtons(validateJSON(JSONEditor.getValue()));
+    }, editorTimeoutLength);
+
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
+});
 
 
 
@@ -105,6 +185,6 @@ function loadChartData(data) {
             updateBVValue(property, value);
         }
     
-        JSONEditor.value = JSON.stringify(chartJSON, null, 4);
+        updateJSONEditor(JSON.stringify(chartJSON, null, 4));
     });
 }

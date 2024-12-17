@@ -5,6 +5,9 @@ function switchToTab(index) {
         document.getElementById(`tab${index}`).classList.remove("tab-inactive");
         document.getElementById(`tab${(index + 1) % 2}`).classList.add("tab-inactive");
     }
+    if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
+        JSONEditor.focus();
+    }
 }
 
 function toggleDropdown(name) {
@@ -25,13 +28,13 @@ document.onclick = (e) => {
 
 document.getElementById("tb-button-save-srtb").onclick = () => {
     let filename = chartFilename.split(".").slice(0, -1).join(".") + ".srtb";
-    let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.value)));
+    let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.getValue())));
     downloadFile(filename, srtb);
 }
 
 document.getElementById("tb-button-save-json").onclick = () => {
     let filename = chartFilename.split(".").slice(0, -1).join(".") + ".json";
-    let json = JSONEditor.value;
+    let json = JSONEditor.getValue();
     downloadFile(filename, json);
 }
 
@@ -105,11 +108,10 @@ function loadTemplate(filename) {
 
 
 function enableUserInput() {
-    console.log("awawawa");
     document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
-    document.getElementById("json-editor").disabled = false;
+    document.querySelector(".jv").classList.remove("disabled");
 }
 
 
