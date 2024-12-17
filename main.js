@@ -26,19 +26,19 @@ document.onclick = (e) => {
     }
 }
 
-document.getElementById("tb-button-save-srtb").onclick = () => {
+
+
+function saveAsSRTB() {
     let filename = chartFilename.split(".").slice(0, -1).join(".") + ".srtb";
     let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.getValue())));
     downloadFile(filename, srtb);
 }
 
-document.getElementById("tb-button-save-json").onclick = () => {
+function saveAsJSON() {
     let filename = chartFilename.split(".").slice(0, -1).join(".") + ".json";
     let json = JSONEditor.getValue();
     downloadFile(filename, json);
 }
-
-
 
 function convertToJSON(srtb) {
     let data = srtb["largeStringValuesContainer"]["values"];
@@ -63,18 +63,13 @@ function convertToSRTB(json) {
 
 
 function downloadFile(filename, file) {
-    if (filename.split(".").slice(0, -1).join(".").length > 0) {
-        let link = document.createElement("a"); 
-        link.setAttribute("href", "data:text/plain; charset=utf-8," + encodeURIComponent(file));
-        link.setAttribute("download", filename);
-        link.style.display = "none";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-    else {
-        console.log("filename is too short");
-    }
+    let link = document.createElement("a"); 
+    link.setAttribute("href", "data:text/plain; charset=utf-8," + encodeURIComponent(file));
+    link.setAttribute("download", filename);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function loadTemplate(filename) {
@@ -83,16 +78,17 @@ function loadTemplate(filename) {
         .then(response => response.json())
         .then((data) => {
             if(["srtb", "json"].includes(fileExtension)) {
-                if (chartJSON === undefined) {
-                    enableUserInput();
+                try {
+                    if (fileExtension === "json") {
+                        loadChartData(data);
+                    }
+                    else if (fileExtension === "srtb") {
+                        let json = convertToJSON(data);
+                        loadChartData(json);
+                    }
                 }
-
-                if (fileExtension === "json") {
-                    loadChartData(data);
-                }
-                else if (fileExtension === "srtb") {
-                    let json = convertToJSON(data);
-                    loadChartData(json);
+                catch {
+                    window.alert(`Template failed to load\n\n${e}`);
                 }
 
                 chartFilename = filename;
@@ -102,7 +98,6 @@ function loadTemplate(filename) {
                 window.alert(`Unrecognized file extension: .${fileExtension}`);
             }
         });
-
 }
 
 

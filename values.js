@@ -11,6 +11,9 @@ const JSONEditorDiscard = document.getElementById("jv-button-discard");
 
 
 
+let editorTimeout;
+let editorTimeoutLength = 500;
+
 function getJSONValue(property) {
     let defaultValue = trackInfo[property]["default"];
     let referenceArray = trackInfo[property]["reference"];
@@ -32,15 +35,6 @@ function updateJSONValue(property, value) {
     updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }
 
-function updateJSONEditor(json) {
-    let cursorPos = JSONEditor.selection.getCursor();
-    JSONEditor.session.setValue(json);
-    JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
-
-    JSONEditorSave.classList.add("disabled");
-    JSONEditorDiscard.classList.add("disabled");
-}
-
 function validateJSON(json) {
     try {
         let obj = JSON.parse(json);
@@ -52,10 +46,14 @@ function validateJSON(json) {
     }
 }
 
+function updateJSONEditor(json) {
+    let cursorPos = JSONEditor.selection.getCursor();
+    JSONEditor.session.setValue(json);
+    JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
 
-
-let editorTimeout;
-let editorTimeoutLength = 500;
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
+}
 
 function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
@@ -126,7 +124,11 @@ function updateTBValue(property, value) {
     if (TBValues.includes(property)) {
         let TBElement = document.getElementById(`tb-${property}`);
         TBElement.textContent = value;
-    };
+    }
+
+    if (property === "title" && value.length === 0) {
+        document.getElementById("tb-title").innerHTML = "<i>Untitled</i>";
+    }
 }
 
 
@@ -178,6 +180,10 @@ function enableUserInput() {
 }
 
 function loadChartData(data) {
+    if (chartJSON === undefined) {
+        enableUserInput();
+    }
+
     chartJSON = data;
 
     fetch("chart-data-template.json")
@@ -192,11 +198,7 @@ function loadChartData(data) {
             updateTBValue(property, value);
             updateBVValue(property, value);
         }
-    
-        updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 
-        if (chartJSON === undefined) {
-            enableUserInput();
-        }
+        updateJSONEditor(JSON.stringify(chartJSON, null, 4));
     });
 }

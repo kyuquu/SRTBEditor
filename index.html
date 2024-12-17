@@ -23,9 +23,11 @@
         <div class="tb-chart">
             <div>
                 <span id="tb-title" class="tb-value"></span>
-                <span id="tb-artist" class="tb-value"><i>No SRTB loaded</i></span>
+                <span id="tb-artist" class="tb-value"></span>
             </div>
-            <div id="tb-filename" class="tb-value"><i>click NEW to get started</i></div>
+            <div id="tb-filename" class="tb-value">
+                <span style="font-size: 2rem;">Click <b>NEW</b> to load a chart!</span>
+            </div>
         </div>
 
         <div class="tb-buttons">
@@ -53,8 +55,8 @@
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
                     <div>
-                        <button id="tb-button-save-srtb">SAVE AS .SRTB</button>
-                        <button id="tb-button-save-json">SAVE AS .JSON</button>
+                        <button id="tb-button-save-srtb" onclick="saveAsSRTB()">SAVE AS .SRTB</button>
+                        <button id="tb-button-save-json" onclick="saveAsJSON()">SAVE AS .JSON</button>
                         <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
                     </div>
                 </div>

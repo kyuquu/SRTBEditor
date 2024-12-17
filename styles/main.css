@@ -90,6 +90,10 @@ input[type="checkbox"]:checked::before {
 }
 
 .tb-chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 5.5rem;
     overflow: hidden;
 }
 
@@ -101,7 +105,6 @@ input[type="checkbox"]:checked::before {
 
 .tb-chart > div:first-child {
     font-size: 3rem;
-    height: 3.625rem;
 }
 
 #tb-title {
