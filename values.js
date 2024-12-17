@@ -30,9 +30,13 @@ function updateJSONValue(property, value) {
 }
 
 function updateJSONEditor(json) {
+    shouldValidate = false;
+
     let cursorPos = JSONEditor.selection.getCursor();
     JSONEditor.session.setValue(json);
     JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
+
+    shouldValidate = true;
 }
 
 function validateJSON(json) {
@@ -46,13 +50,67 @@ function validateJSON(json) {
     }
 }
 
-JSONEditor.session.on("change", () => {
-    if (validateJSON(JSONEditor.getValue()) !== false) {
+
+
+let editorTimeout;
+let editorTimeoutLength = 500;
+
+let shouldValidate = true;
+
+function saveEditorChanges() {
+    chartJSON = JSON.parse(JSONEditor.getValue());
+
+    for (let property in trackInfo) {
+        let value = getJSONValue(property);
+        updateTBValue(property, value);
+        updateBVValue(property, value);
+    }
+
+    JSONEditor.focus();
+
+    document.getElementById("jv-button-save").classList.add("disabled");
+    document.getElementById("jv-button-discard").classList.add("disabled");
+}
+
+function discardEditorChanges() {
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
+
+    JSONEditor.focus();
+
+    document.getElementById("jv-button-save").classList.add("disabled");
+    document.getElementById("jv-button-discard").classList.add("disabled");
+}
+
+function updateEditorButtons(JSONIfValid) {
+    if (JSONIfValid !== false) {
         document.getElementById("jv-button-save").classList.remove("disabled");
+
+        if (JSON.stringify(JSONIfValid) === JSON.stringify(chartJSON)) {
+            document.getElementById("jv-button-save").classList.add("disabled");
+            document.getElementById("jv-button-discard").classList.add("disabled");
+        }
+        else {
+            document.getElementById("jv-button-discard").classList.remove("disabled");
+        }
     }
     else {
         document.getElementById("jv-button-save").classList.add("disabled");
     }
+}
+
+JSONEditor.session.on("change", () => {
+    if (shouldValidate) {
+        if (editorTimeout) {
+            clearTimeout(editorTimeout)
+        }
+    
+        editorTimeout = setTimeout(() => {
+            updateEditorButtons(validateJSON(JSONEditor.getValue()));
+        }, editorTimeoutLength);
+    }
+
+    document.getElementById("jv-button-save").classList.add("disabled");
+    document.getElementById("jv-button-discard").classList.add("disabled");
 });
 
 
@@ -130,5 +188,8 @@ function loadChartData(data) {
         }
     
         updateJSONEditor(JSON.stringify(chartJSON, null, 4));
+
+        document.getElementById("jv-button-save").classList.add("disabled");
+        document.getElementById("jv-button-discard").classList.add("disabled");
     });
 }

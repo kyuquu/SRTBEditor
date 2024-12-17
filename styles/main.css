@@ -40,7 +40,7 @@ button, .tb-input-label {
     background: var(--color-bg);
     cursor: pointer;
     z-index: 1;
-    transition: color 100ms ease-in-out, background 100ms ease-in-out;
+    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
 }
 
 button:hover, .tb-input-label:hover, .tb-button-active, .tab-buttons > button.tab-button-inactive:hover {
