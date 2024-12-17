@@ -6,6 +6,9 @@ let trackInfo;
 let trackData;
 let clipData;
 
+const JSONEditorSave = document.getElementById("jv-button-save");
+const JSONEditorDiscard = document.getElementById("jv-button-discard");
+
 
 
 function getJSONValue(property) {
@@ -30,13 +33,12 @@ function updateJSONValue(property, value) {
 }
 
 function updateJSONEditor(json) {
-    shouldValidate = false;
-
     let cursorPos = JSONEditor.selection.getCursor();
     JSONEditor.session.setValue(json);
     JSONEditor.selection.moveCursorTo(cursorPos.row, cursorPos.column);
 
-    shouldValidate = true;
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
 }
 
 function validateJSON(json) {
@@ -55,8 +57,6 @@ function validateJSON(json) {
 let editorTimeout;
 let editorTimeoutLength = 500;
 
-let shouldValidate = true;
-
 function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
 
@@ -68,8 +68,8 @@ function saveEditorChanges() {
 
     JSONEditor.focus();
 
-    document.getElementById("jv-button-save").classList.add("disabled");
-    document.getElementById("jv-button-discard").classList.add("disabled");
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
 }
 
 function discardEditorChanges() {
@@ -77,40 +77,38 @@ function discardEditorChanges() {
 
     JSONEditor.focus();
 
-    document.getElementById("jv-button-save").classList.add("disabled");
-    document.getElementById("jv-button-discard").classList.add("disabled");
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
 }
 
 function updateEditorButtons(JSONIfValid) {
     if (JSONIfValid !== false) {
-        document.getElementById("jv-button-save").classList.remove("disabled");
+        JSONEditorSave.classList.remove("disabled");
 
         if (JSON.stringify(JSONIfValid) === JSON.stringify(chartJSON)) {
-            document.getElementById("jv-button-save").classList.add("disabled");
-            document.getElementById("jv-button-discard").classList.add("disabled");
+            JSONEditorSave.classList.add("disabled");
+            JSONEditorDiscard.classList.add("disabled");
         }
         else {
-            document.getElementById("jv-button-discard").classList.remove("disabled");
+            JSONEditorDiscard.classList.remove("disabled");
         }
     }
     else {
-        document.getElementById("jv-button-save").classList.add("disabled");
+        JSONEditorSave.classList.add("disabled");
     }
 }
 
 JSONEditor.session.on("change", () => {
-    if (shouldValidate) {
-        if (editorTimeout) {
-            clearTimeout(editorTimeout)
-        }
-    
-        editorTimeout = setTimeout(() => {
-            updateEditorButtons(validateJSON(JSONEditor.getValue()));
-        }, editorTimeoutLength);
+    if (editorTimeout) {
+        clearTimeout(editorTimeout)
     }
 
-    document.getElementById("jv-button-save").classList.add("disabled");
-    document.getElementById("jv-button-discard").classList.add("disabled");
+    editorTimeout = setTimeout(() => {
+        updateEditorButtons(validateJSON(JSONEditor.getValue()));
+    }, editorTimeoutLength);
+
+    JSONEditorSave.classList.add("disabled");
+    JSONEditorDiscard.classList.add("disabled");
 });
 
 
@@ -188,8 +186,5 @@ function loadChartData(data) {
         }
     
         updateJSONEditor(JSON.stringify(chartJSON, null, 4));
-
-        document.getElementById("jv-button-save").classList.add("disabled");
-        document.getElementById("jv-button-discard").classList.add("disabled");
     });
 }
