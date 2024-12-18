@@ -40,6 +40,10 @@ function saveAsJSON() {
     downloadFile(filename, json);
 }
 
+function saveAsZIP() {
+    // write this function later once libraries are working
+}
+
 function convertToJSON(srtb) {
     let data = srtb["largeStringValuesContainer"]["values"];
 

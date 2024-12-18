@@ -26,7 +26,7 @@
                 <span id="tb-artist" class="tb-value"></span>
             </div>
             <div id="tb-filename" class="tb-value">
-                <span style="font-size: 2rem;">Click <b>NEW</b> to load a chart!</span>
+                <span style="font-size: 2rem;">Click <b>LOAD</b> to get started!</span>
             </div>
         </div>
 
@@ -34,15 +34,16 @@
             <div class="tb-button-container">
                 <button class="tb-button" id="tb-button-new" onclick="toggleDropdown('new')">
                     <div>
-                        <span>NEW</span>
+                        <span>LOAD</span>
                         <span></span>
                     </div>
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-new">
                     <div>
-                        <label for="tb-button-new-upload" class="tb-input-label">UPLOAD FILE</label>
-                        <input type="file" accept=".srtb, .json" id="tb-button-new-upload"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
                         <button onclick="loadTemplate('Custom.srtb')">CREATE NEW</button>
+                        <label for="tb-button-new-upload" class="tb-input-label">FROM FILE</label>
+                        <input type="file" accept=".srtb, .json" id="tb-button-new-upload"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
+                        <button>FROM LINK</button>
                     </div>
                 </div>
             </div>
@@ -55,9 +56,9 @@
                 </button>
                 <div class="tb-button-dropdown" id="tb-button-dropdown-save">
                     <div>
-                        <button id="tb-button-save-srtb" onclick="saveAsSRTB()">SAVE AS .SRTB</button>
-                        <button id="tb-button-save-json" onclick="saveAsJSON()">SAVE AS .JSON</button>
-                        <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
+                        <button onclick="saveAsSRTB()">SAVE AS .SRTB</button>
+                        <button onclick="saveAsJSON()">SAVE AS .JSON</button>
+                        <button onclick="saveAsZIP()">SAVE AS .ZIP</button>
                     </div>
                 </div>
             </div>
