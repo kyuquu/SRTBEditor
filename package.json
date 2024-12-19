@@ -13,8 +13,5 @@
       "url": "https://github.com/GaviGuy"
     }
   ],
-  "license": "MIT",
-  "dependencies": {
-    "ace-builds": "^1.37.0"
-  }
+  "license": "MIT"
 }
