@@ -10,6 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
 
+    <!-- - - - LIBRARIES  - - - - - - -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.37.0/ace.min.js" integrity="sha512-ir9JaQR8EgducDjvBjP9spPK+QWvlQDRv3vWn8c1+PAd2+W1wswCI2XDGJSr8V7s3wS/8bKnvK86tNtLbTapdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- - - - MAIN STYLESHEETS - - - -->
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" type="text/css" href="styles/top-bar.css">
@@ -97,18 +102,6 @@
                 <div class="jv disabled">
                     <div id="json-editor">
                         <div id="editor"></div>
-    
-                        <!-- scripts for Ace -->
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.37.0/ace.js" integrity="sha512-AYZKM93Ch1NQ0U57Na4pMAFoAfYviwmhZQWfUfbGtzYM4vs+DiQ8d02ByhyYAVMPgJWmb5qdWlN8cPDKCWS8iw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-                        <script>
-                            var JSONEditor = ace.edit("editor");
-                            JSONEditor.setTheme("ace/theme/dracula");
-                            JSONEditor.session.setMode("ace/mode/json");
-                            JSONEditor.setOptions({
-                                fixedWidthGutter: true,
-                                showPrintMargin: false
-                            });
-                        </script>
                     </div>
 
                     <div class="jv-buttons">
