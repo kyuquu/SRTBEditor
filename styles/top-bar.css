@@ -1,0 +1,42 @@
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.tb-chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 5.5rem;
+    overflow: hidden;
+}
+
+.tb-chart > div, .tb-filename {
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.tb-chart > div:first-child {
+    font-size: 3rem;
+}
+
+#tb-title {
+    font-weight: bold;
+}
+
+#tb-artist, #tb-filename {
+    opacity: 50%;
+}
+
+#tb-filename {
+    font-size: 1.5rem;
+}
+
+.tb-dropdowns {
+    display: flex;
+    gap: 1rem;
+    --size: 1;
+}

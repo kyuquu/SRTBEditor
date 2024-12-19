@@ -6,8 +6,8 @@ let trackInfo;
 let trackData;
 let clipData;
 
-const JSONEditorSave = document.getElementById("jv-button-save");
-const JSONEditorDiscard = document.getElementById("jv-button-discard");
+const JSONEditorSave = document.getElementById("button-jv-save");
+const JSONEditorDiscard = document.getElementById("button-jv-discard");
 
 
 
@@ -173,7 +173,7 @@ function updateBVValue(property, value) {
 
 
 function enableUserInput() {
-    document.querySelector(".tb-button-container.disabled").classList.remove("disabled");
+    document.getElementById("dropdown-tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");

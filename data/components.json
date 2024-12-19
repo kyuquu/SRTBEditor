@@ -1,0 +1,48 @@
+{
+    "dropdowns": {
+        "tb-load": {
+            "text": "LOAD",
+            "options": [
+                {
+                    "text": "CREATE NEW",
+                    "function": "loadTemplate('Custom.srtb')"
+                },
+                {
+                    "text": "FROM FILE",
+                    "function": "fileInput.click()"
+                },
+                {
+                    "text": "FROM LINK",
+                    "function": ""
+                }
+            ]
+        },
+        "tb-save": {
+            "text": "SAVE",
+            "options": [
+                {
+                    "text": "SAVE AS .SRTB",
+                    "function": "saveAsSRTB()"
+                },
+                {
+                    "text": "SAVE AS .JSON",
+                    "function": "saveAsJSON()"
+                },
+                {
+                    "text": "SAVE AS .ZIP",
+                    "function": "saveAsZIP()"
+                }
+            ]
+        }
+    },
+    "buttons": {
+        "jv-save": {
+            "text": "SAVE CHANGES",
+            "function": "saveEditorChanges()"
+        },
+        "jv-discard": {
+            "text": "DISCARD CHANGES",
+            "function": "discardEditorChanges()"
+        }
+    }
+}

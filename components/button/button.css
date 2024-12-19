@@ -1,0 +1,19 @@
+.button {
+    /* PARAMETERS: --size */
+    height: calc(var(--size) * 3.375rem);
+    padding: calc(var(--size) * 0.5rem) calc(var(--size) * 2rem);
+    border: calc(var(--size) * 0.25rem) solid var(--color-main);
+    border-radius: 100rem;
+    box-sizing: border-box;
+    font-size: calc(var(--size) * 1.5rem);
+    font-weight: bold;
+    text-align: center;
+    color: var(--color-main);
+    background: var(--color-bg);
+    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
+}
+
+.button.disabled {
+    opacity: 50%;
+    pointer-events: none;
+}

@@ -10,22 +10,6 @@ function switchToTab(index) {
     }
 }
 
-function toggleDropdown(name) {
-    if (document.querySelector(".tb-button-active") && !document.getElementById(`tb-button-${name}`).classList.contains("tb-button-active")) {
-        document.querySelector(".tb-button-dropdown-active").classList.remove("tb-button-dropdown-active");
-        document.querySelector(".tb-button-active").classList.remove("tb-button-active");
-    }
-    document.getElementById(`tb-button-dropdown-${name}`).classList.toggle("tb-button-dropdown-active");
-    document.getElementById(`tb-button-${name}`).classList.toggle("tb-button-active");
-}
-
-document.onclick = (e) => {
-    if (document.querySelector(".tb-button-active") && !e.target.classList.contains("tb-button-active")) {
-        document.querySelector(".tb-button-dropdown-active").classList.remove("tb-button-dropdown-active");
-        document.querySelector(".tb-button-active").classList.remove("tb-button-active");
-    }
-}
-
 
 
 function saveAsSRTB() {
@@ -78,7 +62,7 @@ function downloadFile(filename, file) {
 
 function loadTemplate(filename) {
     const fileExtension = filename.split(".").pop().toLowerCase();
-    fetch('./templates/' + filename)
+    fetch("./templates/" + filename)
         .then(response => response.json())
         .then((data) => {
             if(["srtb", "json"].includes(fileExtension)) {
@@ -91,7 +75,7 @@ function loadTemplate(filename) {
                         loadChartData(json);
                     }
                 }
-                catch {
+                catch (e) {
                     window.alert(`Template failed to load\n\n${e}`);
                 }
 
@@ -106,7 +90,7 @@ function loadTemplate(filename) {
 
 
 
-const fileInput = document.getElementById("tb-button-new-upload");
+const fileInput = document.getElementById("tb-file-input");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
     let fileExtension = file.name.split('.').pop().toLowerCase();

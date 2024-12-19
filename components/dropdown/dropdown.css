@@ -1,0 +1,80 @@
+.dropdown {
+    /* PARAMETERS: --size */
+    position: relative;
+}
+
+.dropdown.disabled {
+    opacity: 50%;
+    pointer-events: none;
+}
+
+.dropdown-button {
+    position: relative;
+    z-index: 2;
+}
+
+.dropdown.active > .dropdown-button {
+    color: var(--color-bg);
+    background: var(--color-main);
+}
+
+.dropdown-button > div {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+    pointer-events: none;
+}
+
+.dropdown-button > div > span:last-child {
+    width: calc(var(--size) * 1.25rem);
+    height: calc(var(--size) * 1.25rem);
+    --webkit-mask-image: url(/assets/icons/chevron-down.svg);
+    mask-image: url(/assets/icons/chevron-down.svg);
+    --webkit-mask-size: calc(var(--size) * 1.25rem);
+    mask-size: calc(var(--size) * 1.25rem);
+    background: var(--color-main);
+    transition: background 100ms ease-in-out;
+}
+
+.dropdown-button:hover > div > span:last-child, .dropdown.active > .dropdown-button > div > span:last-child {
+    background: var(--color-bg);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-rows: 0fr;
+    width: 100%;
+    min-height: calc(var(--size) * 3.375rem);
+    padding: 
+        calc(var(--size) * 2.625rem)
+        calc(var(--size) * 0.25rem)
+        calc(var(--size) * 0.25rem)
+        calc(var(--size) * 0.25rem);
+    border: calc(var(--size) * 0.25rem) solid var(--color-main);
+    border-radius: calc(var(--size) * 1.625rem);
+    box-sizing: border-box;
+    font-size: calc(var(--size) * 1.125rem);
+    overflow: hidden;
+    transition: all 250ms ease-in-out;
+}
+
+.dropdown.active > .dropdown-options {
+    grid-template-rows: 1fr;
+    padding-top: calc(var(--size) * 3.375rem);
+    border-radius:
+        calc(var(--size) * 1.625rem)
+        calc(var(--size) * 1.625rem)
+        calc(var(--size) * 1.25rem)
+        calc(var(--size) * 1.25rem);
+}
+
+.dropdown-options > div {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(var(--size) * 0.25rem);
+    overflow: hidden;
+}
