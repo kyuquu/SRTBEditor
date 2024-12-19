@@ -28,8 +28,8 @@
 .dropdown-button > div > span:last-child {
     width: calc(var(--size) * 1.25rem);
     height: calc(var(--size) * 1.25rem);
-    --webkit-mask-image: url(/assets/icons/chevron-down.svg);
-    mask-image: url(/assets/icons/chevron-down.svg);
+    --webkit-mask-image: url(../../assets/icons/chevron-down.svg);
+    mask-image: url(../../assets/icons/chevron-down.svg);
     --webkit-mask-size: calc(var(--size) * 1.25rem);
     mask-size: calc(var(--size) * 1.25rem);
     background: var(--color-main);
