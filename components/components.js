@@ -1,4 +1,4 @@
-fetch("../data/components.json")
+fetch("/data/components.json")
     .then(response => response.json())
     .then((data) => {
         let dropdowns = data["dropdowns"];
