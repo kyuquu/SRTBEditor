@@ -10,12 +10,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
 
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/basic-view.css">
-    <link rel="stylesheet" href="styles/json-view.css">
+    <!-- - - - MAIN STYLESHEETS - - - -->
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <link rel="stylesheet" type="text/css" href="styles/top-bar.css">
+    <link rel="stylesheet" type="text/css" href="styles/basic-view.css">
+    <link rel="stylesheet" type="text/css" href="styles/json-view.css">
+    <link rel="stylesheet" type="text/css" href="styles/bottom-bar.css">
 
-    <script defer src="main.js" type="text/javascript"></script>
-    <script defer src="values.js" type="text/javascript"></script>
+    <!-- - - - MAIN SCRIPTS - - - - - -->
+    <script defer type="text/javascript" src="scripts/main.js"></script>
+    <script defer type="text/javascript" src="scripts/values.js"></script>
+
+    <!-- - - - COMPONENTS - - - - - - -->
+    <script defer type="text/javascript" src="components/components.js"></script>
+    <!-- button -->     <link rel="stylesheet" type="text/css" href="components/button/button.css">
+                        <script defer type="text/javascript" src="components/button/button.js"></script>
+    <!-- dropdown -->   <link rel="stylesheet" type="text/css" href="components/dropdown/dropdown.css">
+                        <script defer type="text/javascript" src="components/dropdown/dropdown.js"></script>
 </head>
 
 <body>
@@ -23,43 +34,19 @@
         <div class="tb-chart">
             <div>
                 <span id="tb-title" class="tb-value"></span>
-                <span id="tb-artist" class="tb-value"><i>No SRTB loaded</i></span>
+                <span id="tb-artist" class="tb-value"></span>
             </div>
-            <div id="tb-filename" class="tb-value"><i>click NEW to get started</i></div>
+            <div id="tb-filename" class="tb-value">
+                <span style="font-size: 2rem;">Click <b>LOAD</b> to get started!</span>
+            </div>
         </div>
 
-        <div class="tb-buttons">
-            <div class="tb-button-container">
-                <button class="tb-button" id="tb-button-new" onclick="toggleDropdown('new')">
-                    <div>
-                        <span>NEW</span>
-                        <span></span>
-                    </div>
-                </button>
-                <div class="tb-button-dropdown" id="tb-button-dropdown-new">
-                    <div>
-                        <label for="tb-button-new-upload" class="tb-input-label">UPLOAD FILE</label>
-                        <input type="file" accept=".srtb, .json" id="tb-button-new-upload"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
-                        <button onclick="loadTemplate('Custom.srtb')">CREATE NEW</button>
-                    </div>
-                </div>
-            </div>
-            <div class="tb-button-container disabled">
-                <button class="tb-button" id="tb-button-save" onclick="toggleDropdown('save')">
-                    <div>
-                        <span>SAVE</span>
-                        <span></span>
-                    </div>
-                </button>
-                <div class="tb-button-dropdown" id="tb-button-dropdown-save">
-                    <div>
-                        <button id="tb-button-save-srtb">SAVE AS .SRTB</button>
-                        <button id="tb-button-save-json">SAVE AS .JSON</button>
-                        <button>SAVE AS .ZIP</button> <!-- to do: allow charts to be downloaded as .zip files -->
-                    </div>
-                </div>
-            </div>
+        <div class="tb-dropdowns">
+            <div class="dropdown" id="dropdown-tb-load"></div>
+            <div class="dropdown disabled" id="dropdown-tb-save"></div>
         </div>
+
+        <input type="file" accept=".srtb, .json" id="tb-file-input"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
     </div>
 
     <div class="tab-manager">
@@ -112,7 +99,7 @@
                         <div id="editor"></div>
     
                         <!-- scripts for Ace -->
-                        <script src="libraries/ace-builds-1.5.0/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+                        <script charset="utf-8" type="text/javascript" src="node_modules/ace-builds/src/ace.js"></script>
                         <script>
                             var JSONEditor = ace.edit("editor");
                             JSONEditor.setTheme("ace/theme/dracula");
@@ -125,8 +112,8 @@
                     </div>
 
                     <div class="jv-buttons">
-                        <button class="jv-button disabled" id="jv-button-save" onclick="saveEditorChanges()">SAVE CHANGES</button>
-                        <button class="jv-button disabled" id="jv-button-discard" onclick="discardEditorChanges()">DISCARD CHANGES</button>
+                        <button class="jv-button button disabled" id="button-jv-save"></button>
+                        <button class="jv-button button disabled" id="button-jv-discard"></button>
                     </div>
                 </div>
             </div>

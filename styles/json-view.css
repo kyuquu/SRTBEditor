@@ -20,12 +20,7 @@
 }
 
 .jv-button {
-    height: 2.5rem;
-    padding: 0 1.5rem;
-    border: 0.125rem solid var(--color-main);
-    border-radius: 1.25rem;
-    box-sizing: border-box;
-    font-size: 1.25rem;
+    --size: 0.75;
 }
 
 #json-editor {
