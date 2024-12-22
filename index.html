@@ -12,6 +12,7 @@
 
     <!-- - - - LIBRARIES  - - - - - - -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.37.0/ace.min.js" integrity="sha512-ir9JaQR8EgducDjvBjP9spPK+QWvlQDRv3vWn8c1+PAd2+W1wswCI2XDGJSr8V7s3wS/8bKnvK86tNtLbTapdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- editor -->     <script defer type="text/javascript" src="scripts/editor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -32,6 +33,11 @@
                         <script defer type="text/javascript" src="components/button/button.js"></script>
     <!-- dropdown -->   <link rel="stylesheet" type="text/css" href="components/dropdown/dropdown.css">
                         <script defer type="text/javascript" src="components/dropdown/dropdown.js"></script>
+    <!-- text input --> <link rel="stylesheet" type="text/css" href="components/text-input/text-input.css">
+                        <script defer type="text/javascript" src="components/text-input/text-input.js"></script>
+    <!-- checkbox -->   <link rel="stylesheet" type="text/css" href="components/checkbox/checkbox.css">
+                        <script defer type="text/javascript" src="components/checkbox/checkbox.js"></script>
+                        
 </head>
 
 <body>
@@ -47,8 +53,8 @@
         </div>
 
         <div class="tb-dropdowns">
-            <div class="dropdown" id="dropdown-tb-load"></div>
-            <div class="dropdown disabled" id="dropdown-tb-save"></div>
+            <div class="dropdown" id="tb-load"></div>
+            <div class="dropdown disabled" id="tb-save"></div>
         </div>
 
         <input type="file" accept=".srtb, .json" id="tb-file-input"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
@@ -62,40 +68,15 @@
         <div class="tabs">
             <div class="tab" id="tab0">
                 <div class="bv bv0 disabled">
-                    <div class="bv-item">
-                        <div class="bv-item-name">Title</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-title">
-                    </div>
-
-                    <div class="bv-item">
-                        <div class="bv-item-name">Subtitle</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-subtitle">
-                    </div>
-
-                    <div class="bv-item">
-                        <div class="bv-item-name">Artist</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-artist">
-                    </div>
-
-                    <div class="bv-item">
-                        <div class="bv-item-name">Featured Artist</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-featured-artist">
-                    </div>
-
-                    <div class="bv-item">
-                        <div class="bv-item-name">Charter</div>
-                        <input type="text" onblur="this.scrollLeft=0" class="bv-item-value" id="bv-charter">
-                    </div>
-
-                    <div class="bv-item inline">
-                        <input type="checkbox" class="bv-item-value" id="bv-allow-custom-leaderboards">
-                        <div class="bv-item-name">Allow Leaderboard Creation</div>
-                    </div>
+                    <div class="text-input" id="bv-title"></div>
+                    <div class="text-input" id="bv-subtitle"></div>
+                    <div class="text-input" id="bv-artist"></div>
+                    <div class="text-input" id="bv-featured-artist"></div>
+                    <div class="text-input" id="bv-charter"></div>
+                    <div class="checkbox" id="bv-allow-custom-leaderboards"></div>
                 </div>
 
-                <div class="bv bv1 disabled">
-                    <div class="bv-"></div>
-                </div>
+                <div class="bv bv1 disabled"></div>
             </div>
 
             <div class="tab tab-inactive" id="tab1">
@@ -105,8 +86,8 @@
                     </div>
 
                     <div class="jv-buttons">
-                        <button class="jv-button button disabled" id="button-jv-save"></button>
-                        <button class="jv-button button disabled" id="button-jv-discard"></button>
+                        <button class="jv-button button disabled" id="jv-save"></button>
+                        <button class="jv-button button disabled" id="jv-discard"></button>
                     </div>
                 </div>
             </div>

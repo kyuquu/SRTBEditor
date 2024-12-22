@@ -12,52 +12,15 @@
 }
 
 .bv0 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     flex: 1 2 0;
     padding: 1rem;
     box-sizing: border-box;
     overflow-y: scroll;
 }
 
-.bv-item {
-    margin-bottom: 2rem;
-}
-
-.bv-item.inline {
-    display: flex;
-    align-items: center;
-    gap: 1ch;
-}
-
-.bv-item:last-child {
-    margin-bottom: 0;
-}
-
-.bv-item-name {
-    padding-bottom: 0.25rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.bv-item.inline > .bv-item-name {
-    padding: 0;
-}
-
-input[type="text"].bv-item-value {
-    width: 18.5rem;
-    padding: 0.25rem;
-    border: none;
-    border-radius: 0;
-    box-sizing: border-box;
-    outline: none;
-    font-size: 1.25rem;
-    background: var(--color-main);
-    transition: width 250ms ease-out;
-}
-
-input[type="text"].bv-item-value:focus {
-    width: 100%;
-}
-
-input[type="checkbox"].bv-item-value {
-    --checkbox-size: 12;
+.bv0 .checkbox > input {
+    --size: 12;
 }

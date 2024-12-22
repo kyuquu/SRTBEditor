@@ -6,8 +6,8 @@ let trackInfo;
 let trackData;
 let clipData;
 
-const JSONEditorSave = document.getElementById("button-jv-save");
-const JSONEditorDiscard = document.getElementById("button-jv-discard");
+const JSONEditorSave = document.getElementById("jv-save");
+const JSONEditorDiscard = document.getElementById("jv-discard");
 
 
 
@@ -112,18 +112,9 @@ JSONEditor.session.on("change", () => {
 
 
 
-const TBValues = [];
-const TBElements = document.getElementsByClassName("tb-value");
-for (let i = 0; i < TBElements.length; i++) {
-    let TBElement = TBElements[i];
-    let property = TBElement.id.slice(3);
-    TBValues.push(property);
-}
-
 function updateTBValue(property, value) {
-    if (TBValues.includes(property)) {
-        let TBElement = document.getElementById(`tb-${property}`);
-        TBElement.textContent = value;
+    if (document.getElementById(`tb-${property}`) !== null) {
+        document.getElementById(`tb-${property}`).textContent = value;
     }
 
     if (property === "title" && value.length === 0) {
@@ -133,30 +124,23 @@ function updateTBValue(property, value) {
 
 
 
-const BVValues = [];
-const BVElements = document.getElementsByClassName("bv-item-value");
-for (let i = 0; i < BVElements.length; i++) {
-    let BVElement = BVElements[i];
-    let property = BVElement.id.slice(3);
-    BVValues.push(property);
+function processBVInput(type, property) {
+    let BVElement = document.getElementById(`bv-${property}`);
 
-    BVElement.onchange = () => {
-        if (chartJSON !== undefined) {
-            let value;
-            if (BVElement.type === "text") {
-                value = BVElement.value;
-            }
-            else if (BVElement.type === "checkbox") {
-                value = BVElement.checked;
-            }
-            updateTBValue(property, value);
-            updateJSONValue(property, value);
-        }
+    let value;
+    if (type === "text") {
+        value = BVElement.value;
     }
+    else if (type === "checkbox") {
+        value = BVElement.checked;
+    }
+
+    updateTBValue(property, value);
+    updateJSONValue(property, value);
 }
 
 function updateBVValue(property, value) {
-    if (BVValues.includes(property)) {
+    if (document.getElementById(`bv-${property}`) !== null) {
         let BVElement = document.getElementById(`bv-${property}`);
         if (typeof value === "string") {
             BVElement.value = value;
@@ -173,7 +157,7 @@ function updateBVValue(property, value) {
 
 
 function enableUserInput() {
-    document.getElementById("dropdown-tb-save").classList.remove("disabled");
+    document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");

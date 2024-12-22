@@ -1,13 +1,3 @@
-let JSONEditor = ace.edit("editor");
-JSONEditor.setTheme("ace/theme/dracula");
-JSONEditor.session.setMode("ace/mode/json");
-JSONEditor.setOptions({
-    fixedWidthGutter: true,
-    showPrintMargin: false
-});
-
-
-
 function switchToTab(index) {
     if (document.getElementById(`tab-button${index}`).classList.contains("tab-button-inactive")) {
         document.getElementById(`tab-button${index}`).classList.remove("tab-button-inactive");
@@ -89,13 +79,13 @@ function loadTemplate(filename) {
                         let json = convertToJSON(data);
                         loadChartData(json);
                     }
+
+                    chartFilename = filename;
+                    updateTBValue("filename", chartFilename);
                 }
                 catch (e) {
                     window.alert(`Template failed to load\n\n${e}`);
                 }
-
-                chartFilename = filename;
-                updateTBValue("filename", chartFilename);
             }
             else {
                 window.alert(`Unrecognized file extension: .${fileExtension}`);
