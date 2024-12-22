@@ -1,12 +1,17 @@
+let activeTab = 0;
+
 function switchToTab(index) {
-    if (document.getElementById(`tab-button${index}`).classList.contains("tab-button-inactive")) {
-        document.getElementById(`tab-button${index}`).classList.remove("tab-button-inactive");
-        document.getElementById(`tab-button${(index + 1) % 2}`).classList.add("tab-button-inactive");
-        document.getElementById(`tab${index}`).classList.remove("tab-inactive");
-        document.getElementById(`tab${(index + 1) % 2}`).classList.add("tab-inactive");
-    }
-    if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
-        JSONEditor.focus();
+    if (activeTab !== index) {
+        document.getElementById(`tab-button${activeTab}`).classList.remove("active");
+        document.getElementById(`tab${activeTab}`).classList.remove("active");
+        document.getElementById(`tab-button${index}`).classList.add("active");
+        document.getElementById(`tab${index}`).classList.add("active");
+
+        if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
+            JSONEditor.focus();
+        }
+
+        activeTab = index;
     }
 }
 

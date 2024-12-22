@@ -29,83 +29,9 @@ a {
 }
 
 button {
-    border: none;
-    border-radius: 100rem;
-    font-size: inherit;
-    font-family: inherit;
-    font-weight: bold;
-    text-align: center;
-    color: var(--color-main);
-    background: var(--color-bg);
     cursor: pointer;
-    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
-}
-
-button:hover, .tab-buttons > button.tab-button-inactive:hover {
-    color: var(--color-bg);
-    background: var(--color-main);
 }
 
 input[type="file"] {
     display: none;
-}
-
-
-
-/* TAB MANAGER + CONTENT */
-.tab-manager {
-    display: flex;
-    flex-direction: column;
-    flex: 1 0 auto;
-}
-
-.tab-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: 1rem;
-}
-
-.tab-buttons > button {
-    position: relative;
-    padding: 0.5rem 1rem;
-    border-left: 0.5rem solid var(--color-main);
-    border-top: 0.5rem solid var(--color-main);
-    border-right: 0.5rem solid var(--color-main);
-    border-radius: 0.5rem 0.5rem 0 0;
-    font-size: 1.5rem;
-    color: var(--color-bg);
-    background: var(--color-main);
-    z-index: 2;
-    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
-}
-
-.tab-buttons > button.tab-button-inactive {
-    opacity: 50%;
-    color: var(--color-main);
-    background: var(--color-bg);
-    z-index: 0;
-}
-
-.tabs {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.tab {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 1rem;
-    border: 0.5rem solid var(--color-main);
-    border-radius: 1rem;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.tab-inactive {
-    display: none !important;
 }

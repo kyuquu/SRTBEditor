@@ -1,3 +1,7 @@
+#tab1.active {
+    display: block;
+}
+
 .jv {
     display: flex;
     flex-direction: column;
@@ -7,7 +11,7 @@
     gap: 1rem;
 }
 
-.jv.disabled *, .jv-button.disabled {
+.jv.disabled * {
     opacity: 50%;
     pointer-events: none;
 }
@@ -19,7 +23,7 @@
     background: var(--color-bg);
 }
 
-.jv-button {
+.jv-buttons > button {
     --size: 0.75;
 }
 

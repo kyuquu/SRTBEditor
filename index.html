@@ -19,6 +19,7 @@
     <!-- - - - MAIN STYLESHEETS - - - -->
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" type="text/css" href="styles/top-bar.css">
+    <link rel="stylesheet" type="text/css" href="styles/tab-manager.css">
     <link rel="stylesheet" type="text/css" href="styles/basic-view.css">
     <link rel="stylesheet" type="text/css" href="styles/json-view.css">
     <link rel="stylesheet" type="text/css" href="styles/bottom-bar.css">
@@ -37,7 +38,6 @@
                         <script defer type="text/javascript" src="components/text-input/text-input.js"></script>
     <!-- checkbox -->   <link rel="stylesheet" type="text/css" href="components/checkbox/checkbox.css">
                         <script defer type="text/javascript" src="components/checkbox/checkbox.js"></script>
-                        
 </head>
 
 <body>
@@ -62,11 +62,12 @@
 
     <div class="tab-manager">
         <div class="tab-buttons">
-            <button onclick="switchToTab(0)" id="tab-button0">Basic View</button>
-            <button onclick="switchToTab(1)" id="tab-button1" class="tab-button-inactive">Raw JSON View</button>
+            <button onclick="switchToTab(0)" id="tab-button0" class="tab-button active">Basic View</button>
+            <button onclick="switchToTab(1)" id="tab-button1" class="tab-button">Raw JSON View</button>
+            <button onclick="switchToTab(2)" id="tab-button2" class="tab-button">Chart Diagnostics</button>
         </div>
         <div class="tabs">
-            <div class="tab" id="tab0">
+            <div id="tab0" class="tab active">
                 <div class="bv bv0 disabled">
                     <div class="text-input" id="bv-title"></div>
                     <div class="text-input" id="bv-subtitle"></div>
@@ -79,18 +80,20 @@
                 <div class="bv bv1 disabled"></div>
             </div>
 
-            <div class="tab tab-inactive" id="tab1">
+            <div id="tab1" class="tab">
                 <div class="jv disabled">
                     <div id="json-editor">
                         <div id="editor"></div>
                     </div>
 
                     <div class="jv-buttons">
-                        <button class="jv-button button disabled" id="jv-save"></button>
-                        <button class="jv-button button disabled" id="jv-discard"></button>
+                        <button class="button disabled" id="jv-save"></button>
+                        <button class="button disabled" id="jv-discard"></button>
                     </div>
                 </div>
             </div>
+
+            <div id="tab2" class="tab"></div>
         </div>
     </div>
 

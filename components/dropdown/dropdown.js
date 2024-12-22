@@ -6,7 +6,7 @@ function initializeDropdown(name, values) {
     let options = "";
     for (let i = 0; i < values["options"].length; i++) {
         options += `
-            <button class="dropdown-option" onclick="${values["options"][i]["function"]}">
+            <button class="dropdown-option button" onclick="${values["options"][i]["function"]}">
                 ${values["options"][i]["text"]}
             </button>
         `;

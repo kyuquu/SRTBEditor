@@ -1,0 +1,61 @@
+.tab-manager {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.tab-button {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-left: 0.5rem solid var(--color-main);
+    border-top: 0.5rem solid var(--color-main);
+    border-right: 0.5rem solid var(--color-main);
+    border-bottom: none;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    opacity: 50%;
+    color: var(--color-main);
+    background: var(--color-bg);
+    transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
+}
+
+.tab-button:hover, .tab-button.active {
+    color: var(--color-bg);
+    background: var(--color-main);
+}
+
+.tab-button.active {
+    opacity: 100%;
+}
+
+.tabs {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.tab {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: 0.5rem solid var(--color-main);
+    border-radius: 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#tab2.active {
+    display: block;
+}
