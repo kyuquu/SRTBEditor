@@ -9,7 +9,7 @@ async function init() {
         .then((data) => {
             trackInfo = data["track-info"];
             trackData = data["track-data"];
-            clipData = data["clip-data"];
+            clipInfo = data["clip-info"];
         });
 
 

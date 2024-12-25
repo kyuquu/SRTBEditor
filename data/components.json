@@ -77,7 +77,12 @@
         "bv-album-art": {
             "text": "Album Art",
             "accept": ".png, .jpg, .jpeg",
-            "function": "updateAlbumArt(this)"
+            "function": "updateAlbumArt()"
+        },
+        "bv-audio-clips": {
+            "text": "Audio Clips",
+            "accept": ".mp3, .ogg",
+            "function": "updateAudioClips()"
         }
     }
 }

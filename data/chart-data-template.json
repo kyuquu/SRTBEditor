@@ -62,5 +62,10 @@
         }
     },
     "track-data": [],
-    "clip-info": []
+    "clip-info": {
+        "clip-asset-reference": {
+            "reference": ["largeStringValuesContainer", "values", 6, "val", "clipAssetReference", "assetName"],
+            "default": ""
+        }
+    }
 }

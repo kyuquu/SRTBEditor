@@ -2,6 +2,8 @@ let isDevModeEnabled = true;
 
 let chartTemplates = {};
 
+
+
 let activeTab = 0;
 
 function switchToTab(index) {
@@ -45,6 +47,16 @@ function saveAsZIP() { // this function needs to be edited once audio is support
     });
 }
 
+function downloadFile(filename, file) {
+    let link = document.createElement("a"); 
+    link.setAttribute("href", `data:text/plain; charset=utf-8, ${encodeURIComponent(file)}`);
+    link.setAttribute("download", filename);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 
 
 function convertToJSON(srtb) {
@@ -65,16 +77,6 @@ function convertToSRTB(json) {
 
 
 
-function downloadFile(filename, file) {
-    let link = document.createElement("a"); 
-    link.setAttribute("href", `data:text/plain; charset=utf-8, ${encodeURIComponent(file)}`);
-    link.setAttribute("download", filename);
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
 function loadTemplate(filename) {
     let templateData = JSON.parse(JSON.stringify(chartTemplates))[filename];
     const fileExtension = filename.split(".").pop().toLowerCase();
@@ -90,6 +92,8 @@ function loadTemplate(filename) {
 
             chartFilename = filename;
             updateTBValue("filename", chartFilename);
+            resetAlbumArt();
+            resetAudioClips();
         }
         catch (e) {
             window.alert(`Template failed to load\n\n${e}`);
@@ -115,8 +119,9 @@ async function loadZipSRTB(srtb) {
 }
 
 async function loadZipImage(image, filename) {
+    filename = filename.slice(9);
+
     await image.async("arraybuffer").then((content) => {
-        filename = filename.slice(9);
         let buffer = new Uint8Array(content);
         let blob = new Blob([buffer.buffer]);
         let file = new File([blob], filename);
@@ -127,6 +132,18 @@ async function loadZipImage(image, filename) {
     });
 }
 
+async function loadZipAudio(audio, filename) {
+    filename = filename.slice(11);
+
+    await audio.async("blob").then((content) => {
+        let file = new File([content], filename);
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById("bv-audio-clips").files = dataTransfer.files;
+    });
+}
+
 const fileInput = document.getElementById("tb-file-input");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
@@ -134,28 +151,25 @@ fileInput.onchange = () => {
     if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
         reader.onload = (e) => {
-            if (fileExtension === "srtb") {
-                try {
+            try {
+                if (fileExtension === "srtb") {
                     let srtb = e.target.result;
                     let json = convertToJSON(JSON.parse(srtb));
                     loadChartData(json);
                 }
-                catch (e) {
-                    window.alert(`Invalid .srtb\n\n${e}`);
-                }
-            }
-            else if (fileExtension === "json") {
-                try {
+                else if (fileExtension === "json") {
                     let json = JSON.parse(e.target.result);
                     loadChartData(json);
                 }
-                catch (e) {
-                    window.alert(`Invalid .json\n\n${e}`);
-                }
-            }
 
-            chartFilename = file.name;
-            updateTBValue("filename", chartFilename);
+                chartFilename = file.name;
+                updateTBValue("filename", chartFilename);
+                resetAlbumArt();
+                resetAudioClips();
+            }
+            catch (e) {
+                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+            }
         };
         reader.readAsText(file);
     }
@@ -167,6 +181,7 @@ fileInput.onchange = () => {
                 let srtb;
                 let imageFilename;
                 let image;
+                let audioFilename;
                 let audio;
 
                 let filenames = Object.keys(zip.files);
@@ -182,13 +197,16 @@ fileInput.onchange = () => {
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
                         audio = zip.files[filename];
+                        audioFilename = filename;
                     }
                 }
 
                 await loadZipSRTB(srtb);
                 await loadZipImage(image, imageFilename);
+                await loadZipAudio(audio, audioFilename);
                 
-                updateAlbumArt(document.getElementById("bv-album-art"));
+                updateAlbumArt();
+                updateAudioClips();
                 updateTBValue("filename", srtbFilename);
             }, () => {
                 window.alert("Invalid .zip");
