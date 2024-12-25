@@ -40,3 +40,7 @@
     gap: 1rem;
     --size: 1;
 }
+
+#tb-file-input {
+    display: none;
+}

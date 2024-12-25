@@ -78,3 +78,10 @@
     gap: calc(var(--size) * 0.25rem);
     overflow: hidden;
 }
+
+.dropdown-option {
+    height: auto;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}

@@ -44,5 +44,40 @@
             "text": "DISCARD CHANGES",
             "function": "discardEditorChanges()"
         }
+    },
+    "text-inputs": {
+        "bv-title": {
+            "text": "Title",
+            "function": "processBVInput('text', 'title')"
+        },
+        "bv-subtitle": {
+            "text": "Subitle",
+            "function": "processBVInput('text', 'subtitle')"
+        },
+        "bv-artist": {
+            "text": "Artist",
+            "function": "processBVInput('text', 'artist')"
+        },
+        "bv-featured-artist": {
+            "text": "Featured Artist",
+            "function": "processBVInput('text', 'featured-artist')"
+        },
+        "bv-charter": {
+            "text": "Charter",
+            "function": "processBVInput('text', 'charter')"
+        }
+    },
+    "checkboxes": {
+        "bv-allow-custom-leaderboards": {
+            "text": "Allow Leaderboard Creation",
+            "function": "processBVInput('checkbox', 'allow-custom-leaderboards')"
+        }
+    },
+    "file-inputs": {
+        "bv-album-art": {
+            "text": "Album Art",
+            "accept": ".png, .jpg, .jpeg",
+            "function": "updateAlbumArt(this)"
+        }
     }
 }

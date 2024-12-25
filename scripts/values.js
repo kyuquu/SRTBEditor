@@ -6,8 +6,10 @@ let trackInfo;
 let trackData;
 let clipData;
 
-const JSONEditorSave = document.getElementById("button-jv-save");
-const JSONEditorDiscard = document.getElementById("button-jv-discard");
+let albumArt;
+
+const JSONEditorSave = document.getElementById("jv-save");
+const JSONEditorDiscard = document.getElementById("jv-discard");
 
 
 
@@ -57,6 +59,10 @@ function updateJSONEditor(json) {
 
 function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
+
+    if (getJSONValue("album-art-reference") !== document.getElementById("bv-album-art-filename").textContent && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
+        window.alert("WARNING:\nChanging the album art reference may prevent the chart from loading the album art if you download as ZIP.");
+    }
 
     for (let property in trackInfo) {
         let value = getJSONValue(property);
@@ -112,18 +118,9 @@ JSONEditor.session.on("change", () => {
 
 
 
-const TBValues = [];
-const TBElements = document.getElementsByClassName("tb-value");
-for (let i = 0; i < TBElements.length; i++) {
-    let TBElement = TBElements[i];
-    let property = TBElement.id.slice(3);
-    TBValues.push(property);
-}
-
 function updateTBValue(property, value) {
-    if (TBValues.includes(property)) {
-        let TBElement = document.getElementById(`tb-${property}`);
-        TBElement.textContent = value;
+    if (document.getElementById(`tb-${property}`) !== null) {
+        document.getElementById(`tb-${property}`).textContent = value;
     }
 
     if (property === "title" && value.length === 0) {
@@ -133,30 +130,23 @@ function updateTBValue(property, value) {
 
 
 
-const BVValues = [];
-const BVElements = document.getElementsByClassName("bv-item-value");
-for (let i = 0; i < BVElements.length; i++) {
-    let BVElement = BVElements[i];
-    let property = BVElement.id.slice(3);
-    BVValues.push(property);
+function processBVInput(type, property) {
+    let BVElement = document.getElementById(`bv-${property}`);
 
-    BVElement.onchange = () => {
-        if (chartJSON !== undefined) {
-            let value;
-            if (BVElement.type === "text") {
-                value = BVElement.value;
-            }
-            else if (BVElement.type === "checkbox") {
-                value = BVElement.checked;
-            }
-            updateTBValue(property, value);
-            updateJSONValue(property, value);
-        }
+    let value;
+    if (type === "text") {
+        value = BVElement.value;
     }
+    else if (type === "checkbox") {
+        value = BVElement.checked;
+    }
+
+    updateTBValue(property, value);
+    updateJSONValue(property, value);
 }
 
 function updateBVValue(property, value) {
-    if (BVValues.includes(property)) {
+    if (document.getElementById(`bv-${property}`) !== null) {
         let BVElement = document.getElementById(`bv-${property}`);
         if (typeof value === "string") {
             BVElement.value = value;
@@ -164,41 +154,57 @@ function updateBVValue(property, value) {
         else if (typeof value === "boolean") {
             BVElement.checked = value;
         }
+    }
+}
+
+function updateAlbumArt(fileInput) {
+    let file = fileInput.files[0];
+    let fileSize = () => {
+        if (file.size > 1024 * 1024) {
+            return `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        }
+        else if (file.size > 1024) {
+            return `${(file.size / 1024).toFixed(2)} KB`;
+        }
         else {
-           console.log("data type not yet supported");
+            return `${file.size} B`;
         }
     }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById("bv-album-art-image").src = e.target.result;
+        document.getElementById("bv-album-art-filename").textContent = file.name;
+        document.getElementById("bv-album-art-size").textContent = fileSize();
+    };
+    reader.readAsDataURL(file);
+
+    albumArt = file;
+
+    updateJSONValue("album-art-reference", file.name.split(".").slice(0, -1).join("."));
 }
 
 
 
 function enableUserInput() {
-    document.getElementById("dropdown-tb-save").classList.remove("disabled");
+    document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");
 }
 
-function loadChartData(data) {
+async function loadChartData(data) {
     if (chartJSON === undefined) {
         enableUserInput();
     }
 
     chartJSON = data;
 
-    fetch("./data/chart-data-template.json")
-        .then(response => response.json())
-        .then((data) => {
-            trackInfo = data["track-info"];
-            trackData = data["track-data"];
-            clipData = data["clip-data"];
+    for (let property in trackInfo) {
+        let value = getJSONValue(property);
+        updateTBValue(property, value);
+        updateBVValue(property, value);
+    }
 
-            for (let property in trackInfo) {
-                let value = getJSONValue(property);
-                updateTBValue(property, value);
-                updateBVValue(property, value);
-            }
-
-            updateJSONEditor(JSON.stringify(chartJSON, null, 4));
-        });
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }

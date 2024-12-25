@@ -1,12 +1,8 @@
 {
     "track-info": {
         "album-art-reference" : {
-            "reference": ["largeStringValuesContainer", "values", 0, "val", "albumArtReference"],
-            "default": {
-                "bundle": "",
-                "assetName": "",
-                "m_guid": ""
-            }
+            "reference": ["largeStringValuesContainer", "values", 0, "val", "albumArtReference", "assetName"],
+            "default": ""
         },
         "background-id": {
             "reference": ["largeStringValuesContainer", "values", 0, "val", "backgroundId", "backgroundId"],
