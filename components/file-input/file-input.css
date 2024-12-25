@@ -1,0 +1,25 @@
+.file-input > label {
+    display: block;
+    padding-bottom: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.file-input > div > button {
+    --size: 0.75;
+}
+
+.file-input > div {
+    font-size: 1.25rem;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.file-input > div > span.filename {
+    padding-left: 0.5rem;
+}
+
+.file-input > div > span.size {
+    opacity: 50%;
+}

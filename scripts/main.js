@@ -1,3 +1,7 @@
+let isDevModeEnabled = true;
+
+let chartTemplates = {};
+
 let activeTab = 0;
 
 function switchToTab(index) {
@@ -29,12 +33,13 @@ function saveAsJSON() {
     downloadFile(filename, json);
 }
 
-function saveAsZIP() { // this function needs to be edited once album art and audio is supported
+function saveAsZIP() { // this function needs to be edited once audio is supported
     let filename = chartFilename.split(".").slice(0, -1).join(".");
     let srtb = JSON.stringify(convertToSRTB(JSON.parse(JSONEditor.getValue())));
 
     let zip = new JSZip();
     zip.file(`${filename}.srtb`, srtb);
+    zip.file(`AlbumArt/${albumArt.name}`, albumArt);
     zip.generateAsync({ type: "blob" }).then((content) => {
         saveAs(content, `BACKUP_${filename}.zip`);
     });
@@ -71,40 +76,62 @@ function downloadFile(filename, file) {
 }
 
 function loadTemplate(filename) {
+    let templateData = JSON.parse(JSON.stringify(chartTemplates))[filename];
     const fileExtension = filename.split(".").pop().toLowerCase();
-    fetch("./templates/" + filename)
-        .then(response => response.json())
-        .then((data) => {
-            if(["srtb", "json"].includes(fileExtension)) {
-                try {
-                    if (fileExtension === "json") {
-                        loadChartData(data);
-                    }
-                    else if (fileExtension === "srtb") {
-                        let json = convertToJSON(data);
-                        loadChartData(json);
-                    }
+    if (["srtb", "json"].includes(fileExtension)) {
+        try {
+            if (fileExtension === "json") {
+                loadChartData(templateData);
+            }
+            else if (fileExtension === "srtb") {
+                let json = convertToJSON(templateData);
+                loadChartData(json);
+            }
 
-                    chartFilename = filename;
-                    updateTBValue("filename", chartFilename);
-                }
-                catch (e) {
-                    window.alert(`Template failed to load\n\n${e}`);
-                }
-            }
-            else {
-                window.alert(`Unrecognized file extension: .${fileExtension}`);
-            }
-        });
+            chartFilename = filename;
+            updateTBValue("filename", chartFilename);
+        }
+        catch (e) {
+            window.alert(`Template failed to load\n\n${e}`);
+        }
+    }
+    else {
+        window.alert(`Unrecognized file extension: .${fileExtension}`);
+    }
 }
 
 
+
+async function loadZipSRTB(srtb) {
+    await srtb.async("string").then((content) => {
+        try {
+            json = convertToJSON(JSON.parse(content));
+            loadChartData(json);
+        }
+        catch (e) {
+            window.alert(`.zip file contains invalid .srtb\n\n${e}`);
+        }
+    });
+}
+
+async function loadZipImage(image, filename) {
+    await image.async("arraybuffer").then((content) => {
+        filename = filename.slice(9);
+        let buffer = new Uint8Array(content);
+        let blob = new Blob([buffer.buffer]);
+        let file = new File([blob], filename);
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById("bv-album-art").files = dataTransfer.files;
+    });
+}
 
 const fileInput = document.getElementById("tb-file-input");
 fileInput.onchange = () => {
     let file = fileInput.files[0];
     let fileExtension = file.name.split('.').pop().toLowerCase();
-    if (["srtb", "json"].includes(fileExtension)) { // to do: allow .zip files to be imported
+    if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
         reader.onload = (e) => {
             if (fileExtension === "srtb") {
@@ -131,6 +158,41 @@ fileInput.onchange = () => {
             updateTBValue("filename", chartFilename);
         };
         reader.readAsText(file);
+    }
+    else if (fileExtension === "zip") {
+        let zip = new JSZip();
+        zip.loadAsync(file)
+            .then(async (zip) => {
+                let srtbFilename;
+                let srtb;
+                let imageFilename;
+                let image;
+                let audio;
+
+                let filenames = Object.keys(zip.files);
+                for (let i = 0; i < filenames.length; i++) {
+                    let filename = filenames[i];
+                    if (filename.slice(-4) === "srtb") {
+                        srtb = zip.files[filename];
+                        srtbFilename = filename;
+                    }
+                    else if (filename.slice(0, 8) === "AlbumArt") {
+                        image = zip.files[filename];
+                        imageFilename = filename;
+                    }
+                    else if (filename.slice(0, 10) === "AudioClips") {
+                        audio = zip.files[filename];
+                    }
+                }
+
+                await loadZipSRTB(srtb);
+                await loadZipImage(image, imageFilename);
+                
+                updateAlbumArt(document.getElementById("bv-album-art"));
+                updateTBValue("filename", srtbFilename);
+            }, () => {
+                window.alert("Invalid .zip");
+            }); 
     }
     else {
         window.alert(`Unrecognized file extension: .${fileExtension}`);

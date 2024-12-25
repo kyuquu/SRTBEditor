@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- - - - MAIN STYLESHEETS - - - -->
+    <link rel="stylesheet" type="text/css" href="styles/loading.css">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" type="text/css" href="styles/top-bar.css">
     <link rel="stylesheet" type="text/css" href="styles/tab-manager.css">
@@ -29,7 +30,6 @@
     <script defer type="text/javascript" src="scripts/values.js"></script>
 
     <!-- - - - COMPONENTS - - - - - - -->
-    <script defer type="text/javascript" src="components/components.js"></script>
     <!-- button -->     <link rel="stylesheet" type="text/css" href="components/button/button.css">
                         <script defer type="text/javascript" src="components/button/button.js"></script>
     <!-- dropdown -->   <link rel="stylesheet" type="text/css" href="components/dropdown/dropdown.css">
@@ -38,6 +38,10 @@
                         <script defer type="text/javascript" src="components/text-input/text-input.js"></script>
     <!-- checkbox -->   <link rel="stylesheet" type="text/css" href="components/checkbox/checkbox.css">
                         <script defer type="text/javascript" src="components/checkbox/checkbox.js"></script>
+    <!-- file input --> <link rel="stylesheet" type="text/css" href="components/file-input/file-input.css">
+                        <script defer type="text/javascript" src="components/file-input/file-input.js"></script>
+
+    <script defer type="text/javascript" src="scripts/init.js"></script>
 </head>
 
 <body>
@@ -57,7 +61,7 @@
             <div class="dropdown disabled" id="tb-save"></div>
         </div>
 
-        <input type="file" accept=".srtb, .json" id="tb-file-input"> <!-- "accept" attribute needs to be updated when support for other filetypes uploads is implemented -->
+        <input type="file" accept=".srtb, .json, .zip" id="tb-file-input">
     </div>
 
     <div class="tab-manager">
@@ -69,6 +73,7 @@
         <div class="tabs">
             <div id="tab0" class="tab active">
                 <div class="bv bv0 disabled">
+                    <div class="file-input" id="bv-album-art"></div>
                     <div class="text-input" id="bv-title"></div>
                     <div class="text-input" id="bv-subtitle"></div>
                     <div class="text-input" id="bv-artist"></div>
@@ -77,7 +82,9 @@
                     <div class="checkbox" id="bv-allow-custom-leaderboards"></div>
                 </div>
 
-                <div class="bv bv1 disabled"></div>
+                <div class="bv bv1 disabled">
+                    <img id="bv-album-art-image" src="assets/images/Default_-_Cover.png">
+                </div>
             </div>
 
             <div id="tab1" class="tab">
@@ -110,6 +117,11 @@
             <span>&#8226;</span>
             <span>Up to date with SRXD v1.4.1</span>
         </span>
+    </div>
+
+    <div id="loading-screen" class="active">
+        <span class="loading-icon"></span>
+        <span id="loading-message">FETCHING TEMPLATE...</span>
     </div>
 </body>
 </html>

@@ -2,20 +2,16 @@
     display: flex;
 }
 
-.bv.disabled * {
+.bv.disabled > * {
     opacity: 50%;
     pointer-events: none;
-}
-
-.bv1 {
-    flex: 2 1 0;
 }
 
 .bv0 {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    flex: 1 2 0;
+    flex: 1 1 0;
     padding: 1rem;
     box-sizing: border-box;
     overflow-y: scroll;
@@ -23,4 +19,17 @@
 
 .bv0 .checkbox > input {
     --size: 12;
+}
+
+.bv1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 0;
+}
+
+.bv1 > img {
+    width: 16rem;
+    height: 16rem;
 }

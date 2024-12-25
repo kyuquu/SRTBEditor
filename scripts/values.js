@@ -6,6 +6,8 @@ let trackInfo;
 let trackData;
 let clipData;
 
+let albumArt;
+
 const JSONEditorSave = document.getElementById("jv-save");
 const JSONEditorDiscard = document.getElementById("jv-discard");
 
@@ -57,6 +59,10 @@ function updateJSONEditor(json) {
 
 function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
+
+    if (getJSONValue("album-art-reference") !== document.getElementById("bv-album-art-filename").textContent && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
+        window.alert("WARNING:\nChanging the album art reference may prevent the chart from loading the album art if you download as ZIP.");
+    }
 
     for (let property in trackInfo) {
         let value = getJSONValue(property);
@@ -148,10 +154,34 @@ function updateBVValue(property, value) {
         else if (typeof value === "boolean") {
             BVElement.checked = value;
         }
+    }
+}
+
+function updateAlbumArt(fileInput) {
+    let file = fileInput.files[0];
+    let fileSize = () => {
+        if (file.size > 1024 * 1024) {
+            return `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        }
+        else if (file.size > 1024) {
+            return `${(file.size / 1024).toFixed(2)} KB`;
+        }
         else {
-           console.log("data type not yet supported");
+            return `${file.size} B`;
         }
     }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById("bv-album-art-image").src = e.target.result;
+        document.getElementById("bv-album-art-filename").textContent = file.name;
+        document.getElementById("bv-album-art-size").textContent = fileSize();
+    };
+    reader.readAsDataURL(file);
+
+    albumArt = file;
+
+    updateJSONValue("album-art-reference", file.name.split(".").slice(0, -1).join("."));
 }
 
 
@@ -163,26 +193,18 @@ function enableUserInput() {
     document.querySelector(".jv").classList.remove("disabled");
 }
 
-function loadChartData(data) {
+async function loadChartData(data) {
     if (chartJSON === undefined) {
         enableUserInput();
     }
 
     chartJSON = data;
 
-    fetch("./data/chart-data-template.json")
-        .then(response => response.json())
-        .then((data) => {
-            trackInfo = data["track-info"];
-            trackData = data["track-data"];
-            clipData = data["clip-data"];
+    for (let property in trackInfo) {
+        let value = getJSONValue(property);
+        updateTBValue(property, value);
+        updateBVValue(property, value);
+    }
 
-            for (let property in trackInfo) {
-                let value = getJSONValue(property);
-                updateTBValue(property, value);
-                updateBVValue(property, value);
-            }
-
-            updateJSONEditor(JSON.stringify(chartJSON, null, 4));
-        });
+    updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }
