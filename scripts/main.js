@@ -93,6 +93,7 @@ function loadTemplate(filename) {
             chartFilename = filename;
             updateTBValue("filename", chartFilename);
             resetAlbumArt();
+            resetAudioClips();
         }
         catch (e) {
             window.alert(`Template failed to load\n\n${e}`);
@@ -118,8 +119,9 @@ async function loadZipSRTB(srtb) {
 }
 
 async function loadZipImage(image, filename) {
+    filename = filename.slice(9);
+
     await image.async("arraybuffer").then((content) => {
-        filename = filename.slice(9);
         let buffer = new Uint8Array(content);
         let blob = new Blob([buffer.buffer]);
         let file = new File([blob], filename);
@@ -127,6 +129,18 @@ async function loadZipImage(image, filename) {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         document.getElementById("bv-album-art").files = dataTransfer.files;
+    });
+}
+
+async function loadZipAudio(audio, filename) {
+    filename = filename.slice(11);
+
+    await audio.async("blob").then((content) => {
+        let file = new File([content], filename);
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById("bv-audio-clips").files = dataTransfer.files;
     });
 }
 
@@ -151,6 +165,7 @@ fileInput.onchange = () => {
                 chartFilename = file.name;
                 updateTBValue("filename", chartFilename);
                 resetAlbumArt();
+                resetAudioClips();
             }
             catch (e) {
                 window.alert(`Invalid .${fileExtension}\n\n${e}`);
@@ -166,6 +181,7 @@ fileInput.onchange = () => {
                 let srtb;
                 let imageFilename;
                 let image;
+                let audioFilename;
                 let audio;
 
                 let filenames = Object.keys(zip.files);
@@ -181,13 +197,16 @@ fileInput.onchange = () => {
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
                         audio = zip.files[filename];
+                        audioFilename = filename;
                     }
                 }
 
                 await loadZipSRTB(srtb);
                 await loadZipImage(image, imageFilename);
+                await loadZipAudio(audio, audioFilename);
                 
                 updateAlbumArt();
+                updateAudioClips();
                 updateTBValue("filename", srtbFilename);
             }, () => {
                 window.alert("Invalid .zip");

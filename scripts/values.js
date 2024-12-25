@@ -4,9 +4,10 @@ let chartFilename;
 
 let trackInfo;
 let trackData;
-let clipData;
+let clipInfo;
 
 let albumArt;
+let audioClips;
 
 const JSONEditorSave = document.getElementById("jv-save");
 const JSONEditorDiscard = document.getElementById("jv-discard");
@@ -16,14 +17,14 @@ const JSONEditorDiscard = document.getElementById("jv-discard");
 let editorTimeout;
 let editorTimeoutLength = 500;
 
-function getJSONValue(property) {
-    let defaultValue = trackInfo[property]["default"];
-    let referenceArray = trackInfo[property]["reference"];
+function getJSONValue(obj, property) {
+    let defaultValue = obj[property]["default"];
+    let referenceArray = obj[property]["reference"];
     return referenceArray.reduce((xs, x) => xs?.[x] ?? defaultValue, chartJSON);
 }
 
-function updateJSONValue(property, value) {
-    let referenceArray = trackInfo[property]["reference"];
+function updateJSONValue(obj, property, value) {
+    let referenceArray = obj[property]["reference"];
     let JSONValue = chartJSON;
     for (let i = 0; i < referenceArray.length - 1; i++) {
         if (JSONValue[referenceArray[i]] !== undefined) {
@@ -60,12 +61,15 @@ function updateJSONEditor(json) {
 function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
 
-    if (getJSONValue("album-art-reference") !== document.getElementById("bv-album-art-filename").textContent && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
+    if (getJSONValue(trackInfo, "album-art-reference") !== document.getElementById("bv-album-art-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
         window.alert("WARNING:\nChanging the album art reference may prevent the chart from loading the album art if you download as ZIP.");
+    }
+    else if (getJSONValue(clipInfo, "clip-asset-reference") !== document.getElementById("bv-audio-clips-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-audio-clips-filename").textContent !== "No file selected") {
+        window.alert("WARNING:\nChanging the audio asset reference may prevent the chart from loading the audio if you download as ZIP.");
     }
 
     for (let property in trackInfo) {
-        let value = getJSONValue(property);
+        let value = getJSONValue(trackInfo, property);
         updateTBValue(property, value);
         updateBVValue(property, value);
     }
@@ -142,7 +146,7 @@ function processBVInput(type, property) {
     }
 
     updateTBValue(property, value);
-    updateJSONValue(property, value);
+    updateJSONValue({...trackInfo, ...trackData, ...clipInfo}, property, value);
 }
 
 function updateBVValue(property, value) {
@@ -157,32 +161,23 @@ function updateBVValue(property, value) {
     }
 }
 
+
+
 function updateAlbumArt() {
     let fileInput = document.getElementById("bv-album-art");
     let file = fileInput.files[0];
-    let fileSize = () => {
-        if (file.size > 1024 * 1024) {
-            return `${(file.size / 1024 / 1024).toFixed(2)} MB`;
-        }
-        else if (file.size > 1024) {
-            return `${(file.size / 1024).toFixed(2)} KB`;
-        }
-        else {
-            return `${file.size} B`;
-        }
-    }
 
     const reader = new FileReader();
     reader.onload = (e) => {
         document.getElementById("bv-album-art-image").src = e.target.result;
         document.getElementById("bv-album-art-filename").textContent = file.name;
-        document.getElementById("bv-album-art-size").textContent = fileSize();
+        document.getElementById("bv-album-art-size").textContent = fileSize(file.size);
     };
     reader.readAsDataURL(file);
 
     albumArt = file;
 
-    updateJSONValue("album-art-reference", file.name.split(".").slice(0, -1).join("."));
+    updateJSONValue(trackInfo, "album-art-reference", file.name.split(".").slice(0, -1).join("."));
 }
 
 function resetAlbumArt() {
@@ -192,6 +187,49 @@ function resetAlbumArt() {
         document.getElementById("bv-album-art-image").src = "./assets/images/Default_-_Cover.png";
         document.getElementById("bv-album-art-filename").textContent = "No file selected";
         document.getElementById("bv-album-art-size").textContent = "";
+    }
+}
+
+
+
+function updateAudioClips() {
+    let fileInput = document.getElementById("bv-audio-clips");
+    let file = fileInput.files[0];
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById("bv-audio-clips-audio").src = e.target.result;
+        document.getElementById("bv-audio-clips-filename").textContent = file.name;
+        document.getElementById("bv-audio-clips-size").textContent = fileSize(file.size);
+    };
+    reader.readAsDataURL(file);
+
+    audioClips = file;
+
+    updateJSONValue(clipInfo, "clip-asset-reference", file.name.split(".").slice(0, -1).join("."));
+}
+
+function resetAudioClips() {
+    let fileInput = document.getElementById("bv-audio-clips");
+    if (fileInput.value !== "") {
+        fileInput.value = "";
+        document.getElementById("bv-audio-clips-audio").src = "./assets/audio/Get Good.ogg";
+        document.getElementById("bv-audio-clips-filename").textContent = "No file selected";
+        document.getElementById("bv-audio-clips-size").textContent = "";
+    }
+}
+
+
+
+function fileSize(size) {
+    if (size > 1024 * 1024) {
+        return `${(size / 1024 / 1024).toFixed(2)} MB`;
+    }
+    else if (size > 1024) {
+        return `${(size / 1024).toFixed(2)} KB`;
+    }
+    else {
+        return `${size} B`;
     }
 }
 
@@ -212,7 +250,7 @@ function loadChartData(data) {
     chartJSON = data;
 
     for (let property in trackInfo) {
-        let value = getJSONValue(property);
+        let value = getJSONValue(trackInfo, property);
         updateTBValue(property, value);
         updateBVValue(property, value);
     }
