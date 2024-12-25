@@ -157,7 +157,8 @@ function updateBVValue(property, value) {
     }
 }
 
-function updateAlbumArt(fileInput) {
+function updateAlbumArt() {
+    let fileInput = document.getElementById("bv-album-art");
     let file = fileInput.files[0];
     let fileSize = () => {
         if (file.size > 1024 * 1024) {
@@ -184,6 +185,16 @@ function updateAlbumArt(fileInput) {
     updateJSONValue("album-art-reference", file.name.split(".").slice(0, -1).join("."));
 }
 
+function resetAlbumArt() {
+    let fileInput = document.getElementById("bv-album-art");
+    if (fileInput.value !== "") {
+        fileInput.value = "";
+        document.getElementById("bv-album-art-image").src = "./assets/images/Default_-_Cover.png";
+        document.getElementById("bv-album-art-filename").textContent = "No file selected";
+        document.getElementById("bv-album-art-size").textContent = "";
+    }
+}
+
 
 
 function enableUserInput() {
@@ -193,7 +204,7 @@ function enableUserInput() {
     document.querySelector(".jv").classList.remove("disabled");
 }
 
-async function loadChartData(data) {
+function loadChartData(data) {
     if (chartJSON === undefined) {
         enableUserInput();
     }

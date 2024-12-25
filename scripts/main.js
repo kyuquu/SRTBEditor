@@ -2,6 +2,8 @@ let isDevModeEnabled = true;
 
 let chartTemplates = {};
 
+
+
 let activeTab = 0;
 
 function switchToTab(index) {
@@ -45,6 +47,16 @@ function saveAsZIP() { // this function needs to be edited once audio is support
     });
 }
 
+function downloadFile(filename, file) {
+    let link = document.createElement("a"); 
+    link.setAttribute("href", `data:text/plain; charset=utf-8, ${encodeURIComponent(file)}`);
+    link.setAttribute("download", filename);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 
 
 function convertToJSON(srtb) {
@@ -65,16 +77,6 @@ function convertToSRTB(json) {
 
 
 
-function downloadFile(filename, file) {
-    let link = document.createElement("a"); 
-    link.setAttribute("href", `data:text/plain; charset=utf-8, ${encodeURIComponent(file)}`);
-    link.setAttribute("download", filename);
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
 function loadTemplate(filename) {
     let templateData = JSON.parse(JSON.stringify(chartTemplates))[filename];
     const fileExtension = filename.split(".").pop().toLowerCase();
@@ -90,6 +92,7 @@ function loadTemplate(filename) {
 
             chartFilename = filename;
             updateTBValue("filename", chartFilename);
+            resetAlbumArt();
         }
         catch (e) {
             window.alert(`Template failed to load\n\n${e}`);
@@ -134,28 +137,24 @@ fileInput.onchange = () => {
     if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
         reader.onload = (e) => {
-            if (fileExtension === "srtb") {
-                try {
+            try {
+                if (fileExtension === "srtb") {
                     let srtb = e.target.result;
                     let json = convertToJSON(JSON.parse(srtb));
                     loadChartData(json);
                 }
-                catch (e) {
-                    window.alert(`Invalid .srtb\n\n${e}`);
-                }
-            }
-            else if (fileExtension === "json") {
-                try {
+                else if (fileExtension === "json") {
                     let json = JSON.parse(e.target.result);
                     loadChartData(json);
                 }
-                catch (e) {
-                    window.alert(`Invalid .json\n\n${e}`);
-                }
-            }
 
-            chartFilename = file.name;
-            updateTBValue("filename", chartFilename);
+                chartFilename = file.name;
+                updateTBValue("filename", chartFilename);
+                resetAlbumArt();
+            }
+            catch (e) {
+                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+            }
         };
         reader.readAsText(file);
     }
@@ -188,7 +187,7 @@ fileInput.onchange = () => {
                 await loadZipSRTB(srtb);
                 await loadZipImage(image, imageFilename);
                 
-                updateAlbumArt(document.getElementById("bv-album-art"));
+                updateAlbumArt();
                 updateTBValue("filename", srtbFilename);
             }, () => {
                 window.alert("Invalid .zip");

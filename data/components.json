@@ -77,7 +77,7 @@
         "bv-album-art": {
             "text": "Album Art",
             "accept": ".png, .jpg, .jpeg",
-            "function": "updateAlbumArt(this)"
+            "function": "updateAlbumArt()"
         }
     }
 }
