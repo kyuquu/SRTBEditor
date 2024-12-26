@@ -82,12 +82,12 @@ function loadTemplate(filename) {
     const fileExtension = filename.split(".").pop().toLowerCase();
     if (["srtb", "json"].includes(fileExtension)) {
         try {
-            if (fileExtension === "json") {
-                loadChartData(templateData);
-            }
-            else if (fileExtension === "srtb") {
+            if (fileExtension === "srtb") {
                 let json = convertToJSON(templateData);
                 loadChartData(json);
+            }
+            else if (fileExtension === "json") {
+                loadChartData(templateData);
             }
 
             chartFilename = filename;
@@ -101,6 +101,46 @@ function loadTemplate(filename) {
     }
     else {
         window.alert(`Unrecognized file extension: .${fileExtension}`);
+    }
+}
+
+
+
+async function loadFromLink() {
+    let input = prompt("Please enter a SpinShare link or ID:");
+    let id = "";
+
+    if (input !== null && input !== "") {
+        if (!isNaN(parseInt(input))) { // expected format: 12345
+            id = input;
+        }
+        else {
+            let i = input.lastIndexOf("/") + 1;
+            if (i === 0) { // expected format: spinshare_66f651eb93112
+                id = input;
+            }
+            else if (!isNaN(parseInt(input))) { // expected format: https://spinsha.re/song/12345
+                do {
+                    id += input[i];
+                    i++;
+                }
+                while (!isNaN(parseInt(input)) && input[i] !== undefined);
+            }
+            else { // expected format: https://spinsha.re/song/spinshare_66f651eb93112
+                do {
+                    id += input[i];
+                    i++;
+                }
+                while (input[i] !== "?" && input[i] !== undefined);
+            }
+        }
+
+        await fetch(`https://spinsha.re/api/song/${id}/download`)
+            .then(response => response.blob())
+            .then((blob) => {
+                let file = new File([blob], `${id}.zip`);
+                loadChartFile(file);
+            });
     }
 }
 
@@ -144,9 +184,7 @@ async function loadZipAudio(audio, filename) {
     });
 }
 
-const fileInput = document.getElementById("tb-file-input");
-fileInput.onchange = () => {
-    let file = fileInput.files[0];
+function loadChartFile(file) {
     let fileExtension = file.name.split('.').pop().toLowerCase();
     if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
@@ -205,9 +243,11 @@ fileInput.onchange = () => {
                 await loadZipImage(image, imageFilename);
                 await loadZipAudio(audio, audioFilename);
                 
+                chartFilename = srtbFilename;
+                updateTBValue("filename", srtbFilename);
+
                 updateAlbumArt();
                 updateAudioClips();
-                updateTBValue("filename", srtbFilename);
             }, () => {
                 window.alert("Invalid .zip");
             }); 
@@ -215,4 +255,11 @@ fileInput.onchange = () => {
     else {
         window.alert(`Unrecognized file extension: .${fileExtension}`);
     }
+}
+
+
+
+const fileInput = document.getElementById("tb-file-input");
+fileInput.onchange = () => {
+    loadChartFile(fileInput.files[0]);
 }

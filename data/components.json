@@ -13,7 +13,7 @@
                 },
                 {
                     "text": "FROM LINK",
-                    "function": ""
+                    "function": "loadFromLink()"
                 }
             ]
         },
@@ -51,7 +51,7 @@
             "function": "processBVInput('text', 'title')"
         },
         "bv-subtitle": {
-            "text": "Subitle",
+            "text": "Subtitle",
             "function": "processBVInput('text', 'subtitle')"
         },
         "bv-artist": {
