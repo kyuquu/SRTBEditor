@@ -41,18 +41,15 @@ function calculateMaxScoreAndCombo () {
                     }
                     if(over) break;
                 }
-                if (bookmark - sortedNotes[i].time == 0) 
+                if (bookmark - sortedNotes[i].time == 0) {
                     console.log("erronous slider at " + sortedNotes[i].time)
-                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
+                }
                 tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
                 addScore = tickDuration / 5000n;
-                console.log(addScore);
-                addScore *= 4n;
-                if(addScore < 4n) {
-                    addScore = 4n;
+                if(addScore < 1n) {
+                    addScore = 1n;
                 }
-                maxScore += addScore;
+                maxScore += addScore * 4n;
                 if(prevMSize == 2) {
                     maxScore += 48n;
                     maxCombo ++;
@@ -79,23 +76,22 @@ function calculateMaxScoreAndCombo () {
                             break;
                     }
                     if(over) {
-                        // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                        // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
-                        tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
-                        addScore = tickDuration / 5000n;
-                        console.log(addScore);
-                        addScore *= 4n;
-                        if(addScore < 4n) {
-                            addScore = 4n;
-                        }
-                        maxScore += addScore;
                         break;
                     }
                 }
                 if(!over) { //this spin/scratch goes the default length of 1 second
                     //todo: may break if the chart ends before this 1s has passed
                     maxScore += 80n;
+                    break;
                 }
+                // This logic is essentially 4 points per 50ms, but convoluted to match the way the game calculates it
+                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                addScore = tickDuration / 5000n;
+                if(addScore < 1n) {
+                    addScore = 1n;
+                }
+                maxScore += addScore * 4n;
                 break;
             case 5: //note endpoint
                 break;
@@ -121,15 +117,12 @@ function calculateMaxScoreAndCombo () {
                 }
 
                 // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
                 tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000)) - BigInt(Math.floor(bookmark * 100000));
                 addScore = tickDuration / 5000n;
-                console.log(addScore);
-                addScore *= 4n;
-                if(addScore < 4n) {
-                    addScore = 4n;
+                if(addScore < 1n) {
+                    addScore = 1n;
                 }
-                maxScore += addScore;
+                maxScore += addScore * 4n;
                 if(notes[i].m_size ==  1 || notes[i].m_size == 0) {
                     maxScore += 48n;
                     maxCombo ++;
@@ -140,6 +133,7 @@ function calculateMaxScoreAndCombo () {
                 console.log("found an unknown note type");
         }
     }
+    document.getElementById("dv-summary").value = "" + chartJSON["largeStringValuesContainer"]["values"][0]["val"]["title"] + "," + maxScore + "," + maxCombo;
     document.getElementById("dv-max-score").textContent = "Max Score: " + maxScore;
     document.getElementById("dv-max-combo").textContent = "Max Combo: " + maxCombo;
 }

@@ -65,7 +65,12 @@
         "bv-charter": {
             "text": "Charter",
             "function": "processBVInput('text', 'charter')"
+        },
+        "dv-summary": {
+            "text": "Summary",
+            "function": ""
         }
+
     },
     "checkboxes": {
         "bv-allow-custom-leaderboards": {
