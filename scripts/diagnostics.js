@@ -6,9 +6,10 @@ function calculateMaxScoreAndCombo () {
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
     let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
     let maxScore = 0;
+    let addScore;
     let maxCombo = 0;
     for(let i = 0; i < sortedNotes.length; i++) {
-        let marker, over;
+        let bookmark, over;
         switch(sortedNotes[i].type) {
             case 0: //match
                 maxScore += 16;
@@ -23,12 +24,12 @@ function calculateMaxScoreAndCombo () {
                 let prevMSize;
                 maxScore += 64;
                 maxCombo ++;
-                marker = sortedNotes[i].time;
+                bookmark = sortedNotes[i].time;
                 over = false;
                 for(let j = i + 1; j < sortedNotes.length; j++) {
                     switch(sortedNotes[j].type){
                         case 5: //note end
-                            marker = sortedNotes[j].time;
+                            bookmark = sortedNotes[j].time;
                             prevMSize = notes[j].m_size;
                             break;
                         case 2:
@@ -40,9 +41,13 @@ function calculateMaxScoreAndCombo () {
                     }
                     if(over) break;
                 }
-                if (marker - sortedNotes[i].time == 0) 
+                if (bookmark - sortedNotes[i].time == 0) 
                     console.log("erronous slider at " + sortedNotes[i].time)
-                maxScore += Math.floor((marker - sortedNotes[i].time) * 20) * 4;
+                addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                if(addScore < 4) {
+                    addScore = 4;
+                }
+                maxScore += addScore;
                 if(prevMSize == 2) {
                     maxScore += 48;
                     maxCombo ++;
@@ -53,7 +58,7 @@ function calculateMaxScoreAndCombo () {
             case 12: //scratch
                 maxScore += 48;
                 maxCombo ++;
-                marker = sortedNotes[i].time;
+                bookmark = sortedNotes[i].time;
                 over = false;
                 for(let j = i + 1; j < sortedNotes.length; j++) {
                     switch(sortedNotes[j].type){
@@ -64,27 +69,33 @@ function calculateMaxScoreAndCombo () {
                         case 5:
                         case 8:
                         case 12:
-                            marker = sortedNotes[j].time;
+                            bookmark = sortedNotes[j].time;
                             over = true;
                             break;
                     }
                     if(over) {
-                        maxScore += Math.floor((marker - sortedNotes[i].time) * 20) * 4;
+                        addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                        if(addScore < 4) {
+                            addScore = 4;
+                        }
+                        maxScore += addScore;
                         break;
                     }
                 }
-                if(!over) //this spin/scratch goes the default length of 1 second
+                if(!over) { //this spin/scratch goes the default length of 1 second
+                    //todo: may break if the chart ends before this 1s has passed
                     maxScore += 80;
+                }
                 break;
             case 5: //note endpoint
                 break;
             case 11: //beathold
-                marker = sortedNotes[i].time;
+                bookmark = sortedNotes[i].time;
                 over = false;
                 for(let j = i - 1; j >= 0; j--) {
                     switch(sortedNotes[j].type) {
                         case 1:
-                            marker = sortedNotes[j].time;
+                            bookmark = sortedNotes[j].time;
                             over = true;
                             break;
                         case 11:
@@ -95,10 +106,16 @@ function calculateMaxScoreAndCombo () {
                     if(over) break;
                 }
 
-                if(!over)
+                if(!over) {
                     console.log("erronous beathold end at " + sortedNotes[i].time);
-                maxScore += Math.floor((sortedNotes[i].time - marker) * 20) * 4;
-                if(notes[i].m_size == 1) {
+                }
+
+                addScore = Math.floor((sortedNotes[i].time - bookmark) * 20) * 4;
+                if(addScore < 4) {
+                    addScore = 4;
+                }
+                maxScore += addScore;
+                if(notes[i].m_size ==  1 || notes[i].m_size == 0) {
                     maxScore += 48;
                     maxCombo ++;
                 }

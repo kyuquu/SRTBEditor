@@ -65,10 +65,6 @@
         "bv-charter": {
             "text": "Charter",
             "function": "processBVInput('text', 'charter')"
-        },
-        "dv-test": {
-            "text": "i'm testin here!",
-            "function": ""
         }
     },
     "checkboxes": {
