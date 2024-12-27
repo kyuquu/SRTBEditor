@@ -240,6 +240,7 @@ function enableUserInput() {
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");
+    document.querySelector(".dv").classList.remove("disabled");
 }
 
 function loadChartData(data) {
@@ -248,6 +249,8 @@ function loadChartData(data) {
     }
 
     chartJSON = data;
+
+    calculateMaxScore();
 
     for (let property in trackInfo) {
         let value = getJSONValue(trackInfo, property);
