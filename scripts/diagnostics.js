@@ -82,13 +82,13 @@ function calculateBalance() {
         colorString += " (invis: " + nInvisBlue + ":" + nInvisRed + ")";
     }
 
-    document.getElementById("dv-nMatch").textContent = "Matches: " + nMatch;
-    document.getElementById("dv-nTap").textContent = "Taps: " + (nTap + nSlider);
-    document.getElementById("dv-nBeat").textContent = "Beats: " + nBeat;
-    document.getElementById("dv-nHold").textContent = "Holds: " + (nSlider + nBeathold);
-    document.getElementById("dv-nRelease").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
-    document.getElementById("dv-nSpin").textContent = "Spins: " + (nLeftSpin + nRightSpin);
-    document.getElementById("dv-nScratch").textContent = "Scratches: " + nScratch;
+    document.getElementById("dv-match-count").textContent = "Matches: " + nMatch;
+    document.getElementById("dv-tap-count").textContent = "Taps: " + (nTap + nSlider);
+    document.getElementById("dv-beat-count").textContent = "Beats: " + nBeat;
+    document.getElementById("dv-hold-count").textContent = "Holds: " + (nSlider + nBeathold);
+    document.getElementById("dv-release-count").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
+    document.getElementById("dv-spin-count").textContent = "Spins: " + (nLeftSpin + nRightSpin);
+    document.getElementById("dv-scratch-count").textContent = "Scratches: " + nScratch;
 
     document.getElementById("dv-colors").textContent = colorString;
     document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
