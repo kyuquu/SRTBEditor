@@ -250,8 +250,7 @@ function loadChartData(data) {
 
     chartJSON = data;
 
-    calculateMaxScoreAndCombo();
-    calculateBalance();
+    calculateDiagnostics();
 
     for (let property in trackInfo) {
         let value = getJSONValue(trackInfo, property);

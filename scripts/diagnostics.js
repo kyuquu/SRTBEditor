@@ -10,6 +10,12 @@ function getClipInfo(index) {
         }
     }
 }
+
+function calculateDiagnostics() {
+    calculateBalance();
+    calculateMaxScoreAndCombo();
+}
+
 function calculateBalance() {
     let nRed = 0, nBlue = 0, nInvisRed = 0, nInvisBlue = 0;
     let nLeftSpin = 0, nRightSpin = 0;
@@ -64,7 +70,7 @@ function calculateMaxScoreAndCombo () {
                 bookmark = sortedNotes[i].time;
                 over = false;
                 for(let j = i + 1; j < sortedNotes.length; j++) {
-                    switch(sortedNotes[j].type){
+                    switch(sortedNotes[j].type) {
                         case 5: //note end
                             bookmark = sortedNotes[j].time;
                             prevMSize = notes[j].m_size;
@@ -81,7 +87,8 @@ function calculateMaxScoreAndCombo () {
                 if (bookmark - sortedNotes[i].time == 0) {
                     console.log("erronous slider at " + sortedNotes[i].time)
                 }
-                tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                tickDuration = BigInt(Math.floor(bookmark * 100000))
+                        - BigInt(Math.floor(sortedNotes[i].time * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -100,7 +107,7 @@ function calculateMaxScoreAndCombo () {
                 bookmark = sortedNotes[i].time;
                 over = false;
                 for(let j = i + 1; j < sortedNotes.length; j++) {
-                    switch(sortedNotes[j].type){
+                    switch(sortedNotes[j].type) {
                         case 0:
                         case 2:
                         case 3:
@@ -121,9 +128,8 @@ function calculateMaxScoreAndCombo () {
                     maxScore += 80n;
                     break;
                 }
-                // This logic is essentially 4 points per 50ms, but convoluted to match the way the game calculates it
-                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                tickDuration = BigInt(Math.floor(bookmark * 100000))
+                        - BigInt(Math.floor(sortedNotes[i].time * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -154,7 +160,8 @@ function calculateMaxScoreAndCombo () {
                     break;
                 }
 
-                tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000)) - BigInt(Math.floor(bookmark * 100000));
+                tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000))
+                        - BigInt(Math.floor(bookmark * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
