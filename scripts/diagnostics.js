@@ -5,24 +5,24 @@
 function calculateMaxScoreAndCombo () {
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
     let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
-    let maxScore = 0;
-    let addScore;
+    let maxScore = 0n;
+    let tickDuration, addScore;
     let maxCombo = 0;
     for(let i = 0; i < sortedNotes.length; i++) {
         let bookmark, over;
         switch(sortedNotes[i].type) {
             case 0: //match
-                maxScore += 16;
+                maxScore += 16n;
                 maxCombo ++;
                 break;
             case 1: //beat
             case 8: //tap
-                maxScore += 64;
+                maxScore += 64n;
                 maxCombo ++;
                 break;
             case 4: //slider
                 let prevMSize;
-                maxScore += 64;
+                maxScore += 64n;
                 maxCombo ++;
                 bookmark = sortedNotes[i].time;
                 over = false;
@@ -43,20 +43,25 @@ function calculateMaxScoreAndCombo () {
                 }
                 if (bookmark - sortedNotes[i].time == 0) 
                     console.log("erronous slider at " + sortedNotes[i].time)
-                addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                if(addScore < 4) {
-                    addScore = 4;
+                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
+                tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                addScore = tickDuration / 5000n;
+                console.log(addScore);
+                addScore *= 4n;
+                if(addScore < 4n) {
+                    addScore = 4n;
                 }
                 maxScore += addScore;
                 if(prevMSize == 2) {
-                    maxScore += 48;
+                    maxScore += 48n;
                     maxCombo ++;
                 }
                 break;
             case 2: //right spin
             case 3: //left spin
             case 12: //scratch
-                maxScore += 48;
+                maxScore += 48n;
                 maxCombo ++;
                 bookmark = sortedNotes[i].time;
                 over = false;
@@ -74,9 +79,14 @@ function calculateMaxScoreAndCombo () {
                             break;
                     }
                     if(over) {
-                        addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
-                        if(addScore < 4) {
-                            addScore = 4;
+                        // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                        // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
+                        tickDuration = BigInt(Math.floor(bookmark * 100000)) - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                        addScore = tickDuration / 5000n;
+                        console.log(addScore);
+                        addScore *= 4n;
+                        if(addScore < 4n) {
+                            addScore = 4n;
                         }
                         maxScore += addScore;
                         break;
@@ -84,7 +94,7 @@ function calculateMaxScoreAndCombo () {
                 }
                 if(!over) { //this spin/scratch goes the default length of 1 second
                     //todo: may break if the chart ends before this 1s has passed
-                    maxScore += 80;
+                    maxScore += 80n;
                 }
                 break;
             case 5: //note endpoint
@@ -110,13 +120,18 @@ function calculateMaxScoreAndCombo () {
                     console.log("erronous beathold end at " + sortedNotes[i].time);
                 }
 
-                addScore = Math.floor((sortedNotes[i].time - bookmark) * 20) * 4;
-                if(addScore < 4) {
-                    addScore = 4;
+                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
+                // addScore = Math.floor(Math.fround(Math.floor(Math.fround(bookmark) * 100000) - Math.floor(Math.fround(sortedNotes[i].time * 100000))) / 5000) * 4;
+                tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000)) - BigInt(Math.floor(bookmark * 100000));
+                addScore = tickDuration / 5000n;
+                console.log(addScore);
+                addScore *= 4n;
+                if(addScore < 4n) {
+                    addScore = 4n;
                 }
                 maxScore += addScore;
                 if(notes[i].m_size ==  1 || notes[i].m_size == 0) {
-                    maxScore += 48;
+                    maxScore += 48n;
                     maxCombo ++;
                 }
                 break;
