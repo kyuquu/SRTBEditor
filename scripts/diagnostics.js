@@ -21,7 +21,7 @@ function calculateMaxScoreAndCombo () {
     let maxCombo = 0;
 
     for(let i = 0; i < sortedNotes.length; i++) {
-        let bookmark, over;
+        let bookmark, over, skip;
         switch(sortedNotes[i].type) {
             case 0: //match
                 maxScore += 16n;
@@ -117,18 +117,18 @@ function calculateMaxScoreAndCombo () {
                             over = true;
                             break;
                         case 11:
-                            console.log("erronous beathold end at " + sortedNotes[i].time);
+                            skip = true;
                             over = true;
                             break;
                     }
                     if(over) break;
                 }
-
-                if(!over) {
+                
+                if(!over || skip) {
                     console.log("erronous beathold end at " + sortedNotes[i].time);
+                    break;
                 }
 
-                // addScore = Math.floor((bookmark - sortedNotes[i].time) * 20) * 4;
                 tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000)) - BigInt(Math.floor(bookmark * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
