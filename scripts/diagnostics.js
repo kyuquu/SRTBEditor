@@ -1,6 +1,17 @@
 
 
-
+function getClipInfo(index) {
+    let vals = chartJSON["largeStringValuesContainer"]["values"];
+    let count = index;
+    for (v in vals) {
+        if(v.key.contains("SO_ClipInfo")) {
+            if(count == 0)
+                return v.val;
+            else
+                count--;
+        }
+    }
+}
 
 function calculateMaxScoreAndCombo () {
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
@@ -8,6 +19,7 @@ function calculateMaxScoreAndCombo () {
     let maxScore = 0n;
     let tickDuration, addScore;
     let maxCombo = 0;
+
     for(let i = 0; i < sortedNotes.length; i++) {
         let bookmark, over;
         switch(sortedNotes[i].type) {
