@@ -1,5 +1,3 @@
-
-
 function getClipInfo(index) {
     let vals = chartJSON["largeStringValuesContainer"]["values"];
     let count = index;
@@ -12,7 +10,34 @@ function getClipInfo(index) {
         }
     }
 }
+function calculateBalance() {
+    let nRed = 0, nBlue = 0, nInvisRed = 0, nInvisBlue = 0;
+    let nLeftSpin = 0, nRightSpin = 0;
+    let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
+    let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
 
+    for(let i = 0; i < sortedNotes.length; i++) {
+        switch(sortedNotes[i].type) {
+            case 0:
+            case 4:
+            case 8:
+                if(sortedNotes[i].colorIndex == 0) nBlue++;
+                else if(sortedNotes[i].colorIndex == 1) nRed++;
+                else if(sortedNotes[i].colorIndex % 2 == 0) nInvisBlue++;
+                else nInvisRed++;
+                break;
+            case 2:
+                nRightSpin++;
+                break;
+            case 3:
+                nLeftSpin++;
+                break;
+        }
+    }
+    document.getElementById("dv-colors").textContent = "Note Colors (blue:red): " + nBlue + ":" + nRed;
+    document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
+
+}
 function calculateMaxScoreAndCombo () {
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
     let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
