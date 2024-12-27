@@ -17,8 +17,20 @@ function calculateDiagnostics() {
 }
 
 function calculateBalance() {
-    let nRed = 0, nBlue = 0, nInvisRed = 0, nInvisBlue = 0;
-    let nLeftSpin = 0, nRightSpin = 0;
+    let nRed = 0,
+        nBlue = 0,
+        nInvisRed = 0,
+        nInvisBlue = 0;
+    let nMatch = 0,
+        nTap = 0,
+        nSlider = 0,
+        nSliderRelease = 0,
+        nBeat = 0,
+        nBeathold = 0,
+        nBeatRelease = 0,
+        nLeftSpin = 0,
+        nRightSpin = 0,
+        nScratch = 0;
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
     let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
 
@@ -32,18 +44,59 @@ function calculateBalance() {
                 else if(sortedNotes[i].colorIndex % 2 == 0) nInvisBlue++;
                 else nInvisRed++;
                 break;
+        }
+        switch(sortedNotes[i].type) {
+            case 0:
+                nMatch++;
+                break;
+            case 1:
+                nBeat++;
+                break;
             case 2:
                 nRightSpin++;
                 break;
             case 3:
                 nLeftSpin++;
                 break;
+            case 4:
+                nSlider++;
+                //further logic for releases
+                break;
+            case 8:
+                nTap++;
+                break;
+            case 11:
+                //logic for beathold
+                //todo: account for error beatholds
+                if(sortedNotes[i].m_size == 2)
+                    nBeatRelease++;
+                nBeathold++;
+                break;
+            case 12:
+                nScratch++;
+                break;
         }
     }
-    document.getElementById("dv-colors").textContent = "Note Colors (blue:red): " + nBlue + ":" + nRed;
-    document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
+    let colorString = "Note Colors (blue:red): " + nBlue + ":" + nRed;
+    if(nInvisRed + nInvisBlue > 0) {
+        colorString += " (invis: " + nInvisBlue + ":" + nInvisRed + ")";
+    }
 
+    document.getElementById("dv-nMatch").textContent = "Matches: " + nMatch;
+    document.getElementById("dv-nTap").textContent = "Taps: " + (nTap + nSlider);
+    document.getElementById("dv-nBeat").textContent = "Beats: " + nBeat;
+    document.getElementById("dv-nHold").textContent = "Holds: " + (nSlider + nBeathold);
+    document.getElementById("dv-nRelease").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
+    document.getElementById("dv-nSpin").textContent = "Spins: " + (nLeftSpin + nRightSpin);
+    document.getElementById("dv-nScratch").textContent = "Scratches: " + nScratch;
+
+    document.getElementById("dv-colors").textContent = colorString;
+    document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
 }
+
+function calculateNoteCounts() {
+}
+
 function calculateMaxScoreAndCombo () {
     let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
     let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
