@@ -54,13 +54,13 @@
             "text": "Subtitle",
             "function": "processBVInput('text', 'subtitle')"
         },
-        "bv-artist": {
+        "bv-artistName": {
             "text": "Artist",
-            "function": "processBVInput('text', 'artist')"
+            "function": "processBVInput('text', 'artistName')"
         },
-        "bv-featured-artist": {
+        "bv-featArtists": {
             "text": "Featured Artist",
-            "function": "processBVInput('text', 'featured-artist')"
+            "function": "processBVInput('text', 'featArtists')"
         },
         "bv-charter": {
             "text": "Charter",
@@ -73,9 +73,9 @@
 
     },
     "checkboxes": {
-        "bv-allow-custom-leaderboards": {
+        "bv-allowCustomLeaderboardCreation": {
             "text": "Allow Leaderboard Creation",
-            "function": "processBVInput('checkbox', 'allow-custom-leaderboards')"
+            "function": "processBVInput('checkbox', 'allowCustomLeaderboardCreation')"
         }
     },
     "file-inputs": {

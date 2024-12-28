@@ -27,7 +27,11 @@
 
     <!-- - - - MAIN SCRIPTS - - - - - -->
     <script defer type="text/javascript" src="scripts/main.js"></script>
-    <script defer type="text/javascript" src="scripts/values.js"></script>
+    <script defer type="text/javascript" src="scripts/references.js"></script>
+    <script defer type="text/javascript" src="scripts/chart-saving.js"></script>
+    <script defer type="text/javascript" src="scripts/chart-loading.js"></script>
+    <script defer type="text/javascript" src="scripts/album-art.js"></script>
+    <script defer type="text/javascript" src="scripts/audio-clips.js"></script>
     <script defer type="text/javascript" src="scripts/diagnostics.js"></script>
 
     <!-- - - - COMPONENTS - - - - - - -->
@@ -50,7 +54,7 @@
         <div class="tb-chart">
             <div>
                 <span id="tb-title" class="tb-value"></span>
-                <span id="tb-artist" class="tb-value"></span>
+                <span id="tb-artistName" class="tb-value"></span>
             </div>
             <div id="tb-filename" class="tb-value">
                 <span style="font-size: 2rem;">Click <b>LOAD</b> to get started!</span>
@@ -78,10 +82,10 @@
                     <div class="file-input" id="bv-audio-clips"></div>
                     <div class="text-input" id="bv-title"></div>
                     <div class="text-input" id="bv-subtitle"></div>
-                    <div class="text-input" id="bv-artist"></div>
-                    <div class="text-input" id="bv-featured-artist"></div>
+                    <div class="text-input" id="bv-artistName"></div>
+                    <div class="text-input" id="bv-featArtists"></div>
                     <div class="text-input" id="bv-charter"></div>
-                    <div class="checkbox" id="bv-allow-custom-leaderboards"></div>
+                    <div class="checkbox" id="bv-allowCustomLeaderboardCreation"></div>
                 </div>
 
                 <div class="bv bv1 disabled">
@@ -121,7 +125,6 @@
                     <br>
                     <div id="dv-colors"></div>
                     <div id="dv-movement"></div>
-
                 </div>
             </div>
         </div>
