@@ -2,18 +2,6 @@ const loadingScreen = document.getElementById("loading-screen");
 const loadingMessage = document.getElementById("loading-message");
 
 async function init() {
-    loadingMessage.textContent = "FETCHING .SRTB REFERENCES...";
-
-    await fetch("./data/chart-data-template.json")
-        .then(response => response.json())
-        .then((data) => {
-            trackInfo = data["track-info"];
-            trackData = data["track-data"];
-            clipInfo = data["clip-info"];
-        });
-
-
-
     loadingMessage.textContent = "INITIALIZING TEMPLATES...";
 
     let requests = [];
@@ -30,6 +18,8 @@ async function init() {
                 chartTemplates[templateFilenames[i]] = templates[i];
             }
         });
+
+    templateJSON = chartTemplates["Custom.json"];
 
 
 
