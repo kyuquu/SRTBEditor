@@ -1,50 +1,36 @@
-#tab-basic.active {
+#tab0.active {
     display: flex;
-}
-
-.bv-left {
-    position: relative;
-    flex: 2 3 0;
-    height: 100%;
-    padding: 1rem;
-    box-sizing: border-box;
-    overflow-y: auto;
-}
-
-.bv.disabled {
-    opacity: 50%;
 }
 
 .bv.disabled > * {
+    opacity: 50%;
     pointer-events: none;
 }
 
-.category {
-    position: relative;
-    display: none;
+.bv0 {
+    display: flex;
     flex-direction: column;
     gap: 2rem;
+    flex: 1 1 0;
+    padding: 1rem;
     box-sizing: border-box;
+    overflow-y: scroll;
 }
 
-.category.active {
-    display: flex;
-}
-
-.category .checkbox > input {
+.bv0 .checkbox > input {
     --size: 12;
 }
 
-.bv-right {
+.bv1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    flex: 3 2 0;
+    flex: 1 1 0;
 }
 
-.bv-right > img {
+.bv1 > img {
     width: 16rem;
     height: 16rem;
 }

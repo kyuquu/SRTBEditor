@@ -20,11 +20,9 @@
     <link rel="stylesheet" type="text/css" href="styles/loading.css">
     <link rel="stylesheet" type="text/css" href="styles/main.css">
     <link rel="stylesheet" type="text/css" href="styles/top-bar.css">
-    <link rel="stylesheet" type="text/css" href="styles/category-buttons.css">
     <link rel="stylesheet" type="text/css" href="styles/tab-manager.css">
     <link rel="stylesheet" type="text/css" href="styles/basic-view.css">
     <link rel="stylesheet" type="text/css" href="styles/json-view.css">
-    <link rel="stylesheet" type="text/css" href="styles/diagnostics-view.css">
     <link rel="stylesheet" type="text/css" href="styles/bottom-bar.css">
 
     <!-- - - - MAIN SCRIPTS - - - - - -->
@@ -71,93 +69,64 @@
         <input type="file" accept=".srtb, .json, .zip" id="tb-file-input">
     </div>
 
-    <div class="content">
-        <div class="category-buttons">
-            <button onclick="switchToCategory(this, 'track-info')" id="category-button-track-info" class="category-button active">Track Info</button>
-            <div>
-                <button onclick="switchToCategory(this, 'difficulties')" id="category-button-difficulties" class="category-button">Difficulties</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty0" class="category-button sub disabled">Easy</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty1" class="category-button sub disabled">Normal</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty2" class="category-button sub">Hard</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty3" class="category-button sub">Expert</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty4" class="category-button sub">XD</button>
-                <button onclick="switchToCategory(this, 'difficulty')" id="category-button-difficulty5" class="category-button sub disabled">RemiXD</button>
-            </div>
-            <button onclick="switchToCategory(this, 'clip-info')" id="category-button-clip-info" class="category-button">Clip Info</button>
-            <button onclick="switchToCategory(this, 'dts')" id="category-button-dts" class="category-button">DTS</button>
-            <button onclick="switchToCategory(this, 'chroma')" id="category-button-chroma" class="category-button">Chroma</button>
+    <div class="tab-manager">
+        <div class="tab-buttons">
+            <button onclick="switchToTab(0)" id="tab-button0" class="tab-button active">Basic View</button>
+            <button onclick="switchToTab(1)" id="tab-button1" class="tab-button">Raw JSON View</button>
+            <button onclick="switchToTab(2)" id="tab-button2" class="tab-button">Chart Diagnostics</button>
         </div>
+        <div class="tabs">
+            <div id="tab0" class="tab active">
+                <div class="bv bv0 disabled">
+                    <div class="file-input" id="bv-album-art"></div>
+                    <div class="file-input" id="bv-audio-clips"></div>
 
-        <div class="tab-manager">
-            <div class="tab-buttons">
-                <button onclick="switchToTab(this, 'basic')" class="tab-button active">Basic View</button>
-                <button onclick="switchToTab(this, 'json')" class="tab-button">Raw JSON View</button>
-                <button onclick="switchToTab(this, 'diagnostics')" class="tab-button">Chart Diagnostics</button>
+                    <div class="text-input" id="bv-title"></div>
+                    <div class="text-input" id="bv-subtitle"></div>
+                    <div class="text-input" id="bv-artistName"></div>
+                    <div class="text-input" id="bv-featArtists"></div>
+                    <div class="text-input" id="bv-charter"></div>
+
+                    <div class="checkbox" id="bv-allowCustomLeaderboardCreation"></div>
+                </div>
+
+                <div class="bv bv1 disabled">
+                    <img id="bv-album-art-image" src="assets/images/Default_-_Cover.png">
+                    <audio id="bv-audio-clips-audio" src="assets/audio/Get Good.ogg" controls></audio>
+                </div>
             </div>
-            <div class="tabs">
-                <div id="tab-basic" class="tab active">
-                    <div class="bv bv-left disabled">
-                        <div id="category-track-info" class="category active">
-                            <div class="text-input" id="bv-title"></div>
-                            <div class="text-input" id="bv-subtitle"></div>
-                            <div class="text-input" id="bv-artistName"></div>
-                            <div class="text-input" id="bv-featArtists"></div>
-                            <div class="text-input" id="bv-charter"></div>
-                            <div class="checkbox" id="bv-allowCustomLeaderboardCreation"></div>
-                            <div class="file-input" id="bv-album-art"></div>
-                        </div>
 
-                        <div id="category-difficulties" class="category">Difficulties</div>
-
-                        <div id="category-difficulty" class="category">Difficulty</div>
-
-                        <div id="category-clip-info" class="category">
-                            <div class="file-input" id="bv-audio-clips"></div>
-                        </div>
-
-                        <div id="category-dts" class="category">Dynamic Track Speed</div>
-
-                        <div id="category-chroma" class="category">Speen Chroma</div>
+            <div id="tab1" class="tab">
+                <div class="jv disabled">
+                    <div id="json-editor">
+                        <div id="editor"></div>
                     </div>
-    
-                    <div class="bv bv-right disabled">
-                        <img id="bv-album-art-image" src="assets/images/Default_-_Cover.png">
-                        <audio id="bv-audio-clips-audio" src="assets/audio/Get Good.ogg" controls></audio>
+
+                    <div class="jv-buttons">
+                        <button class="button disabled" id="jv-save"></button>
+                        <button class="button disabled" id="jv-discard"></button>
                     </div>
                 </div>
-    
-                <div id="tab-json" class="tab">
-                    <div class="jv disabled">
-                        <div id="json-editor">
-                            <div id="editor"></div>
-                        </div>
-    
-                        <div class="jv-buttons">
-                            <button class="button disabled" id="jv-save"></button>
-                            <button class="button disabled" id="jv-discard"></button>
-                        </div>
-                    </div>
-                </div>
-                
-    
-                <div id="tab-diagnostics" class="tab">
-                    <div class="dv disabled">
-                        <div class="text-input" id="dv-summary"></div>
-                        <br>
-                        <div id="dv-max-score"></div>
-                        <div id="dv-max-combo"></div>
-                        <br>
-                        <div id="dv-match-count"></div>
-                        <div id="dv-tap-count"></div>
-                        <div id="dv-beat-count"></div>
-                        <div id="dv-hold-count"></div>
-                        <div id="dv-release-count"></div>
-                        <div id="dv-spin-count"></div>
-                        <div id="dv-scratch-count"></div>
-                        <br>
-                        <div id="dv-colors"></div>
-                        <div id="dv-movement"></div>
-                    </div>
+            </div>
+            
+
+            <div id="tab2" class="tab">
+                <div class="dv disabled">
+                    <div class="text-input" id="dv-summary"></div>
+                    <br>
+                    <div id="dv-max-score"></div>
+                    <div id="dv-max-combo"></div>
+                    <br>
+                    <div id="dv-match-count"></div>
+                    <div id="dv-tap-count"></div>
+                    <div id="dv-beat-count"></div>
+                    <div id="dv-hold-count"></div>
+                    <div id="dv-release-count"></div>
+                    <div id="dv-spin-count"></div>
+                    <div id="dv-scratch-count"></div>
+                    <br>
+                    <div id="dv-colors"></div>
+                    <div id="dv-movement"></div>
                 </div>
             </div>
         </div>
