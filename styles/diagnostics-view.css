@@ -1,8 +1,8 @@
-#tab2.active {
+#tab-diagnostics.active {
     display: flex;
 }
 
-.dv.disabled * {
+.dv.disabled > * {
     opacity: 50%;
     pointer-events: none;
 }

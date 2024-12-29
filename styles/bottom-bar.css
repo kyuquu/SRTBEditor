@@ -1,6 +1,7 @@
 .bottom-bar {
     display: flex;
     justify-content: space-between;
+    margin: 0 12rem;
 }
 
 .bb span {

@@ -1,0 +1,65 @@
+.category-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 12rem;
+    border-right: none;
+    box-sizing: border-box;
+    margin-top: 4.3125rem;
+    margin-bottom: 0.75rem;
+}
+
+.category-buttons > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.category-button {
+    flex: 0 0 3rem;
+    padding: 0 1rem;
+    border: 0.25rem solid var(--color-main);
+    border-right: none;
+    border-top-left-radius: 100rem;
+    border-bottom-left-radius: 100rem;
+    box-sizing: border-box;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-wrap: nowrap;
+    color: var(--color-main);
+    background: var(--color-bg);
+    opacity: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 100ms ease-in-out;
+}
+
+.category-button.sub {
+    flex: 0 0 2rem;
+    align-self: flex-end;
+    width: 75%;
+    border: 0.125rem solid var(--color-main);
+    border-right: none;
+    margin-top: 0.25rem;
+    text-align: left;
+    font-size: 1.25rem;
+    font-weight: normal;
+    transition: all 100ms ease-in-out;
+}
+
+.category-button:hover, .category-button.active {
+    color: var(--color-bg);
+    background: var(--color-main);
+}
+
+.category-button.active {
+    opacity: 100%;
+}
+
+.category-button.disabled {
+    flex: 0 0 0;
+    border: none;
+    border-left: 0.25rem;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}

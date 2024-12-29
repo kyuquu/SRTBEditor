@@ -22,6 +22,7 @@ body {
     user-select: none;
     color: var(--color-main);
     background: var(--color-bg);
+    overflow: hidden;
 }
 
 a {
@@ -34,4 +35,10 @@ button {
 
 input[type="file"] {
     display: none;
+}
+
+.content {
+    display: flex;
+    flex: 1 1 0;
+    overflow: hidden;
 }

@@ -1,21 +1,63 @@
 let isDevModeEnabled = true;
 
+let activeDifficulties = [2, 3, 4];
 
 
-let activeTab = 0;
 
-function switchToTab(index) {
-    if (activeTab !== index) {
-        document.getElementById(`tab-button${activeTab}`).classList.remove("active");
-        document.getElementById(`tab${activeTab}`).classList.remove("active");
-        document.getElementById(`tab-button${index}`).classList.add("active");
-        document.getElementById(`tab${index}`).classList.add("active");
+function switchToTab(button, tab) {
+    if (document.querySelector(`.tab-button.active`) !== button) {
+        document.querySelector(".tab-button.active").classList.remove("active");
+        document.querySelector(".tab.active").classList.remove("active");
+        button.classList.add("active");
+        document.getElementById(`tab-${tab}`).classList.add("active");
 
-        if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
-            JSONEditor.focus();
+        if (tab === "basic") {
+            document.querySelectorAll(".category-button").forEach(btn => {
+                if (!btn.id.includes("difficulty") || activeDifficulties.includes(parseInt(btn.id.slice(-1)))) {
+                    btn.classList.remove("disabled");
+                }
+            });
+        }
+        else if (tab === "json") {
+            document.querySelectorAll(".category-button").forEach(btn => {
+                btn.classList.add("disabled");
+            });
+            
+            if (document.querySelector(".jv.disabled") === null) {
+                JSONEditor.focus();
+            }
         }
 
-        activeTab = index;
+        else if (tab === "diagnostics") {
+            let disabled = ["track-info", "difficulties", "clip-info", "dts", "chroma"];
+            let enabled = [];
+            activeDifficulties.forEach(index => {
+                enabled.push(`difficulty${index}`);
+            })
+
+            enabled.forEach(category => {
+                document.getElementById(`category-button-${category}`).classList.remove("disabled");
+            });
+    
+            disabled.forEach(category => {
+                document.getElementById(`category-button-${category}`).classList.add("disabled");
+            });
+        }
+    }
+}
+
+function switchToCategory(button, name) {
+    if (document.querySelector(`.category-button.active`) !== button) {
+        if (document.querySelector(`.category-button.active`) !== null) {
+            document.querySelector(".category-button.active").classList.remove("active");
+        }
+        button.classList.add("active");
+        if (document.querySelector(`#category-${name}.active`) === null) {
+            if (document.querySelector(".category.active") !== null) {
+                document.querySelector(".category.active").classList.remove("active");
+            }
+            document.getElementById(`category-${name}`).classList.add("active");
+        }
     }
 }
 
@@ -23,8 +65,8 @@ function switchToTab(index) {
 
 function enableUserInput() {
     document.getElementById("tb-save").classList.remove("disabled");
-    document.querySelector(".bv0").classList.remove("disabled");
-    document.querySelector(".bv1").classList.remove("disabled");
+    document.querySelector(".bv-left").classList.remove("disabled");
+    document.querySelector(".bv-right").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");
     document.querySelector(".dv").classList.remove("disabled");
 }
@@ -66,7 +108,7 @@ function updateJSONValue(obj, property, value) {
 }
 
 function updateChartData() {
-    chartReferences.forEach((obj) => {
+    chartReferences.forEach(obj => {
         for (let property in obj) {
             let value = obj[property];
             updateTBValue(property, value);
