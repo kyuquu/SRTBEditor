@@ -2,23 +2,36 @@
     display: flex;
 }
 
-.bv.disabled > * {
-    opacity: 50%;
-    pointer-events: none;
-}
-
 .bv0 {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
     flex: 1 1 0;
-    padding: 1rem;
-    box-sizing: border-box;
-    overflow-y: scroll;
+    overflow: hidden;
 }
 
 .bv0 .checkbox > input {
     --size: 12;
+}
+
+.bv0 > div:first-child {
+    display: flex;
+    gap: 4rem;
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+#bv-categories {
+    overflow-y: auto;
+}
+
+.category {
+    display: none;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.category.active {
+    display: flex;
 }
 
 .bv1 {
@@ -33,4 +46,9 @@
 .bv1 > img {
     width: 16rem;
     height: 16rem;
+}
+
+.bv0.disabled > #bv-categories > *, .bv1.disabled > *{
+    opacity: 50%;
+    pointer-events: none;
 }

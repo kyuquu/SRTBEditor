@@ -3,6 +3,11 @@
     width: 50%;
 }
 
+.select-input.disabled {
+    opacity: 50%;
+    pointer-events: none;
+}
+
 .select-input > label {
     display: block;
     width: fit-content;

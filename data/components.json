@@ -99,7 +99,9 @@
                 "Clip Info",
                 "Dynamic Track Speed",
                 "Speen Chroma"
-            ]
+            ],
+            "default": 0,
+            "function": "switchToCategory"
         },
         "bv-difficulty": {
             "text": "Difficulty",
@@ -110,7 +112,9 @@
                 "Expert",
                 "XD",
                 "RemiXD"
-            ]
+            ],
+            "default": 2,
+            "function": "switchToDifficulty"
         }
     }
 }

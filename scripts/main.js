@@ -21,6 +21,22 @@ function switchToTab(index) {
     }
 }
 
+function switchToCategory(index) {
+    document.querySelector(".category.active").classList.remove("active");
+    document.getElementById("bv-categories").children[index].classList.add("active");
+
+    if (index === 0 || index === 2) {
+        document.getElementById("bv-difficulty").parentElement.classList.add("disabled");
+    }
+    else {
+        document.getElementById("bv-difficulty").parentElement.classList.remove("disabled");
+    }
+}
+
+function switchToDifficulty(index) {
+    
+}
+
 
 
 function enableUserInput() {

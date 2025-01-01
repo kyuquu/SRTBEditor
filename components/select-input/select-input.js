@@ -3,11 +3,13 @@ function initializeSelectInput(name, values) {
 
     let text = values["text"];
     let options = values["options"];
+    let defaultIndex = values["default"];
+    let func = values["function"];
 
     let optionElements = "";
     for (let i = 0; i < options.length; i++) {
         optionElements += `
-            <button class="select-input-option" onclick="selectOption('${options[i]}', this.parentElement.parentElement)" onmouseover="hoverOption(${i}, this.parentElement.parentElement)">
+            <button class="select-input-option" onclick="selectOption(${i}, '${options[i]}', this.parentElement.parentElement, '${func}')" onmouseover="hoverOption(${i}, this.parentElement.parentElement)">
                 ${options[i]}
             </button>
         `;
@@ -19,7 +21,7 @@ function initializeSelectInput(name, values) {
         <label for="${name}">${text}</label>
         <button class="select-input-button" id="${name}" onclick="toggleSelectInput('${name}')">
             <div>
-                <div class="select-input-selected"></div>
+                <div class="select-input-selected">${options[defaultIndex]}</div>
                 <div class="select-input-preview disabled"></div>
                 <input type="text" class="select-input-query disabled">
             </div>
@@ -61,8 +63,9 @@ function initializeSelectInput(name, values) {
         }
         else if (e.key === "Enter") {
             e.preventDefault();
-            selectOption(options[tabIndex], element);
+            selectOption(tabIndex, options[tabIndex], element, func);
             toggleSelectInput(element.querySelector(".select-input-button").id);
+            // do stuff
         }
         else if (!e.shiftKey) {
             element.querySelector(".select-input-preview").classList.add("disabled");
@@ -100,11 +103,11 @@ function queryOption(options, string) {
     return 0;
 }
 
-function selectOption(option, element) {
+function selectOption(index, option, element, func) {
     let selectedOption = element.querySelector(".select-input-selected").textContent.trim();
     if (selectedOption === "" || selectedOption !== option) {
         element.querySelector(".select-input-selected").textContent = option;
-        // do stuff
+        window[func](index);   
     }
 }
 
