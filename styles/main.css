@@ -1,6 +1,8 @@
 :root {
     --color-bg: rgb(16, 16, 16);
+    --color-bg-values: 16, 16, 16;
     --color-main: rgb(255, 255, 255);
+    --color-main-values: 255, 255, 255;
 
     font-family: "Montserrat", sans-serif;
     font-size: 16px;
@@ -8,6 +10,10 @@
 
 * {
     font-family: inherit;
+}
+
+*:focus {
+    outline: none;
 }
 
 body {

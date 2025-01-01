@@ -35,9 +35,3 @@ function toggleDropdown(dropdown) {
     }
     document.getElementById(dropdown).classList.toggle("active");
 }
-
-document.onclick = (e) => {
-    if (document.querySelector(".dropdown.active") && !e.target.parentElement.classList.contains("active")) {
-        document.querySelector(".dropdown.active").classList.remove("active");
-    }
-}
