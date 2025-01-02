@@ -1,3 +1,5 @@
+const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+
 let isDevModeEnabled = true;
 
 
@@ -17,6 +19,22 @@ function switchToTab(index) {
 
         activeTab = index;
     }
+}
+
+function switchToCategory(index) {
+    document.querySelector(".category.active").classList.remove("active");
+    document.getElementById("bv-categories").children[index].classList.add("active");
+
+    if (index === 0 || index === 2) {
+        document.getElementById("bv-difficulty").parentElement.classList.add("disabled");
+    }
+    else {
+        document.getElementById("bv-difficulty").parentElement.classList.remove("disabled");
+    }
+}
+
+function switchToDifficulty(index) {
+    
 }
 
 
@@ -127,5 +145,17 @@ function getFileSize(size) {
     }
     else {
         return `${size} B`;
+    }
+}
+
+
+
+document.onclick = (e) => {
+    if (document.querySelector(".dropdown.active") && !(e.target.parentElement.classList.contains("active") && e.target.parentElement.classList.contains("dropdown"))) {
+        document.querySelector(".dropdown.active").classList.remove("active");
+    }
+    
+    if (document.querySelector(".select-input.active") && !(e.target.parentElement.classList.contains("active") && e.target.parentElement.classList.contains("select-input"))) {
+        toggleSelectInput(document.querySelector(".select-input.active > .select-input-button").id);
     }
 }

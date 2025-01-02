@@ -52,6 +52,11 @@ async function init() {
             for (let fileInput in fileInputs) {
                 initializeFileInput(fileInput, fileInputs[fileInput]);
             }
+
+            let selectInputs = data["select-inputs"];
+            for (let selectInput in selectInputs) {
+                initializeSelectInput(selectInput, selectInputs[selectInput]);
+            }
         });
 
 

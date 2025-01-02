@@ -10,7 +10,7 @@
 
 .dropdown-button {
     position: relative;
-    z-index: 2;
+    z-index: 3;
 }
 
 .dropdown.active > .dropdown-button {
@@ -57,7 +57,9 @@
     border-radius: calc(var(--size) * 1.625rem);
     box-sizing: border-box;
     font-size: calc(var(--size) * 1.125rem);
+    background: var(--color-bg);
     overflow: hidden;
+    z-index: 2;
     transition: all 250ms ease-in-out;
 }
 

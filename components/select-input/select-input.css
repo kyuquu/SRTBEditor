@@ -1,0 +1,108 @@
+.select-input {
+    position: relative;
+    width: 50%;
+}
+
+.select-input.disabled {
+    opacity: 50%;
+    pointer-events: none;
+}
+
+.select-input > label {
+    display: block;
+    width: fit-content;
+    padding-bottom: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.select-input-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 2rem;
+    padding: 0.25rem;
+    border: none;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 1.25rem;
+    background: var(--color-main);
+    overflow: hidden;
+}
+
+.select-input-button > div {
+    display: flex;
+    justify-content: left;
+}
+
+.select-input-button > div:first-child {
+    flex: 1 1 auto;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.select-input-button > div:first-child > * {
+    text-wrap: nowrap;
+    text-align: left;
+}
+
+.select-input-preview, .select-input-query {
+    opacity: 50%;
+}
+
+.select-input-query {
+    height: 100%;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--color-bg);
+    background: none;
+}
+
+.select-input-button > div:first-child > *.disabled {
+    display: none !important;
+}
+
+.select-input-button > div:last-child {
+    width: 1rem;
+    min-width: 1rem;
+    height: 1rem;
+    margin: 0 0.5rem 0 1.5rem;
+    --webkit-mask-image: url(../../assets/icons/chevron-down.svg);
+    mask-image: url(../../assets/icons/chevron-down.svg);
+    --webkit-mask-size: 1rem;
+    mask-size: 1rem;
+    background: var(--color-bg);
+}
+
+.select-input-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    max-height: 10rem;
+    background: var(--color-main);
+    overflow-y: auto;
+    z-index: 3;
+}
+
+.select-input.active > .select-input-options {
+    display: flex;
+}
+
+.select-input-option {
+    padding: 0.25rem;
+    border: none;
+    border-top: 0.0625rem solid rgba(var(--color-bg-values), 10%);
+    font-size: 1rem;
+    text-align: left;
+    background: var(--color-main);
+    transition: border 100ms ease-in-out, background 100ms ease-in-out;
+}
+
+.select-input-option.hovered {
+    border-color: transparent;
+    background: rgba(var(--color-bg-values), 10%);
+}

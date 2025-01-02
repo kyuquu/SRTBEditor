@@ -89,5 +89,32 @@
             "accept": ".mp3, .ogg",
             "function": "updateAudioClips()"
         }
+    },
+    "select-inputs": {
+        "bv-category": {
+            "text": "Category",
+            "options": [
+                "Track Info",
+                "Track Data",
+                "Clip Info",
+                "Dynamic Track Speed",
+                "Speen Chroma"
+            ],
+            "default": 0,
+            "function": "switchToCategory"
+        },
+        "bv-difficulty": {
+            "text": "Difficulty",
+            "options": [
+                "Easy",
+                "Normal",
+                "Hard",
+                "Expert",
+                "XD",
+                "RemiXD"
+            ],
+            "default": 2,
+            "function": "switchToDifficulty"
+        }
     }
 }
