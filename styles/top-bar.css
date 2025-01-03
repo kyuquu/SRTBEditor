@@ -27,7 +27,7 @@
     font-weight: bold;
 }
 
-#tb-artist, #tb-filename {
+#tb-artistName, #tb-filename {
     opacity: 50%;
 }
 
