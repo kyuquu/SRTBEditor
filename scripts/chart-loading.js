@@ -199,7 +199,12 @@ function loadChartData(data) {
 
     chartJSON = data;
 
-    getReferences();
+    let references = getReferences(chartJSON);
+    trackInfo = references[0];
+    trackData = references[1];
+    clipInfo = references[2];
+    chartReferences = [trackInfo, trackData[activeDifficulty], clipInfo[0]];
+
     updateChartData();
 
     calculateDiagnostics();
