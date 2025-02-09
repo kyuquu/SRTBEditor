@@ -117,6 +117,10 @@ function processBVInput(type, property) {
     else if (type === "checkbox") {
         value = BVElement.checked;
     }
+    else {
+        console.error("attempted to process unknown type \"" + type + "\"");
+        return;
+    }
 
     updateTBValue(property, value);
     updateJSONValue(chartReferences, property, value);
@@ -130,6 +134,10 @@ function updateBVValue(property, value) {
         }
         else if (typeof value === "boolean") {
             BVElement.checked = value;
+        }
+        else {
+            console.error("attempted to process unknown type \"" + type + "\"");
+            return;
         }
     }
 }
