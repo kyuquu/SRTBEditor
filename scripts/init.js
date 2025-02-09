@@ -1,6 +1,10 @@
 const loadingScreen = document.getElementById("loading-screen");
 const loadingMessage = document.getElementById("loading-message");
 
+let templateTrackInfo;
+let templateTrackData;
+let templateClipInfo;
+
 async function init() {
     loadingMessage.textContent = "INITIALIZING TEMPLATES...";
 
@@ -20,6 +24,11 @@ async function init() {
         });
 
     templateJSON = chartTemplates["Custom.json"];
+
+    let references = getReferences(templateJSON);
+    templateTrackInfo = references[0];
+    templateTrackData = references[1];
+    templateClipInfo = references[2];
 
 
 

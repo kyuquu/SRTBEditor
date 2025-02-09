@@ -5,6 +5,7 @@ let isDevModeEnabled = true;
 
 
 let activeTab = 0;
+let activeDifficulty = 2;
 
 function switchToTab(index) {
     if (activeTab !== index) {
@@ -34,7 +35,19 @@ function switchToCategory(index) {
 }
 
 function switchToDifficulty(index) {
-    
+    activeDifficulty = index;
+    chartReferences[1] = trackData[index];
+
+    let categories = [1, 3, 4];
+    for (let i = 0; i < categories.length; i++) {
+        let elements = document.getElementById("bv-categories").children[categories[i]].children;
+        for (let j = 0; j < elements.length; j++) {
+            let element = elements[j].querySelector("input");
+            let property = element.id.slice(3);
+            let value = trackData[activeDifficulty][property];
+            updateBVValue(property, value);
+        }
+    }
 }
 
 
@@ -110,22 +123,33 @@ function updateTBValue(property, value) {
 function processBVInput(type, property) {
     let BVElement = document.getElementById(`bv-${property}`);
 
-    let value;
-    if (type === "text") {
-        value = BVElement.value;
-    }
-    else if (type === "checkbox") {
-        value = BVElement.checked;
+    const getValue = () => {
+        if (type === "text") {
+            return BVElement.value;
+        }
+        else if (type === "checkbox") {
+            return BVElement.checked;
+        }
     }
 
+    let value = getValue();
+
     updateTBValue(property, value);
-    updateJSONValue(chartReferences, property, value);
+
+    let category;
+    chartReferences.some((obj) => {
+        if (Object.keys(obj).length > 0 && obj.hasOwnProperty(property)) {
+            category = obj;
+            return true;
+        }
+    })
+    updateJSONValue(category, property, value);
 }
 
 function updateBVValue(property, value) {
     if (document.getElementById(`bv-${property}`) !== null) {
         let BVElement = document.getElementById(`bv-${property}`);
-        if (typeof value === "string") {
+        if (typeof value === "string" || typeof value === "number") { // this is not good!!!
             BVElement.value = value;
         }
         else if (typeof value === "boolean") {
