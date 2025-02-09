@@ -130,10 +130,10 @@ function processBVInput(type, property) {
         else if (type === "checkbox") {
             return BVElement.checked;
         }
-    }
-    else {
-        console.error("attempted to process unknown type \"" + type + "\"");
-        return;
+        else {
+            console.error("attempted to process unknown type \"" + type + "\"");
+            return;
+        }
     }
 
     let value = getValue();
