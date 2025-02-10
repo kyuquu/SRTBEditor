@@ -120,18 +120,18 @@ function updateTBValue(property, value) {
 
 
 
-function processBVInput(type, property) {
+function processBVInput(inputType, property, keyName, index) {
     let BVElement = document.getElementById(`bv-${property}`);
 
     const getValue = () => {
-        if (type === "text") {
+        if (inputType === "text") {
             return BVElement.value;
         }
-        else if (type === "checkbox") {
+        else if (inputType === "checkbox") {
             return BVElement.checked;
         }
         else {
-            console.error("attempted to process unknown type \"" + type + "\"");
+            console.error("attempted to process unknown type \"" + inputType + "\"");
             return;
         }
     }
@@ -140,14 +140,37 @@ function processBVInput(type, property) {
 
     updateTBValue(property, value);
 
-    let category;
-    chartReferences.some((obj) => {
-        if (Object.keys(obj).length > 0 && obj.hasOwnProperty(property)) {
-            category = obj;
-            return true;
-        }
-    })
-    updateJSONValue(category, property, value);
+    let objIndex;
+    //TODO: this can probably be done more cleanly with enums
+    switch(keyName) {
+        case "TrackInfo":
+            objIndex = 0;
+            break;
+        case "TrackData":
+            if(index === null) {
+                index = 4;
+                console.warn("no specified index for TrackData, defaulting to 4 (XD)");
+            }
+            objIndex = 1;
+            break;
+        case "ClipInfo":
+            if(index === null) {
+                index = 0;
+                console.warn("no specified index for ClipData, defaulting to 0");
+            }
+            objIndex = 2;
+            break;
+        //TODO: add cases for chroma and dts
+        default:
+            console.error("attempt to access unknown SRTB key \"" + keyName + "\"");
+    }
+    let val = getReferences(chartJSON)[objIndex];
+    if(objIndex > 0) {
+        val = val[index];
+    }
+    console.error(val);
+
+    updateJSONValue(val, property, value);
 }
 
 function updateBVValue(property, value) {

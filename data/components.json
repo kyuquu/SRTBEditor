@@ -48,27 +48,27 @@
     "text-inputs": {
         "bv-title": {
             "text": "Title",
-            "function": "processBVInput('text', 'title')"
+            "function": "processBVInput('text', 'title', 'TrackInfo')"
         },
         "bv-subtitle": {
             "text": "Subtitle",
-            "function": "processBVInput('text', 'subtitle')"
+            "function": "processBVInput('text', 'subtitle', 'TrackInfo')"
         },
         "bv-artistName": {
             "text": "Artist",
-            "function": "processBVInput('text', 'artistName')"
+            "function": "processBVInput('text', 'artistName', 'TrackInfo')"
         },
         "bv-featArtists": {
             "text": "Featured Artist",
-            "function": "processBVInput('text', 'featArtists')"
+            "function": "processBVInput('text', 'featArtists', 'TrackInfo')"
         },
         "bv-charter": {
             "text": "Charter",
-            "function": "processBVInput('text', 'charter')"
+            "function": "processBVInput('text', 'charter', 'TrackInfo')"
         },
         "bv-difficultyRating": {
             "text": "Difficulty Rating",
-            "function": "processBVInput('text', 'difficultyRating')"
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '4')"
         },
         "dv-summary": {
             "text": "Summary",
