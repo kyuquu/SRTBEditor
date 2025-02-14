@@ -130,11 +130,20 @@ function processBVInput(inputType, property, keyName, index) {
         if (inputType === "text") {
             return BVElement.value;
         }
+        else if(inputType === "number") {
+            //this error and parsing won't be necessary once number inputs are real
+            let ret = parseFloat(BVElement.value);
+            if(isNaN(ret)) {
+                console.error(`expected a number, got \"${BVElement.value}\"`);
+                return 0;
+            }
+            return ret;
+        }
         else if (inputType === "checkbox") {
             return BVElement.checked;
         }
         else {
-            console.error("attempted to process unknown type \"" + inputType + "\"");
+            console.error(`attempted to process unknown type \"${inputType}\"`);
             return;
         }
     }
@@ -165,7 +174,7 @@ function processBVInput(inputType, property, keyName, index) {
             break;
         //TODO: add cases for chroma and dts
         default:
-            console.error("attempted to access unknown SRTB key \"" + keyName + "\"");
+            console.error(`attempted to access unknown SRTB key \"${keyName}\"`);
             return;
     }
 
@@ -175,6 +184,7 @@ function processBVInput(inputType, property, keyName, index) {
     }
 
     updateJSONValue(val, property, value);
+    updateBVValue(property, value);
 }
 
 function updateBVValue(property, value) {
