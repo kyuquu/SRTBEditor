@@ -66,15 +66,37 @@
             "text": "Charter",
             "function": "processBVInput('text', 'charter', 'TrackInfo')"
         },
-        "bv-difficultyRating": {
-            "text": "Difficulty Rating",
-            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '4')"
-        },
         "dv-summary": {
             "text": "Summary",
             "function": ""
         }
 
+    },
+    "number-inputs": {
+        "bv-difficultyRating-0": {
+            "text": "Easy:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '0')"
+        },
+        "bv-difficultyRating-1": {
+            "text": "Normal:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '1')"
+        },
+        "bv-difficultyRating-2": {
+            "text": "Hard:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '2')"
+        },
+        "bv-difficultyRating-3": {
+            "text": "Expert:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '3')"
+        },
+        "bv-difficultyRating-4": {
+            "text": "XD:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '4')"
+        },
+        "bv-difficultyRating-5": {
+            "text": "RemiXD:",
+            "function": "processBVInput('text', 'difficultyRating', 'TrackData', '5')"
+        }
     },
     "checkboxes": {
         "bv-allowCustomLeaderboardCreation": {

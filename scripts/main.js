@@ -121,7 +121,10 @@ function updateTBValue(property, value) {
 
 
 function processBVInput(inputType, property, keyName, index) {
-    let BVElement = document.getElementById(`bv-${property}`);
+    var BVName = property;
+    if(keyName == "TrackData") //special case for TrackData (make scaleable later)
+        BVName += "-" + index;
+    let BVElement = document.getElementById(`bv-${BVName}`);
 
     const getValue = () => {
         if (inputType === "text") {
@@ -162,13 +165,14 @@ function processBVInput(inputType, property, keyName, index) {
             break;
         //TODO: add cases for chroma and dts
         default:
-            console.error("attempt to access unknown SRTB key \"" + keyName + "\"");
+            console.error("attempted to access unknown SRTB key \"" + keyName + "\"");
+            return;
     }
+
     let val = getReferences(chartJSON)[objIndex];
     if(objIndex > 0) {
         val = val[index];
     }
-    console.error(val);
 
     updateJSONValue(val, property, value);
 }
