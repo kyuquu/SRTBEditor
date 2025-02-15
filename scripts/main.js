@@ -126,6 +126,11 @@ function processBVInput(inputType, property, keyName, index) {
         BVName += "-" + index;
     let BVElement = document.getElementById(`bv-${BVName}`);
 
+    //this technically works now, but needs a few improvements
+    //  number input visually needs to change
+    //  number input doesn't reject non-numbers gracefully
+    //  *all* text inputs should revert to most recent valid value upon failed input
+    //  build an actual ui for this
     const getValue = () => {
         if (inputType === "text") {
             return BVElement.value;
@@ -184,7 +189,6 @@ function processBVInput(inputType, property, keyName, index) {
     }
 
     updateJSONValue(val, property, value);
-    updateBVValue(property, value);
 }
 
 function updateBVValue(property, value) {
