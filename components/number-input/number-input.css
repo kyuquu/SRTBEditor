@@ -1,5 +1,6 @@
 .number-input > label {
-    display: block;
+    display: inline;
+    text-align: right;
     width: fit-content;
     padding-bottom: 0.25rem;
     font-size: 1.5rem;
@@ -8,6 +9,7 @@
 
 .number-input > input {
     width: 50%;
+    float: right;
     padding: 0.25rem;
     border: none;
     border-radius: 0;
@@ -18,6 +20,8 @@
     transition: width 250ms ease-out;
 }
 
+/*
 .number-input > input:focus {
     width: 100%;
 }
+*/

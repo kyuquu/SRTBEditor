@@ -136,10 +136,13 @@ function processBVInput(inputType, property, keyName, index) {
             return BVElement.value;
         }
         else if(inputType === "number") {
-            //this error and parsing won't be necessary once number inputs are real
             let ret = parseFloat(BVElement.value);
             if(isNaN(ret)) {
                 console.error(`expected a number, got \"${BVElement.value}\"`);
+                return 0;
+            }
+            if(ret > 2147483647 || ret < -2147483648) {
+                console.error(`number is outside the integer limit, \"${BVElement.value}\"`);
                 return 0;
             }
             return ret;
@@ -187,7 +190,6 @@ function processBVInput(inputType, property, keyName, index) {
     if(objIndex > 0) {
         val = val[index];
     }
-
     updateJSONValue(val, property, value);
 }
 
