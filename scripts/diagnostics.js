@@ -12,6 +12,8 @@ function getClipInfo(index) {
 }
 
 function calculateDiagnostics() {
+    if(! chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(5))
+        return;
     calculateBalance();
     calculateMaxScoreAndCombo();
 }

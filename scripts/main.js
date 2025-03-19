@@ -56,6 +56,7 @@ function enableUserInput() {
     document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
+    document.querySelector(".bv2").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");
     document.querySelector(".dv").classList.remove("disabled");
 }
@@ -104,6 +105,17 @@ function updateChartData() {
             updateBVValue(property, value);
         }
     });
+    //scuffed hardcoded diff rating boxes
+    if (typeof json !== 'undefined') {
+        var scuffed = getReferences(json);
+        for (var i = 0; i < 6; i++) {
+            if(scuffed[1].hasOwnProperty(i) && scuffed[1][i].hasOwnProperty("difficultyRating")) {
+                updateBVValue(`difficultyRating-${i}`, scuffed[1][i].difficultyRating);
+            } else {
+                updateBVValue(`difficultyRating-${i}`, "");
+            }
+        }
+    }
 }
 
 

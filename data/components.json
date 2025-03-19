@@ -116,8 +116,8 @@
             "function": "updateAudioClips()"
         }
     },
-    "select-inputs": {
-        "bv-category": {
+    "WAWA select-inputs": {
+        "WAWAbv-category": {
             "text": "Category",
             "options": [
                 "Track Info",
@@ -129,7 +129,7 @@
             "default": 0,
             "function": "switchToCategory"
         },
-        "bv-difficulty": {
+        "WAWAbv-difficulty": {
             "text": "Difficulty",
             "options": [
                 "Easy",
