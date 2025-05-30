@@ -14,11 +14,11 @@ function getClipInfo(index) {
 function calculateDiagnostics() {
     let diffNames = ["Easy", "Normal", "Hard", "Expert", "XD", "RemiXD"];
     for(let diff = 0; diff < 6; diff++) {
+        document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
         if(chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(diff+1) &&
                 chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"].hasOwnProperty("notes")) {
             let notes = chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"]["notes"]
             let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
-            document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
             calculateBalance(sortedNotes, diff);
             calculateMaxScoreAndCombo(sortedNotes, diff);
         }
