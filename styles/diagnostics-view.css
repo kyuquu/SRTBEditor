@@ -12,6 +12,7 @@
     flex-direction: row;
     gap: 2rem;
     flex: 1 1 0;
+    flex-wrap: wrap;
     padding: 1rem;
     box-sizing: border-box;
     overflow-y: auto;
@@ -20,7 +21,7 @@
 .dv-box {
     display: flex;
     flex-direction: column;
-    flex: 0 1 15%;
+    flex: 0 1 12%;
     min-width: 10rem;
     padding: 1rem;
     border: 0.25rem solid #FFFFFF;
