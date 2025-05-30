@@ -7,7 +7,7 @@
 }
 
 .number-input > input {
-    width: 50%;
+    width: 6rem;
     float: right;
     padding: 0.25rem;
     border: none;
