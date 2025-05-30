@@ -1,3 +1,14 @@
+let diffTypeNames = [
+    "",
+    "",
+    "Easy",
+    "Normal",
+    "Hard",
+    "Expert",
+    "XD",
+    "RemiXD"
+];
+
 function getClipInfo(index) {
     let vals = chartJSON["largeStringValuesContainer"]["values"];
     let count = index;
@@ -11,22 +22,46 @@ function getClipInfo(index) {
     }
 }
 
-function calculateDiagnostics() {
-    let diffNames = ["Easy", "Normal", "Hard", "Expert", "XD", "RemiXD"];
-    for(let diff = 0; diff < 6; diff++) {
-        document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
-        if(chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(diff+1) &&
-                chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"].hasOwnProperty("notes")) {
-            let notes = chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"]["notes"]
-            let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
-            calculateBalance(sortedNotes, diff);
-            calculateMaxScoreAndCombo(sortedNotes, diff);
+function renderBasicDiagnostics() {
+    //console.log(trackInfo.difficulties);
+
+    for(let i = 0; i < trackInfo.difficulties.length; i++) {
+        console.log(trackInfo.difficulties[i]);
+        if(trackInfo.difficulties[i]._active == true) {
+
+            let mainContainer = document.createElement("div");
+            mainContainer.setAttribute("class", "dv-box");
+
+            let title = mainContainer.appendChild(document.createElement("div"));
+            title.textContent = diffTypeNames[trackData[i].difficultyType];
+            title.setAttribute("justify", "center");
+
+            calculateBalance(trackData[i].notes, mainContainer);
+
+            let diagnosticsRoot = document.getElementById(`dv-root`)
+            diagnosticsRoot.appendChild(mainContainer);
+
+            console.log(mainContainer.outerHTML);
         }
     }
 }
 
-function calculateBalance(notesIn, index) {
-    console.log(notesIn);
+function calculateDiagnostics() {
+    // let diffNames = ["Easy", "Normal", "Hard", "Expert", "XD", "RemiXD"];
+    renderBasicDiagnostics();
+    // for(let diff = 0; diff < 6; diff++) {
+    //     //document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
+    //     if(chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(diff+1) &&
+    //             chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"].hasOwnProperty("notes")) {
+    //         let notes = chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"]["notes"]
+    //         let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
+    //         //calculateBalance(sortedNotes, diff);
+    //         //calculateMaxScoreAndCombo(sortedNotes, diff);
+    //     }
+    // }
+}
+
+function calculateBalance(notesIn, htmlParent) {
     if(notesIn.length < 1) return;
     let nRed = 0,
         nBlue = 0,
@@ -44,8 +79,6 @@ function calculateBalance(notesIn, index) {
         nScratch = 0;
 
     for(let i = 0; i < notesIn.length; i++) {
-        console.log("Notes in:");
-        console.log(notesIn[i]);
         switch(notesIn[i].type) {
             case 0:
             case 4:
@@ -92,23 +125,30 @@ function calculateBalance(notesIn, index) {
     if(nInvisRed + nInvisBlue > 0) {
         colorString += " (invis: " + nInvisBlue + ":" + nInvisRed + ")";
     }
-    document.getElementById(`dv-${index}`).textContent += 
-            ` Matches: ${nMatch}, Taps: ${nTap}, Beats: ${nBeat}, Holds: ${nSlider + nBeathold}, 
-            Releases: ${nBeatRelease + nSliderRelease}, Spins: ${nLeftSpin + nRightSpin}, Scratches: ${nScratch}, 
-            ${colorString}, Spin Directions (left:right): ${nLeftSpin}:${nRightSpin}`;
-    // document.getElementById("dv-match-count").textContent = "Matches: " + nMatch;
-    // document.getElementById("dv-tap-count").textContent = "Taps: " + (nTap + nSlider);
-    // document.getElementById("dv-beat-count").textContent = "Beats: " + nBeat;
-    // document.getElementById("dv-hold-count").textContent = "Holds: " + (nSlider + nBeathold);
-    // document.getElementById("dv-release-count").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
-    // document.getElementById("dv-spin-count").textContent = "Spins: " + (nLeftSpin + nRightSpin);
-    // document.getElementById("dv-scratch-count").textContent = "Scratches: " + nScratch;
 
-    // document.getElementById("dv-colors").textContent = colorString;
-    // document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
-}
+    let title = htmlParent.appendChild(document.createElement("div"));
+    title.textContent = "Note Counts";
+    // title.setAttribute("justify", "center");
 
-function calculateNoteCounts() {
+    let matchElement = htmlParent.appendChild(document.createElement("div"));
+    matchElement.textContent = `Matches: ${nMatch}`;
+    let tapElement = htmlParent.appendChild(document.createElement("div"));
+    tapElement.textContent = `Taps: ${nTap}`;
+    let beatElement = htmlParent.appendChild(document.createElement("div"));
+    beatElement.textContent = `Beats: ${nBeat}`;
+    let holdElement = htmlParent.appendChild(document.createElement("div"));
+    holdElement.textContent = `Holds: ${nSlider + nBeathold}`;
+    let releaseElement = htmlParent.appendChild(document.createElement("div"));
+    releaseElement.textContent = `Releases: ${nBeatRelease + nSliderRelease}`;
+    let spinElement = htmlParent.appendChild(document.createElement("div"));
+    spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
+    let scratchElement = htmlParent.appendChild(document.createElement("div"));
+    scratchElement.textContent = `Scratches: ${nTap}`;
+
+    // document.getElementById(`dv-${index}`).textContent += 
+    //         ` Matches: ${nMatch}, Taps: ${nTap}, Beats: ${nBeat}, Holds: ${nSlider + nBeathold}, 
+    //         Releases: ${nBeatRelease + nSliderRelease}, Spins: ${nLeftSpin + nRightSpin}, Scratches: ${nScratch}, 
+    //         ${colorString}, Spin Directions (left:right): ${nLeftSpin}:${nRightSpin}`;
 }
 
 function calculateMaxScoreAndCombo (notesIn, index) {
@@ -243,7 +283,4 @@ function calculateMaxScoreAndCombo (notesIn, index) {
         }
     }
     document.getElementById(`dv-${index}`).textContent += ` Max Score: ${maxScore}, Max Combo: ${maxCombo}, `;
-    // document.getElementById("dv-summary").value = "" + chartJSON["largeStringValuesContainer"]["values"][0]["val"]["title"] + "," + maxScore + "," + maxCombo;
-    // document.getElementById("dv-max-score").textContent = "Max Score: " + maxScore;
-    // document.getElementById("dv-max-combo").textContent = "Max Combo: " + maxCombo;
 }

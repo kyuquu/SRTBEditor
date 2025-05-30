@@ -1,5 +1,6 @@
 #tab0.active {
     display: flex;
+    flex-direction: row;
 }
 
 .bv0 {

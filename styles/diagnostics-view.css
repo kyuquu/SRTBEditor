@@ -9,10 +9,19 @@
 
 .dv {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 2rem;
     flex: 1 1 0;
     padding: 1rem;
     box-sizing: border-box;
     overflow-y: scroll;
+}
+
+.dv-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 1rem;
+    border: 0.25rem solid #FFFFFF;
+    border-radius: 0.25rem;
 }
