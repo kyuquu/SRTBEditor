@@ -23,7 +23,6 @@ function getClipInfo(index) {
 }
 
 function renderBasicDiagnostics() {
-    //console.log(trackInfo.difficulties);
     let diagnosticsRoot = document.getElementById(`dv-root`);
 
     while(diagnosticsRoot.hasChildNodes()){
@@ -31,7 +30,6 @@ function renderBasicDiagnostics() {
     }
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
-        console.log(trackInfo.difficulties[i]);
         if(trackInfo.difficulties[i]._active == true) {
 
             let mainContainer = document.createElement("div");
@@ -45,8 +43,6 @@ function renderBasicDiagnostics() {
 
             calculateMaxScoreAndCombo(trackData[i].notes, mainContainer);
             diagnosticsRoot.appendChild(mainContainer);
-
-            console.log(mainContainer.outerHTML);
         }
     }
 }
@@ -134,11 +130,6 @@ function calculateBalance(notesIn, htmlParent) {
     spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
     let scratchElement = htmlParent.appendChild(document.createElement("div"));
     scratchElement.textContent = `Scratches: ${nTap}`;
-
-    // document.getElementById(`dv-${index}`).textContent += 
-    //         ` Matches: ${nMatch}, Taps: ${nTap}, Beats: ${nBeat}, Holds: ${nSlider + nBeathold}, 
-    //         Releases: ${nBeatRelease + nSliderRelease}, Spins: ${nLeftSpin + nRightSpin}, Scratches: ${nScratch}, 
-    //         ${colorString}, Spin Directions (left:right): ${nLeftSpin}:${nRightSpin}`;
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
