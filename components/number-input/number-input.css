@@ -1,7 +1,7 @@
 .number-input > label {
     display: inline;
     width: fit-content;
-    padding-bottom: 0.0rem;
+    padding-bottom: 0.25rem;
     font-size: 1.5rem;
     font-weight: bold;
 }
@@ -17,6 +17,11 @@
     font-size: 1.25rem;
     background: var(--color-main);
     transition: width 250ms ease-out;
+}
+
+.number-input.disabled {
+    opacity: 50%;
+    pointer-events: none;
 }
 
 /*
