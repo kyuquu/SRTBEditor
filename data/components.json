@@ -65,10 +65,6 @@
         "bv-charter": {
             "text": "Charter",
             "function": "processBVInput('text', 'charter', 'TrackInfo')"
-        },
-        "dv-summary": {
-            "text": "Summary",
-            "function": ""
         }
 
     },

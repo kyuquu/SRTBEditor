@@ -24,6 +24,11 @@ function getClipInfo(index) {
 
 function renderBasicDiagnostics() {
     //console.log(trackInfo.difficulties);
+    let diagnosticsRoot = document.getElementById(`dv-root`);
+
+    while(diagnosticsRoot.hasChildNodes()){
+        diagnosticsRoot.removeChild(diagnosticsRoot.firstChild);
+    }
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         console.log(trackInfo.difficulties[i]);
@@ -34,31 +39,16 @@ function renderBasicDiagnostics() {
 
             let title = mainContainer.appendChild(document.createElement("div"));
             title.textContent = diffTypeNames[trackData[i].difficultyType];
-            title.setAttribute("justify", "center");
+            title.setAttribute("class", "dv-box-title");
 
             calculateBalance(trackData[i].notes, mainContainer);
 
-            let diagnosticsRoot = document.getElementById(`dv-root`)
+            calculateMaxScoreAndCombo(trackData[i].notes, mainContainer);
             diagnosticsRoot.appendChild(mainContainer);
 
             console.log(mainContainer.outerHTML);
         }
     }
-}
-
-function calculateDiagnostics() {
-    // let diffNames = ["Easy", "Normal", "Hard", "Expert", "XD", "RemiXD"];
-    renderBasicDiagnostics();
-    // for(let diff = 0; diff < 6; diff++) {
-    //     //document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
-    //     if(chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(diff+1) &&
-    //             chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"].hasOwnProperty("notes")) {
-    //         let notes = chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"]["notes"]
-    //         let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
-    //         //calculateBalance(sortedNotes, diff);
-    //         //calculateMaxScoreAndCombo(sortedNotes, diff);
-    //     }
-    // }
 }
 
 function calculateBalance(notesIn, htmlParent) {
@@ -126,9 +116,9 @@ function calculateBalance(notesIn, htmlParent) {
         colorString += " (invis: " + nInvisBlue + ":" + nInvisRed + ")";
     }
 
-    let title = htmlParent.appendChild(document.createElement("div"));
-    title.textContent = "Note Counts";
-    // title.setAttribute("justify", "center");
+    let subtitle = htmlParent.appendChild(document.createElement("div"));
+    subtitle.textContent = "Note Counts";
+    subtitle.setAttribute("class", "dv-box-subtitle");
 
     let matchElement = htmlParent.appendChild(document.createElement("div"));
     matchElement.textContent = `Matches: ${nMatch}`;
@@ -151,7 +141,7 @@ function calculateBalance(notesIn, htmlParent) {
     //         ${colorString}, Spin Directions (left:right): ${nLeftSpin}:${nRightSpin}`;
 }
 
-function calculateMaxScoreAndCombo (notesIn, index) {
+function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     if(notesIn.length < 1) return;
     let maxScore = 0n;
     let tickDuration, addScore;
@@ -282,5 +272,12 @@ function calculateMaxScoreAndCombo (notesIn, index) {
                 console.log("found an unknown note type");
         }
     }
-    document.getElementById(`dv-${index}`).textContent += ` Max Score: ${maxScore}, Max Combo: ${maxCombo}, `;
+    let subtitle = htmlParent.appendChild(document.createElement("div"));
+    subtitle.textContent = `Misc.`;
+    subtitle.setAttribute("class", "dv-box-subtitle");
+
+    let scoreElement = htmlParent.appendChild(document.createElement("div"));
+    scoreElement.textContent = `Max score: ${maxScore}`;
+    let comboElement = htmlParent.appendChild(document.createElement("div"));
+    comboElement.textContent = `Max combo: ${maxCombo}`;
 }
