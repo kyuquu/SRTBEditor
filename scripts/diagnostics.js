@@ -12,13 +12,22 @@ function getClipInfo(index) {
 }
 
 function calculateDiagnostics() {
-    if(! chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(5))
-        return;
-    calculateBalance();
-    calculateMaxScoreAndCombo();
+    let diffNames = ["Easy", "Normal", "Hard", "Expert", "XD", "RemiXD"];
+    for(let diff = 0; diff < 6; diff++) {
+        if(chartJSON["largeStringValuesContainer"]["values"].hasOwnProperty(diff+1) &&
+                chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"].hasOwnProperty("notes")) {
+            let notes = chartJSON["largeStringValuesContainer"]["values"][diff+1]["val"]["notes"]
+            let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
+            document.getElementById(`dv-${diff}`).textContent = `${diffNames[diff]}:`;
+            calculateBalance(sortedNotes, diff);
+            calculateMaxScoreAndCombo(sortedNotes, diff);
+        }
+    }
 }
 
-function calculateBalance() {
+function calculateBalance(notesIn, index) {
+    console.log(notesIn);
+    if(notesIn.length < 1) return;
     let nRed = 0,
         nBlue = 0,
         nInvisRed = 0,
@@ -33,21 +42,21 @@ function calculateBalance() {
         nLeftSpin = 0,
         nRightSpin = 0,
         nScratch = 0;
-    let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
-    let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
 
-    for(let i = 0; i < sortedNotes.length; i++) {
-        switch(sortedNotes[i].type) {
+    for(let i = 0; i < notesIn.length; i++) {
+        console.log("Notes in:");
+        console.log(notesIn[i]);
+        switch(notesIn[i].type) {
             case 0:
             case 4:
             case 8:
-                if(sortedNotes[i].colorIndex == 0) nBlue++;
-                else if(sortedNotes[i].colorIndex == 1) nRed++;
-                else if(sortedNotes[i].colorIndex % 2 == 0) nInvisBlue++;
+                if(notesIn[i].colorIndex == 0) nBlue++;
+                else if(notesIn[i].colorIndex == 1) nRed++;
+                else if(notesIn[i].colorIndex % 2 == 0) nInvisBlue++;
                 else nInvisRed++;
                 break;
         }
-        switch(sortedNotes[i].type) {
+        switch(notesIn[i].type) {
             case 0:
                 nMatch++;
                 break;
@@ -70,7 +79,7 @@ function calculateBalance() {
             case 11:
                 //logic for beathold
                 //todo: account for error beatholds
-                if(sortedNotes[i].m_size == 2)
+                if(notesIn[i].m_size == 2)
                     nBeatRelease++;
                 nBeathold++;
                 break;
@@ -83,32 +92,33 @@ function calculateBalance() {
     if(nInvisRed + nInvisBlue > 0) {
         colorString += " (invis: " + nInvisBlue + ":" + nInvisRed + ")";
     }
+    document.getElementById(`dv-${index}`).textContent += 
+            ` Matches: ${nMatch}, Taps: ${nTap}, Beats: ${nBeat}, Holds: ${nSlider + nBeathold}, 
+            Releases: ${nBeatRelease + nSliderRelease}, Spins: ${nLeftSpin + nRightSpin}, Scratches: ${nScratch}, 
+            ${colorString}, Spin Directions (left:right): ${nLeftSpin}:${nRightSpin}`;
+    // document.getElementById("dv-match-count").textContent = "Matches: " + nMatch;
+    // document.getElementById("dv-tap-count").textContent = "Taps: " + (nTap + nSlider);
+    // document.getElementById("dv-beat-count").textContent = "Beats: " + nBeat;
+    // document.getElementById("dv-hold-count").textContent = "Holds: " + (nSlider + nBeathold);
+    // document.getElementById("dv-release-count").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
+    // document.getElementById("dv-spin-count").textContent = "Spins: " + (nLeftSpin + nRightSpin);
+    // document.getElementById("dv-scratch-count").textContent = "Scratches: " + nScratch;
 
-    document.getElementById("dv-match-count").textContent = "Matches: " + nMatch;
-    document.getElementById("dv-tap-count").textContent = "Taps: " + (nTap + nSlider);
-    document.getElementById("dv-beat-count").textContent = "Beats: " + nBeat;
-    document.getElementById("dv-hold-count").textContent = "Holds: " + (nSlider + nBeathold);
-    document.getElementById("dv-release-count").textContent = "Releases: " + (nBeatRelease + nSliderRelease);
-    document.getElementById("dv-spin-count").textContent = "Spins: " + (nLeftSpin + nRightSpin);
-    document.getElementById("dv-scratch-count").textContent = "Scratches: " + nScratch;
-
-    document.getElementById("dv-colors").textContent = colorString;
-    document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
+    // document.getElementById("dv-colors").textContent = colorString;
+    // document.getElementById("dv-movement").textContent = "Spin Directions (left:right): " + nLeftSpin + ":" + nRightSpin;
 }
 
 function calculateNoteCounts() {
 }
 
-function calculateMaxScoreAndCombo () {
-    let notes = chartJSON["largeStringValuesContainer"]["values"][5]["val"]["notes"];
-    let sortedNotes = notes.toSorted((a, b) => a["time"] - b["time"]);
+function calculateMaxScoreAndCombo (notesIn, index) {
+    if(notesIn.length < 1) return;
     let maxScore = 0n;
     let tickDuration, addScore;
     let maxCombo = 0;
-
-    for(let i = 0; i < sortedNotes.length; i++) {
+    for(let i = 0; i < notesIn.length; i++) {
         let bookmark, over, skip;
-        switch(sortedNotes[i].type) {
+        switch(notesIn[i].type) {
             case 0: //match
                 maxScore += 16n;
                 maxCombo ++;
@@ -122,13 +132,13 @@ function calculateMaxScoreAndCombo () {
                 let prevMSize;
                 maxScore += 64n;
                 maxCombo ++;
-                bookmark = sortedNotes[i].time;
+                bookmark = notesIn[i].time;
                 over = false;
-                for(let j = i + 1; j < sortedNotes.length; j++) {
-                    switch(sortedNotes[j].type) {
+                for(let j = i + 1; j < notesIn.length; j++) {
+                    switch(notesIn[j].type) {
                         case 5: //note end
-                            bookmark = sortedNotes[j].time;
-                            prevMSize = notes[j].m_size;
+                            bookmark = notesIn[j].time;
+                            prevMSize = notesIn[j].m_size;
                             break;
                         case 2:
                         case 3:
@@ -139,11 +149,11 @@ function calculateMaxScoreAndCombo () {
                     }
                     if(over) break;
                 }
-                if (bookmark - sortedNotes[i].time == 0) {
-                    console.log("erronous slider at " + sortedNotes[i].time)
+                if (bookmark - notesIn[i].time == 0) {
+                    console.log("erronous slider at " + notesIn[i].time)
                 }
                 tickDuration = BigInt(Math.floor(bookmark * 100000))
-                        - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                        - BigInt(Math.floor(notesIn[i].time * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -159,10 +169,10 @@ function calculateMaxScoreAndCombo () {
             case 12: //scratch
                 maxScore += 48n;
                 maxCombo ++;
-                bookmark = sortedNotes[i].time;
+                bookmark = notesIn[i].time;
                 over = false;
-                for(let j = i + 1; j < sortedNotes.length; j++) {
-                    switch(sortedNotes[j].type) {
+                for(let j = i + 1; j < notesIn.length; j++) {
+                    switch(notesIn[j].type) {
                         case 0:
                         case 2:
                         case 3:
@@ -170,7 +180,7 @@ function calculateMaxScoreAndCombo () {
                         case 5:
                         case 8:
                         case 12:
-                            bookmark = sortedNotes[j].time;
+                            bookmark = notesIn[j].time;
                             over = true;
                             break;
                     }
@@ -184,7 +194,7 @@ function calculateMaxScoreAndCombo () {
                     break;
                 }
                 tickDuration = BigInt(Math.floor(bookmark * 100000))
-                        - BigInt(Math.floor(sortedNotes[i].time * 100000));
+                        - BigInt(Math.floor(notesIn[i].time * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -194,12 +204,12 @@ function calculateMaxScoreAndCombo () {
             case 5: //note endpoint
                 break;
             case 11: //beathold
-                bookmark = sortedNotes[i].time;
+                bookmark = notesIn[i].time;
                 over = false;
                 for(let j = i - 1; j >= 0; j--) {
-                    switch(sortedNotes[j].type) {
+                    switch(notesIn[j].type) {
                         case 1:
-                            bookmark = sortedNotes[j].time;
+                            bookmark = notesIn[j].time;
                             over = true;
                             break;
                         case 11:
@@ -211,18 +221,18 @@ function calculateMaxScoreAndCombo () {
                 }
                 
                 if(!over || skip) {
-                    console.log("erronous beathold end at " + sortedNotes[i].time);
+                    console.log("erronous beathold end at " + notesIn[i].time);
                     break;
                 }
 
-                tickDuration = BigInt(Math.floor(sortedNotes[i].time * 100000))
+                tickDuration = BigInt(Math.floor(notesIn[i].time * 100000))
                         - BigInt(Math.floor(bookmark * 100000));
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
                 }
                 maxScore += addScore * 4n;
-                if(notes[i].m_size ==  1 || notes[i].m_size == 0) {
+                if(notesIn[i].m_size ==  1 || notesIn[i].m_size == 0) {
                     maxScore += 48n;
                     maxCombo ++;
                 }
@@ -232,7 +242,8 @@ function calculateMaxScoreAndCombo () {
                 console.log("found an unknown note type");
         }
     }
-    document.getElementById("dv-summary").value = "" + chartJSON["largeStringValuesContainer"]["values"][0]["val"]["title"] + "," + maxScore + "," + maxCombo;
-    document.getElementById("dv-max-score").textContent = "Max Score: " + maxScore;
-    document.getElementById("dv-max-combo").textContent = "Max Combo: " + maxCombo;
+    document.getElementById(`dv-${index}`).textContent += ` Max Score: ${maxScore}, Max Combo: ${maxCombo}, `;
+    // document.getElementById("dv-summary").value = "" + chartJSON["largeStringValuesContainer"]["values"][0]["val"]["title"] + "," + maxScore + "," + maxCombo;
+    // document.getElementById("dv-max-score").textContent = "Max Score: " + maxScore;
+    // document.getElementById("dv-max-combo").textContent = "Max Combo: " + maxCombo;
 }
