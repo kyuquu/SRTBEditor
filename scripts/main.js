@@ -107,12 +107,19 @@ function updateChartData() {
     });
     //scuffed hardcoded diff rating boxes
     if (typeof json !== 'undefined') {
-        var scuffed = getReferences(json);
         for (var i = 0; i < 6; i++) {
-            if(scuffed[1].hasOwnProperty(i) && scuffed[1][i].hasOwnProperty("difficultyRating")) {
-                updateBVValue(`difficultyRating-${i}`, scuffed[1][i].difficultyRating);
+            if(trackData.hasOwnProperty(i) && trackData[i].hasOwnProperty("difficultyRating")) {
+                updateBVValue(`difficultyRating-${i}`,trackData[i].difficultyRating);
+                document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.remove("disabled");
+                //console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
             } else {
                 updateBVValue(`difficultyRating-${i}`, "");
+                document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+                //console.log(`Disabled diff ${i}`);
+            }
+            if(trackInfo.difficulties.length <= i  || !trackInfo.difficulties[i]._active) {
+                document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+                //console.log(`Disabled diff ${i}`);
             }
         }
     }
