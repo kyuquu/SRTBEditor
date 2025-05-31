@@ -75,12 +75,14 @@ function calculateBalance(notesIn, htmlParent) {
                 else nInvisRed++;
                 break;
         }
+        let beatRecent = false;
         switch(notesIn[i].type) {
             case 0:
                 nMatch++;
                 break;
             case 1:
                 nBeat++;
+                beatRecent = true;
                 break;
             case 2:
                 nRightSpin++;
@@ -90,17 +92,40 @@ function calculateBalance(notesIn, htmlParent) {
                 break;
             case 4:
                 nSlider++;
-                //further logic for releases
+
+                let prevMSize;
+                over = false;
+                for(let j = i + 1; j < notesIn.length; j++) {
+                    switch(notesIn[j].type) {
+                        case 5: //note end
+                            prevMSize = notesIn[j].m_size;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 12:
+                            over = true;
+                            break;
+                    }
+                    if(over) break;
+                }
+                if(prevMSize == 2) {
+                    nSliderRelease++;
+                }
+
+
                 break;
             case 8:
                 nTap++;
                 break;
             case 11:
                 //logic for beathold
-                //todo: account for error beatholds
-                if(notesIn[i].m_size == 2)
-                    nBeatRelease++;
-                nBeathold++;
+                if(beatRecent) {
+                    nBeathold++;
+                    if(notesIn[i].m_size != 2) nBeatRelease++;
+                }
+                else
+                    ;//error beathold endpoint
                 break;
             case 12:
                 nScratch++;
@@ -129,7 +154,7 @@ function calculateBalance(notesIn, htmlParent) {
     let spinElement = htmlParent.appendChild(document.createElement("div"));
     spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
     let scratchElement = htmlParent.appendChild(document.createElement("div"));
-    scratchElement.textContent = `Scratches: ${nTap}`;
+    scratchElement.textContent = `Scratches: ${nScratch}`;
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
