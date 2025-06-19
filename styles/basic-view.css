@@ -8,6 +8,7 @@
     flex-direction: column;
     flex: 2 1 0;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 .bv0 .checkbox > input {
