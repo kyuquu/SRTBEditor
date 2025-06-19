@@ -39,9 +39,13 @@ function renderBasicDiagnostics() {
             title.textContent = diffTypeNames[trackData[i].difficultyType];
             title.setAttribute("class", "dv-box-title");
 
-            calculateBalance(trackData[i].notes, mainContainer);
+            let notes = trackData[i].notes;
+            //let notesEncoding = trackData[i].noteSerializationFormat;
+            // TODO: account for other serialization formats
+            
+            calculateBalance(notes, mainContainer);
 
-            calculateMaxScoreAndCombo(trackData[i].notes, mainContainer);
+            calculateMaxScoreAndCombo(notes, mainContainer);
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
