@@ -47,6 +47,11 @@ async function init() {
                 initializeButton(button, buttons[button]);
             }
 
+            let numberInputs = data["number-inputs"];
+            for (let numberInput in numberInputs) {
+                initializeNumberInput(numberInput, numberInputs[numberInput]);
+            }
+
             let textInputs = data["text-inputs"];
             for (let textInput in textInputs) {
                 initializeTextInput(textInput, textInputs[textInput]);

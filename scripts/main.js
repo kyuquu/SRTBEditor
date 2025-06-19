@@ -56,6 +56,7 @@ function enableUserInput() {
     document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
+    document.querySelector(".bv2").classList.remove("disabled");
     document.querySelector(".jv").classList.remove("disabled");
     document.querySelector(".dv").classList.remove("disabled");
 }
@@ -104,6 +105,22 @@ function updateChartData() {
             updateBVValue(property, value);
         }
     });
+    //scuffed hardcoded diff rating boxes
+    for (var i = 0; i < 6; i++) {
+        if(trackData.hasOwnProperty(i) && trackData[i].hasOwnProperty("difficultyRating")) {
+            updateBVValue(`difficultyRating-${i}`,trackData[i].difficultyRating);
+            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.remove("disabled");
+            //console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
+        } else {
+            updateBVValue(`difficultyRating-${i}`, "");
+            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+            //console.log(`Disabled diff ${i}`);
+        }
+        if(trackInfo.difficulties.length <= i  || !trackInfo.difficulties[i]._active) {
+            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+            //console.log(`Disabled diff ${i}`);
+        }
+    }
 }
 
 
@@ -120,15 +137,39 @@ function updateTBValue(property, value) {
 
 
 
-function processBVInput(type, property) {
-    let BVElement = document.getElementById(`bv-${property}`);
+function processBVInput(inputType, property, keyName, index) {
+    var BVName = property;
+    if(keyName == "TrackData") //special case for TrackData (make scaleable later)
+        BVName += "-" + index;
+    let BVElement = document.getElementById(`bv-${BVName}`);
 
+    //this technically works now, but needs a few improvements
+    //  number input visually needs to change
+    //  number input doesn't reject non-numbers gracefully
+    //  *all* text inputs should revert to most recent valid value upon failed input
+    //  build an actual ui for this
     const getValue = () => {
-        if (type === "text") {
+        if (inputType === "text") {
             return BVElement.value;
         }
-        else if (type === "checkbox") {
+        else if(inputType === "number") {
+            let ret = parseFloat(BVElement.value);
+            if(isNaN(ret)) {
+                console.error(`expected a number, got \"${BVElement.value}\"`);
+                return 0;
+            }
+            if(ret > 2147483647 || ret < -2147483648) {
+                console.error(`number is outside the integer limit, \"${BVElement.value}\"`);
+                return 0;
+            }
+            return ret;
+        }
+        else if (inputType === "checkbox") {
             return BVElement.checked;
+        }
+        else {
+            console.error(`attempted to process unknown type \"${inputType}\"`);
+            return;
         }
     }
 
@@ -136,14 +177,37 @@ function processBVInput(type, property) {
 
     updateTBValue(property, value);
 
-    let category;
-    chartReferences.some((obj) => {
-        if (Object.keys(obj).length > 0 && obj.hasOwnProperty(property)) {
-            category = obj;
-            return true;
-        }
-    })
-    updateJSONValue(category, property, value);
+    let objIndex;
+    //TODO: this can probably be done more cleanly with enums
+    switch(keyName) {
+        case "TrackInfo":
+            objIndex = 0;
+            break;
+        case "TrackData":
+            if(index === null) {
+                index = 4;
+                console.warn("no specified index for TrackData, defaulting to 4 (XD)");
+            }
+            objIndex = 1;
+            break;
+        case "ClipInfo":
+            if(index === null) {
+                index = 0;
+                console.warn("no specified index for ClipData, defaulting to 0");
+            }
+            objIndex = 2;
+            break;
+        //TODO: add cases for chroma and dts
+        default:
+            console.error(`attempted to access unknown SRTB key \"${keyName}\"`);
+            return;
+    }
+
+    let val = getReferences(chartJSON)[objIndex];
+    if(objIndex > 0) {
+        val = val[index];
+    }
+    updateJSONValue(val, property, value);
 }
 
 function updateBVValue(property, value) {
@@ -154,6 +218,10 @@ function updateBVValue(property, value) {
         }
         else if (typeof value === "boolean") {
             BVElement.checked = value;
+        }
+        else {
+            console.error("attempted to process unknown type \"" + type + "\"");
+            return;
         }
     }
 }

@@ -48,33 +48,51 @@
     "text-inputs": {
         "bv-title": {
             "text": "Title",
-            "function": "processBVInput('text', 'title')"
+            "function": "processBVInput('text', 'title', 'TrackInfo')"
         },
         "bv-subtitle": {
             "text": "Subtitle",
-            "function": "processBVInput('text', 'subtitle')"
+            "function": "processBVInput('text', 'subtitle', 'TrackInfo')"
         },
         "bv-artistName": {
             "text": "Artist",
-            "function": "processBVInput('text', 'artistName')"
+            "function": "processBVInput('text', 'artistName', 'TrackInfo')"
         },
         "bv-featArtists": {
             "text": "Featured Artist",
-            "function": "processBVInput('text', 'featArtists')"
+            "function": "processBVInput('text', 'featArtists', 'TrackInfo')"
         },
         "bv-charter": {
             "text": "Charter",
-            "function": "processBVInput('text', 'charter')"
-        },
-        "bv-difficultyRating": {
-            "text": "Difficulty Rating",
-            "function": "processBVInput('text', 'difficultyRating')"
-        },
-        "dv-summary": {
-            "text": "Summary",
-            "function": ""
+            "function": "processBVInput('text', 'charter', 'TrackInfo')"
         }
 
+    },
+    "number-inputs": {
+        "bv-difficultyRating-0": {
+            "text": "Easy:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '0')"
+        },
+        "bv-difficultyRating-1": {
+            "text": "Normal:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '1')"
+        },
+        "bv-difficultyRating-2": {
+            "text": "Hard:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '2')"
+        },
+        "bv-difficultyRating-3": {
+            "text": "Expert:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '3')"
+        },
+        "bv-difficultyRating-4": {
+            "text": "XD:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '4')"
+        },
+        "bv-difficultyRating-5": {
+            "text": "RemiXD:",
+            "function": "processBVInput('number', 'difficultyRating', 'TrackData', '5')"
+        }
     },
     "checkboxes": {
         "bv-allowCustomLeaderboardCreation": {
@@ -94,8 +112,8 @@
             "function": "updateAudioClips()"
         }
     },
-    "select-inputs": {
-        "bv-category": {
+    "WAWA select-inputs": {
+        "WAWAbv-category": {
             "text": "Category",
             "options": [
                 "Track Info",
@@ -107,7 +125,7 @@
             "default": 0,
             "function": "switchToCategory"
         },
-        "bv-difficulty": {
+        "WAWAbv-difficulty": {
             "text": "Difficulty",
             "options": [
                 "Easy",

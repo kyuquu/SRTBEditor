@@ -16,8 +16,12 @@ function saveAsZIP() {
 
     let zip = new JSZip();
     zip.file(`${filename}.srtb`, srtb);
-    zip.file(`AlbumArt/${albumArt.name}`, albumArt);
-    zip.file(`AudioClips/${audioClips.name}`, audioClips);
+    if(albumArt) {
+        zip.file(`AlbumArt/${albumArt.name}`, albumArt);
+    }
+    if(audioClips) {
+        zip.file(`AudioClips/${audioClips.name}`, audioClips);
+    }
     zip.generateAsync({ type: "blob" }).then((content) => {
         saveAs(content, `BACKUP_${filename}.zip`);
     });

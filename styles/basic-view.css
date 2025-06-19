@@ -1,11 +1,12 @@
 #tab0.active {
     display: flex;
+    flex-direction: row;
 }
 
 .bv0 {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
+    flex: 2 1 0;
     overflow: hidden;
 }
 
@@ -26,7 +27,7 @@
 .category {
     display: none;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     padding: 1rem;
 }
 
@@ -37,18 +38,39 @@
 .bv1 {
     display: flex;
     flex-direction: column;
+    flex: 1 1 0;
+    overflow: hidden;
+}
+
+.bv1 .checkbox > input {
+    --size: 12;
+}
+
+.bv1 > div:first-child {
+    display: flex;
+    gap: 4rem;
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+#bv-diffs {
+    overflow-y: auto;
+}
+
+.bv2 {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    flex: 1 1 0;
+    flex: 2 1 0;
 }
 
-.bv1 > img {
+.bv2 > img {
     width: 16rem;
     height: 16rem;
 }
 
-.bv0.disabled > #bv-categories > *, .bv1.disabled > *{
+.bv0.disabled > #bv-categories > *, .bv1.disabled > #bv-diffs > *, .bv2.disabled > *{
     opacity: 50%;
     pointer-events: none;
 }

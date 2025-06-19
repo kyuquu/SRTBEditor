@@ -9,10 +9,32 @@
 
 .dv {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 2rem;
     flex: 1 1 0;
+    flex-wrap: wrap;
     padding: 1rem;
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+.dv-box {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 12%;
+    min-width: 10rem;
+    padding: 1rem;
+    border: 0.25rem solid #FFFFFF;
+    border-radius: 0.25rem;
+}
+
+.dv-box-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+.dv-box-subtitle {
+    font-weight: bold;
+    padding-top: 1rem;
 }
