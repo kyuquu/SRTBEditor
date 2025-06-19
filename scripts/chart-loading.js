@@ -115,6 +115,7 @@ function loadChartFile(file) {
                 let audio;
 
                 let filenames = Object.keys(zip.files);
+                let nAudio = 0;
                 for (let i = 0; i < filenames.length; i++) {
                     let filename = filenames[i];
                     if (filename.slice(-4) === "srtb") {
@@ -128,6 +129,10 @@ function loadChartFile(file) {
                     else if (filename.slice(0, 10) === "AudioClips") {
                         audio = zip.files[filename];
                         audioFilename = filename;
+                        nAudio++;
+                        if(nAudio > 1) {
+                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
+                        }
                     }
                 }
 
