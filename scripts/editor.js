@@ -34,7 +34,6 @@ function saveEditorChanges() {
     }
 
     loadChartData(chartJSON);
-    //updateChartData();
 
     JSONEditor.focus();
 
