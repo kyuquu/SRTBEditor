@@ -33,7 +33,8 @@ function saveEditorChanges() {
         window.alert("WARNING:\nChanging the audio asset reference may prevent the chart from loading the audio if you download as ZIP.");
     }
 
-    updateChartData();
+    loadChartData(chartJSON);
+    //updateChartData();
 
     JSONEditor.focus();
 
