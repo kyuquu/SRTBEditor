@@ -9,6 +9,18 @@ let activeDifficulty = 2;
 
 function switchToTab(index) {
     if (activeTab !== index) {
+        
+        // prompt if unsaved changes in the JSON editor
+        if (activeTab === 1
+                && !(document.getElementById("json-editor").classList.contains("disabled"))
+                && !(document.getElementById("jv-discard").classList.contains("disabled"))) {
+            if(confirm("Leave and discard JSON Editor changes?")) {
+                discardEditorChanges();
+            } else {
+                return;
+            }
+        }
+
         document.getElementById(`tab-button${activeTab}`).classList.remove("active");
         document.getElementById(`tab${activeTab}`).classList.remove("active");
         document.getElementById(`tab-button${index}`).classList.add("active");
@@ -120,6 +132,19 @@ function updateChartData() {
             document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
             //console.log(`Disabled diff ${i}`);
         }
+    }
+    //scuffed fallback cases
+    if(!trackInfo.hasOwnProperty("allowCustomLeaderboardCreation")) {
+        console.log("track doesn't have modern allowLeaderboard field, defaulting to true");
+        document.getElementById("bv-allowCustomLeaderboardCreation").checked = true;
+
+        // if(trackInfo.hasOwnProperty("isReleasable")) {
+        //     console.log(`found isReleaseable = ${trackInfo.isReleasable}`)
+        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = trackInfo.isReleasable;
+        // } else {
+        //     console.log("no fallbacks found, defaulting to false");
+        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = false;
+        // }
     }
 }
 

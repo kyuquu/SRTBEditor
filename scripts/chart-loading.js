@@ -86,10 +86,14 @@ function loadChartFile(file) {
                     let srtb = e.target.result;
                     let json = convertToJSON(JSON.parse(srtb));
                     loadChartData(json);
+                    document.getElementById("bv-album-art").src = "assets/images/Default_-_Cover.png";
+                    document.getElementById("bv-album-art").src = "assets/audio/Get Good.ogg";
                 }
                 else if (fileExtension === "json") {
                     let json = JSON.parse(e.target.result);
                     loadChartData(json);
+                    document.getElementById("bv-album-art").src = "assets/images/Default_-_Cover.png";
+                    document.getElementById("bv-album-art").src = "assets/audio/Get Good.ogg";
                 }
 
                 chartFilename = file.name;
@@ -127,12 +131,13 @@ function loadChartFile(file) {
                         imageFilename = filename;
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
+                        if(nAudio > 1) {
+                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
+                            continue;
+                        }
                         audio = zip.files[filename];
                         audioFilename = filename;
                         nAudio++;
-                        if(nAudio > 1) {
-                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
-                        }
                     }
                 }
 
