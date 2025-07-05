@@ -6,6 +6,12 @@
     gap: 2rem;
 }
 
+@media screen and (max-width: 900px) {
+    .top-bar {
+        flex-direction: column;
+    }
+}
+
 .tb-chart {
     display: flex;
     flex-direction: column;
@@ -44,10 +50,4 @@
 
 #tb-file-input {
     display: none;
-}
-
-@media screen and (max-width: 900px) {
-    .top-bar {
-        flex-direction: column;
-    }
 }
