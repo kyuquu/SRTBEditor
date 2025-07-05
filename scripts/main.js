@@ -133,6 +133,19 @@ function updateChartData() {
             //console.log(`Disabled diff ${i}`);
         }
     }
+    //scuffed fallback cases
+    if(!trackInfo.hasOwnProperty("allowCustomLeaderboardCreation")) {
+        console.log("track doesn't have modern allowLeaderboard field, defaulting to true");
+        document.getElementById("bv-allowCustomLeaderboardCreation").checked = true;
+
+        // if(trackInfo.hasOwnProperty("isReleasable")) {
+        //     console.log(`found isReleaseable = ${trackInfo.isReleasable}`)
+        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = trackInfo.isReleasable;
+        // } else {
+        //     console.log("no fallbacks found, defaulting to false");
+        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = false;
+        // }
+    }
 }
 
 
