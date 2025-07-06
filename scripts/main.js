@@ -22,8 +22,10 @@ function switchToTab(index) {
         }
 
         document.getElementById(`tab-button${activeTab}`).classList.remove("active");
+        document.getElementById(`tab-button-small${activeTab}`).classList.remove("active");
         document.getElementById(`tab${activeTab}`).classList.remove("active");
         document.getElementById(`tab-button${index}`).classList.add("active");
+        document.getElementById(`tab-button-small${index}`).classList.add("active");
         document.getElementById(`tab${index}`).classList.add("active");
 
         if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
@@ -65,6 +67,7 @@ function switchToDifficulty(index) {
 
 
 function enableUserInput() {
+    document.querySelector(".dropdown.disabled > button").removeAttribute("disabled");
     document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");

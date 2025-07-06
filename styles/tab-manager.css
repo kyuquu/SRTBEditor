@@ -9,6 +9,21 @@
     gap: 0.5rem;
     margin-left: 1rem;
 }
+.tab-buttons-small {
+    display: none;
+}
+
+@media screen and (max-width: 820px) {
+
+    .tab-buttons-small {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: 1rem;
+    }
+    .tab-buttons {
+        display: none;
+    }
+}
 
 .tab-button {
     position: relative;
