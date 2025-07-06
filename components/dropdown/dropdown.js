@@ -33,15 +33,18 @@ function toggleDropdown(dropdown) {
 
     //close other dropdowns
     if (document.querySelector(".dropdown.active") && !document.getElementById(dropdown).classList.contains("active")) {
-        document.querySelector(".dropdown.active").classList.remove("active");
+        let otherDropdown = document.querySelector(".dropdown.active")
+        otherDropdown.classList.remove("active");
+
+        let otherOptions = otherDropdown.getElementsByClassName("dropdown-options")[0].children[0];
+        for (let i = 0; i < otherOptions.children.length; i++) {
+            otherOptions.children[i].setAttribute("tabindex", "-1");
+        }
     }
 
     let dd = document.getElementById(dropdown);
     dd.classList.toggle("active");
-    let options = dd.getElementsByClassName("dropdown-options")[0];
-    options = options.children[0];
-
-    console.log(options);
+    let options = dd.getElementsByClassName("dropdown-options")[0].children[0];
 
     if(dd.classList.contains("active")) {
         for (let i = 0; i < options.children.length; i++) {
