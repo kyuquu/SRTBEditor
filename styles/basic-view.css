@@ -73,7 +73,6 @@
     align-items: center;
     gap: 1rem;
     flex: 2 1 0;
-    overflow-y: scroll;
 }
 
 .bv2 > img {
