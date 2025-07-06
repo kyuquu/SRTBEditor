@@ -5,9 +5,8 @@ let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
 
-function restoreEditor() {
+function enabledWriting() {
     JSONEditor.setReadOnly(false);
-    console.log("did a thing");
 }
 
 
@@ -84,7 +83,7 @@ async function init() {
     // startup modifications
     // disable the save dropdown until a chart is loaded
     document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
-    
+
     // configure JSON editor to be readOnly when hitting escape, to allow tab navigation
     // restore writability when focusing back on it
     let editorElement = document.querySelector("#editor");
@@ -94,7 +93,7 @@ async function init() {
         }
     }); 
     let textArea = document.querySelector(".ace_text-input");
-    textArea.setAttribute("onfocus", "restoreWriting()");
+    textArea.setAttribute("onfocus", "enabledWriting()");
     
     loadingScreen.classList.remove("active");
     

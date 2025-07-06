@@ -123,16 +123,16 @@ function updateChartData() {
     //scuffed hardcoded diff rating boxes
     for (var i = 0; i < 6; i++) {
         if(trackData.hasOwnProperty(i) && trackData[i].hasOwnProperty("difficultyRating")) {
-            updateBVValue(`difficultyRating-${i}`,trackData[i].difficultyRating);
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.remove("disabled");
+            updateBVValue(`difficultyRating${i}`,trackData[i].difficultyRating);
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.remove("disabled");
             //console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
         } else {
             updateBVValue(`difficultyRating-${i}`, "");
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
             //console.log(`Disabled diff ${i}`);
         }
         if(trackInfo.difficulties.length <= i  || !trackInfo.difficulties[i]._active) {
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
             //console.log(`Disabled diff ${i}`);
         }
     }
@@ -171,11 +171,6 @@ function processBVInput(inputType, property, keyName, index) {
         BVName += "-" + index;
     let BVElement = document.getElementById(`bv-${BVName}`);
 
-    //this technically works now, but needs a few improvements
-    //  number input visually needs to change
-    //  number input doesn't reject non-numbers gracefully
-    //  *all* text inputs should revert to most recent valid value upon failed input
-    //  build an actual ui for this
     const getValue = () => {
         if (inputType === "text") {
             return BVElement.value;
@@ -236,6 +231,35 @@ function processBVInput(inputType, property, keyName, index) {
         val = val[index];
     }
     updateJSONValue(val, property, value);
+}
+
+function toggleDifficultyActive(index) {
+    let checked = document.getElementById(`bv-difficulty-active${index}`).checked;
+    
+    if(trackInfo.difficulties.length > index) {
+        trackInfo.difficulties[index]._active = checked;
+        console.log("enabled diff the easy way")
+    }
+    else {
+        for(let i = trackInfo.difficulties.length-1; i <= index; i++) {
+            trackInfo.difficulties.add({
+                "bundle": "CUSTOM",
+                "assetName": `TrackData_${i}`,
+                "m_guid": "",
+                "_active": false
+            })
+        }
+        trackInfo.difficulties[index]._active = checked;
+        console.log("enabled diff the difficult way")
+    }
+    updateJSONValue(trackInfo.difficulties[index], "_active", checked);
+
+    if(!trackData.length > index) {
+        //import a trackData from the template
+        console.warn("enabled a difficulty that doesn't have a trackData to support it");
+    }
+
+    updateChartData();
 }
 
 function updateBVValue(property, value) {
