@@ -21,7 +21,9 @@ async function init() {
             for (let i = 0; i < templates.length; i++) {
                 chartTemplates[templateFilenames[i]] = templates[i];
             }
+            
         });
+    
 
     templateJSON = chartTemplates["Custom.json"];
 
@@ -72,9 +74,8 @@ async function init() {
                 initializeSelectInput(selectInput, selectInputs[selectInput]);
             }
         });
-
-
-
+    document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
+    
     loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {

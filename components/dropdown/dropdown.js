@@ -6,7 +6,7 @@ function initializeDropdown(name, values) {
     let options = "";
     for (let i = 0; i < values["options"].length; i++) {
         options += `
-            <button class="dropdown-option button" tabIndex="-1" onclick="${values["options"][i]["function"]}">
+            <button class="dropdown-option button" disabled onclick="${values["options"][i]["function"]}">
                 ${values["options"][i]["text"]}
             </button>
         `;
@@ -31,14 +31,14 @@ function initializeDropdown(name, values) {
 
 function toggleDropdown(dropdown) {
 
-    //close other dropdowns
+    // close other dropdowns
     if (document.querySelector(".dropdown.active") && !document.getElementById(dropdown).classList.contains("active")) {
-        let otherDropdown = document.querySelector(".dropdown.active")
-        otherDropdown.classList.remove("active");
+        let otherDd = document.querySelector(".dropdown.active")
+        otherDd.classList.remove("active");
 
-        let otherOptions = otherDropdown.getElementsByClassName("dropdown-options")[0].children[0];
+        let otherOptions = otherDd.getElementsByClassName("dropdown-options")[0].children[0];
         for (let i = 0; i < otherOptions.children.length; i++) {
-            otherOptions.children[i].setAttribute("tabindex", "-1");
+            otherOptions.children[i].setAttribute("disabled", "true");
         }
     }
 
@@ -46,13 +46,14 @@ function toggleDropdown(dropdown) {
     dd.classList.toggle("active");
     let options = dd.getElementsByClassName("dropdown-options")[0].children[0];
 
+    // toggle accessibility to keyboard navigation
     if(dd.classList.contains("active")) {
         for (let i = 0; i < options.children.length; i++) {
-            options.children[i].removeAttribute("tabindex");
+            options.children[i].removeAttribute("disabled");
         }
     } else {
         for (let i = 0; i < options.children.length; i++) {
-            options.children[i].setAttribute("tabindex", "-1");
+            options.children[i].setAttribute("disabled", "true");
         }
     }
 }

@@ -67,6 +67,7 @@ function switchToDifficulty(index) {
 
 
 function enableUserInput() {
+    document.querySelector(".dropdown.disabled > button").removeAttribute("disabled");
     document.getElementById("tb-save").classList.remove("disabled");
     document.querySelector(".bv0").classList.remove("disabled");
     document.querySelector(".bv1").classList.remove("disabled");
