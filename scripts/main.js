@@ -136,18 +136,24 @@ function updateChartData() {
             //console.log(`Disabled diff ${i}`);
         }
     }
+    //scuffed hardcoded diff enabled checkboxes
+    for(let i = 0; i < 6; i++) {
+        if(trackInfo.hasOwnProperty("difficulties")) {
+            console.log(trackInfo.difficulties);
+            if(trackInfo.difficulties.length > i) {
+                document.getElementById(`bv-difficulty-active${i}`).checked = trackInfo.difficulties[i]._active;
+            } else {
+                document.getElementById(`bv-difficulty-active${i}`).checked = false;
+            }
+        }
+    }
+
     //scuffed fallback cases
     if(!trackInfo.hasOwnProperty("allowCustomLeaderboardCreation")) {
         console.log("track doesn't have modern allowLeaderboard field, defaulting to true");
         document.getElementById("bv-allowCustomLeaderboardCreation").checked = true;
 
-        // if(trackInfo.hasOwnProperty("isReleasable")) {
-        //     console.log(`found isReleaseable = ${trackInfo.isReleasable}`)
-        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = trackInfo.isReleasable;
-        // } else {
-        //     console.log("no fallbacks found, defaulting to false");
-        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = false;
-        // }
+        // unsure if "isReleaseable" is a fallback metric for this
     }
 }
 
@@ -238,26 +244,23 @@ function toggleDifficultyActive(index) {
     
     if(trackInfo.difficulties.length > index) {
         trackInfo.difficulties[index]._active = checked;
-        console.log("enabled diff the easy way")
+        console.log("toggled diff the easy way")
     }
     else {
         for(let i = trackInfo.difficulties.length-1; i <= index; i++) {
-            trackInfo.difficulties.add({
+            trackInfo.difficulties[i] = {
                 "bundle": "CUSTOM",
                 "assetName": `TrackData_${i}`,
                 "m_guid": "",
                 "_active": false
-            })
+            };
         }
         trackInfo.difficulties[index]._active = checked;
-        console.log("enabled diff the difficult way")
+        console.log("added diff and toggled it");
+        //TODO: check for and add other necessary pieces for this
+        console.warn("new difficulty might not be supported in the srtb");
     }
     updateJSONValue(trackInfo.difficulties[index], "_active", checked);
-
-    if(!trackData.length > index) {
-        //import a trackData from the template
-        console.warn("enabled a difficulty that doesn't have a trackData to support it");
-    }
 
     updateChartData();
 }
