@@ -27,6 +27,11 @@ function initializeDropdown(name, values) {
     `;
 
     element.setAttribute("onclick", `toggleDropdown("${name}")`);
+    element.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeAllDropdowns();
+        }
+    }); 
 }
 
 function toggleDropdown(dropdown) {
@@ -52,6 +57,18 @@ function toggleDropdown(dropdown) {
             options.children[i].removeAttribute("disabled");
         }
     } else {
+        for (let i = 0; i < options.children.length; i++) {
+            options.children[i].setAttribute("disabled", "true");
+        }
+    }
+}
+
+function closeAllDropdowns() {
+    while(document.querySelector(".dropdown.active")) {
+        let dd = document.querySelector(".dropdown.active")
+        dd.classList.remove("active");
+
+        let options = dd.getElementsByClassName("dropdown-options")[0].children[0];
         for (let i = 0; i < options.children.length; i++) {
             options.children[i].setAttribute("disabled", "true");
         }
