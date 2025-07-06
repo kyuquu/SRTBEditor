@@ -96,9 +96,6 @@ async function init() {
                 e.preventDefault();
                 loadTemplate("CUTIEMARKS (And the Things That Bind Us).srtb");
             }
-            else if (e.key === "Escape") {
-                closeAllDropdowns();
-            }
         }
     });
 }
