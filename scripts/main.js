@@ -22,8 +22,10 @@ function switchToTab(index) {
         }
 
         document.getElementById(`tab-button${activeTab}`).classList.remove("active");
+        document.getElementById(`tab-button-small${activeTab}`).classList.remove("active");
         document.getElementById(`tab${activeTab}`).classList.remove("active");
         document.getElementById(`tab-button${index}`).classList.add("active");
+        document.getElementById(`tab-button-small${index}`).classList.add("active");
         document.getElementById(`tab${index}`).classList.add("active");
 
         if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
