@@ -6,7 +6,7 @@ function initializeDropdown(name, values) {
     let options = "";
     for (let i = 0; i < values["options"].length; i++) {
         options += `
-            <button class="dropdown-option button" onclick="${values["options"][i]["function"]}">
+            <button class="dropdown-option button" tabIndex="-1" onclick="${values["options"][i]["function"]}">
                 ${values["options"][i]["text"]}
             </button>
         `;
@@ -30,8 +30,26 @@ function initializeDropdown(name, values) {
 }
 
 function toggleDropdown(dropdown) {
+
+    //close other dropdowns
     if (document.querySelector(".dropdown.active") && !document.getElementById(dropdown).classList.contains("active")) {
         document.querySelector(".dropdown.active").classList.remove("active");
     }
-    document.getElementById(dropdown).classList.toggle("active");
+
+    let dd = document.getElementById(dropdown);
+    dd.classList.toggle("active");
+    let options = dd.getElementsByClassName("dropdown-options")[0];
+    options = options.children[0];
+
+    console.log(options);
+
+    if(dd.classList.contains("active")) {
+        for (let i = 0; i < options.children.length; i++) {
+            options.children[i].removeAttribute("tabindex");
+        }
+    } else {
+        for (let i = 0; i < options.children.length; i++) {
+            options.children[i].setAttribute("tabindex", "-1");
+        }
+    }
 }
