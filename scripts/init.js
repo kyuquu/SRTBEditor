@@ -5,7 +5,7 @@ let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
 
-function enabledWriting() {
+function enableWriting() {
     JSONEditor.setReadOnly(false);
 }
 
@@ -93,7 +93,7 @@ async function init() {
         }
     }); 
     let textArea = document.querySelector(".ace_text-input");
-    textArea.setAttribute("onfocus", "enabledWriting()");
+    textArea.setAttribute("onfocus", "enableWriting()");
     
     loadingScreen.classList.remove("active");
     
