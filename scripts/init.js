@@ -116,6 +116,15 @@ async function init() {
                 loadTemplate("CUTIEMARKS (And the Things That Bind Us).srtb");
             }
         }
+        if (e.ctrlKey && e.code === "KeyS" && activeTab === 1) {
+                e.preventDefault();
+                if(validateJSON(JSONEditor.getValue())) {
+                    saveEditorChanges();
+                }
+                else {
+                    console.warn("cannot save invalid JSON");
+                }
+            }
     });
 }
 
