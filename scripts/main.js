@@ -125,15 +125,16 @@ function updateChartData() {
         if(trackData.hasOwnProperty(i) && trackData[i].hasOwnProperty("difficultyRating")) {
             updateBVValue(`difficultyRating${i}`,trackData[i].difficultyRating);
             document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.remove("disabled");
-            //console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
+            // console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
         } else {
             updateBVValue(`difficultyRating-${i}`, "");
             document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
-            //console.log(`Disabled diff ${i}`);
+            document.getElementById(`bv-difficultyRating${i}`).value = "";
+            // console.log(`Disabled diff ${i}`);
         }
         if(trackInfo.difficulties.length <= i  || !trackInfo.difficulties[i]._active) {
             document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
-            //console.log(`Disabled diff ${i}`);
+            // console.log(`Disabled diff ${i}`);
         }
     }
     //scuffed hardcoded diff enabled checkboxes
@@ -279,10 +280,15 @@ function toggleDifficultyActive(index) {
             console.log(`failed to find trackData${index} in the body, making one`);
             let newBody = returnTemplate("Diff Body.json");
             newBody = newBody.replaceAll("$0", index);
-            newBody = newBody.replaceAll("$1", index + 2);
-            jsonBody[jsonBody.length] = JSON.parse(newBody);
+            newBody = JSON.parse(newBody);
+            newBody.val.difficultyType = index + 2;
+            jsonBody[jsonBody.length] = newBody;
         }
         
+        if(trackInfoIndex < 0) {
+            console.error("failed to find trackInfo");
+            return;
+        }
         let diffs = jsonBody[trackInfoIndex].val.difficulties;
         found = false;
         for(let i = 0; i < diffs.length; i++) {
@@ -292,18 +298,13 @@ function toggleDifficultyActive(index) {
             }
         }
         if(!found) {
-            console.log(`failed to find trackData${index} in the difficulties, making one`);
+            console.log(`failed to find trackData${index} in trackData.difficulties, making one`);
             let newIndex = returnTemplate("Diff Index.json");
             newIndex = newIndex.replaceAll("$0", index);
             diffs[diffs.length] = JSON.parse(newIndex);
         }
-
-
-        console.log("added diff and toggled it");
-        console.log(fullJSON);
         loadChartData(fullJSON);
     }
-
     updateChartData();
     renderBasicDiagnostics();
 }
