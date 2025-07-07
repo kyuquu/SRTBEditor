@@ -244,26 +244,80 @@ function toggleDifficultyActive(index) {
     if(trackInfo.difficulties.length > index) {
         trackInfo.difficulties[index]._active = checked;
         // console.log("toggled diff the easy way")
+        updateJSONValue(trackInfo.difficulties[index], "_active", checked);
     }
     else {
-        for(let i = trackInfo.difficulties.length; i <= index; i++) {
-            trackInfo.difficulties[i] = {
-                "bundle": "CUSTOM",
-                "assetName": `TrackData_${i}`,
-                "m_guid": "",
-                "_active": false
-            };
+        let temp = loadTemplateSnippet("Diff Header.json");
+        console.log(temp);
+        let fullJSON = JSON.parse(JSONEditor.getValue());
+        console.log(JSONEditor.getValue());
+        let trackInfoIndex = -1;
+
+        let jsonHeader = fullJSON.unityObjectValuesContainer.values;
+        console.log(jsonHeader);
+        let found = false;
+        for(let i = 0; i < jsonHeader.length; i++) {
+            if(jsonHeader[i].jsonKey.trim() == `SO_TrackData_TrackData_${index}`) {
+                found = true;
+                break;
+            }
         }
-        trackInfo.difficulties[index]._active = checked;
-        // console.log("added diff and toggled it");
-        //TODO: check for and add other necessary pieces for this
-        console.warn("enabled difficulty might not be supported in the srtb");
+        if(!found) {
+            console.log(`failed to find trackData${index} in the header, making one`);
+            jsonHeader[jsonHeader.length] = {
+                "key": `TrackData_${index}`,
+                "jsonKey": `SO_TrackData_TrackData_${index}`,
+                "fullType": "TrackData"
+            }
+        }
+
+        let jsonBody = fullJSON.largeStringValuesContainer.values;
+        found = false;
+        for(let i = 0; i < jsonBody.length; i++) {
+            if(jsonBody[i].key.trim() === `SO_TrackData_TrackData_${index}`) {
+                found = true;
+            }
+            if(jsonBody[i].key.trim() === "SO_TrackInfo_TrackInfo") {
+                trackInfoIndex = i;
+            }
+        }
+        if(!found) {
+            console.log(`failed to find trackData${index} in the body, making one`);
+            jsonBody[jsonBody.length] = {
+                "key": `SO_TrackData_TrackData_${index}`,
+                "val": "null"
+            }
+        }
+        
+        let diffs = jsonBody[trackInfoIndex].val.difficulties;
+        found = false;
+        for(let i = 0; i < diffs.length; i++) {
+            if(diffs[i].assetName.trim() === `trackData_${index}`) {
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            console.log(`failed to find trackData${index} in the difficulties, making one`);
+            diffs[diffs.length] = {
+                "bundle": "CUSTOM",
+                "assetName": `TrackData_${index}`,
+                "m_guid": "",
+                "_active": checked
+            }
+        }
+
+
+        console.log("added diff and toggled it");
+        console.log(fullJSON);
+        loadChartData(fullJSON);
     }
-    updateJSONValue(trackInfo.difficulties[index], "_active", checked);
 
     updateChartData();
     renderBasicDiagnostics();
 }
+
+
 
 function updateBVValue(property, value) {
     if (document.getElementById(`bv-${property}`) !== null) {
