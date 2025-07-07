@@ -262,6 +262,7 @@ function toggleDifficultyActive(index) {
     updateJSONValue(trackInfo.difficulties[index], "_active", checked);
 
     updateChartData();
+    renderBasicDiagnostics();
 }
 
 function updateBVValue(property, value) {
