@@ -100,27 +100,27 @@
             "function": "processBVInput('checkbox', 'allowCustomLeaderboardCreation', 'TrackInfo')"
         },
         "bv-difficulty-active0": {
-            "text": "Easy",
+            "text": "",
             "function": "toggleDifficultyActive(0)"
         },
         "bv-difficulty-active1": {
-            "text": "Normal",
+            "text": "",
             "function": "toggleDifficultyActive(1)"
         },
         "bv-difficulty-active2": {
-            "text": "Hard",
+            "text": "",
             "function": "toggleDifficultyActive(2)"
         },
         "bv-difficulty-active3": {
-            "text": "Expert",
+            "text": "",
             "function": "toggleDifficultyActive(3)"
         },
         "bv-difficulty-active4": {
-            "text": "XD",
+            "text": "",
             "function": "toggleDifficultyActive(4)"
         },
         "bv-difficulty-active5": {
-            "text": "RemiXD",
+            "text": "",
             "function": "toggleDifficultyActive(5)"
         }
     },

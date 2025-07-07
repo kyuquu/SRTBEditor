@@ -43,17 +43,46 @@
 
 .category.active {
     display: flex;
+    overflow-y: hidden;
 }
 
 .bv1 {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
+    flex: 2 1 0;
     overflow: hidden;
+}
+
+.bv1 .diff-name {
+    display: inline-block;
+    padding-bottom: 0.25rem;
+    width: 7rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.bv1 .checkbox {
+    padding-top: 0.125rem;
+    padding-right: 0.5rem;
+    float: left;
+    align-content: top;
+}
+
+.bv1 .number-input {
+    float: right;
+    padding-left: 0.5rem;
 }
 
 .bv1 .checkbox > input {
     --size: 12;
+}
+
+.bv1 .checkbox > label {
+    display: none;
+}
+
+.bv1 .number-input > label {
+    display: none;
 }
 
 .bv1 > div:first-child {

@@ -139,7 +139,6 @@ function updateChartData() {
     //scuffed hardcoded diff enabled checkboxes
     for(let i = 0; i < 6; i++) {
         if(trackInfo.hasOwnProperty("difficulties")) {
-            console.log(trackInfo.difficulties);
             if(trackInfo.difficulties.length > i) {
                 document.getElementById(`bv-difficulty-active${i}`).checked = trackInfo.difficulties[i]._active;
             } else {
@@ -244,7 +243,7 @@ function toggleDifficultyActive(index) {
     
     if(trackInfo.difficulties.length > index) {
         trackInfo.difficulties[index]._active = checked;
-        console.log("toggled diff the easy way")
+        // console.log("toggled diff the easy way")
     }
     else {
         for(let i = trackInfo.difficulties.length-1; i <= index; i++) {
@@ -256,9 +255,9 @@ function toggleDifficultyActive(index) {
             };
         }
         trackInfo.difficulties[index]._active = checked;
-        console.log("added diff and toggled it");
+        // console.log("added diff and toggled it");
         //TODO: check for and add other necessary pieces for this
-        console.warn("new difficulty might not be supported in the srtb");
+        console.warn("enabled difficulty might not be supported in the srtb");
     }
     updateJSONValue(trackInfo.difficulties[index], "_active", checked);
 
