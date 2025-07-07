@@ -70,27 +70,27 @@
     },
     "number-inputs": {
         "bv-difficultyRating0": {
-            "text": "Easy:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '0')"
         },
         "bv-difficultyRating1": {
-            "text": "Normal:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '1')"
         },
         "bv-difficultyRating2": {
-            "text": "Hard:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '2')"
         },
         "bv-difficultyRating3": {
-            "text": "Expert:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '3')"
         },
         "bv-difficultyRating4": {
-            "text": "XD:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '4')"
         },
         "bv-difficultyRating5": {
-            "text": "RemiXD:",
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '5')"
         }
     },
@@ -100,27 +100,27 @@
             "function": "processBVInput('checkbox', 'allowCustomLeaderboardCreation', 'TrackInfo')"
         },
         "bv-difficulty-active0": {
-            "text": "",
+            "text": "Easy:",
             "function": "toggleDifficultyActive(0)"
         },
         "bv-difficulty-active1": {
-            "text": "",
+            "text": "Normal:",
             "function": "toggleDifficultyActive(1)"
         },
         "bv-difficulty-active2": {
-            "text": "",
+            "text": "Hard:",
             "function": "toggleDifficultyActive(2)"
         },
         "bv-difficulty-active3": {
-            "text": "",
+            "text": "Expert:",
             "function": "toggleDifficultyActive(3)"
         },
         "bv-difficulty-active4": {
-            "text": "",
+            "text": "XD:",
             "function": "toggleDifficultyActive(4)"
         },
         "bv-difficulty-active5": {
-            "text": "",
+            "text": "RemiXD:",
             "function": "toggleDifficultyActive(5)"
         }
     },
