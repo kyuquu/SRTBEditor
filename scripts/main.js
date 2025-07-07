@@ -246,7 +246,7 @@ function toggleDifficultyActive(index) {
         // console.log("toggled diff the easy way")
     }
     else {
-        for(let i = trackInfo.difficulties.length-1; i <= index; i++) {
+        for(let i = trackInfo.difficulties.length; i <= index; i++) {
             trackInfo.difficulties[i] = {
                 "bundle": "CUSTOM",
                 "assetName": `TrackData_${i}`,
