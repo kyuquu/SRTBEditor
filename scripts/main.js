@@ -174,7 +174,7 @@ function updateTBValue(property, value) {
 function processBVInput(inputType, property, keyName, index) {
     var BVName = property;
     if(keyName == "TrackData") //special case for TrackData (make scaleable later)
-        BVName += "-" + index;
+        BVName += index;
     let BVElement = document.getElementById(`bv-${BVName}`);
 
     const getValue = () => {
