@@ -247,14 +247,10 @@ function toggleDifficultyActive(index) {
         updateJSONValue(trackInfo.difficulties[index], "_active", checked);
     }
     else {
-        let temp = loadTemplateSnippet("Diff Header.json");
-        console.log(temp);
         let fullJSON = JSON.parse(JSONEditor.getValue());
-        console.log(JSONEditor.getValue());
         let trackInfoIndex = -1;
 
         let jsonHeader = fullJSON.unityObjectValuesContainer.values;
-        console.log(jsonHeader);
         let found = false;
         for(let i = 0; i < jsonHeader.length; i++) {
             if(jsonHeader[i].jsonKey.trim() == `SO_TrackData_TrackData_${index}`) {
@@ -264,11 +260,9 @@ function toggleDifficultyActive(index) {
         }
         if(!found) {
             console.log(`failed to find trackData${index} in the header, making one`);
-            jsonHeader[jsonHeader.length] = {
-                "key": `TrackData_${index}`,
-                "jsonKey": `SO_TrackData_TrackData_${index}`,
-                "fullType": "TrackData"
-            }
+            let newHeader = returnTemplate("Diff Header.json");
+            newHeader = newHeader.replaceAll("$0", index);
+            jsonHeader[jsonHeader.length] = JSON.parse(newHeader);
         }
 
         let jsonBody = fullJSON.largeStringValuesContainer.values;
@@ -283,10 +277,10 @@ function toggleDifficultyActive(index) {
         }
         if(!found) {
             console.log(`failed to find trackData${index} in the body, making one`);
-            jsonBody[jsonBody.length] = {
-                "key": `SO_TrackData_TrackData_${index}`,
-                "val": "null"
-            }
+            let newBody = returnTemplate("Diff Body.json");
+            newBody = newBody.replaceAll("$0", index);
+            newBody = newBody.replaceAll("$1", index + 2);
+            jsonBody[jsonBody.length] = JSON.parse(newBody);
         }
         
         let diffs = jsonBody[trackInfoIndex].val.difficulties;
@@ -299,12 +293,9 @@ function toggleDifficultyActive(index) {
         }
         if(!found) {
             console.log(`failed to find trackData${index} in the difficulties, making one`);
-            diffs[diffs.length] = {
-                "bundle": "CUSTOM",
-                "assetName": `TrackData_${index}`,
-                "m_guid": "",
-                "_active": checked
-            }
+            let newIndex = returnTemplate("Diff Index.json");
+            newIndex = newIndex.replaceAll("$0", index);
+            diffs[diffs.length] = JSON.parse(newIndex);
         }
 
 

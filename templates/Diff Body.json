@@ -1,0 +1,69 @@
+{
+    "key": "SO_TrackData_TrackData_$0",
+    "val": {
+        "revisionVersion": 0,
+        "compatibilityVersion": 0,
+        "noteSerializationFormat": 0,
+        "difficultyRating": 0,
+        "previewLoopBars": {
+            "min": 4,
+            "max": 12
+        },
+        "goBeatOffsetFromFirstNote": -4,
+        "difficultyType": -1,
+        "isTutorial": false,
+        "tutorialTitleTranslation": {
+            "key": ""
+        },
+        "clipInfoAssetReferences": [
+            {
+                "bundle": "CUSTOM",
+                "assetName": "ClipInfo_0",
+                "m_guid": ""
+            }
+        ],
+        "backgroundId": {
+            "backgroundId": ""
+        },
+        "background": {
+            "bundle": "",
+            "assetName": "",
+            "m_guid": ""
+        },
+        "groundSettingsToUse": {
+            "bundle": "",
+            "assetName": "",
+            "m_guid": ""
+        },
+        "groundSettingsOverTime": {
+            "bundle": "",
+            "assetName": "",
+            "m_guid": ""
+        },
+        "splinePath": {
+            "rid": -2
+        },
+        "splinePathData": {
+            "instanceID": 0
+        },
+        "clipData": [],
+        "notesCompressed": "",
+        "notes": [],
+        "binaryNotes": [],
+        "lastEditedOnDate": "",
+        "references": {
+            "version": 2,
+            "RefIds": [
+                {
+                    "rid": -2,
+                    "type": {
+                        "class": "",
+                        "ns": "",
+                        "asm": ""
+                    },
+                    "data": {}
+                }
+            ]
+        }
+    }
+}

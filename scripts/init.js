@@ -14,7 +14,7 @@ async function init() {
     loadingMessage.textContent = "INITIALIZING TEMPLATES...";
 
     let requests = [];
-    let templateFilenames = ["Custom.json", "Custom.srtb", "Inertia.srtb", "CUTIEMARKS (And the Things That Bind Us).srtb"];
+    let templateFilenames = ["Custom.json", "Custom.srtb", "Inertia.srtb", "CUTIEMARKS (And the Things That Bind Us).srtb", "Diff Header.json", "Diff Index.json", "Diff Body.json"];
     for (let i = 0; i < templateFilenames.length; i++) {
         requests.push(
             fetch("./templates/" + templateFilenames[i]).then(response => response.json())
