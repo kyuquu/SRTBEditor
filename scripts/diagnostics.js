@@ -31,7 +31,8 @@ function renderBasicDiagnostics() {
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
-
+            if(!trackData[i].difficultyType)
+                continue;
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
 
@@ -52,7 +53,7 @@ function renderBasicDiagnostics() {
 }
 
 function calculateBalance(notesIn, htmlParent) {
-    if(notesIn.length < 1) return;
+    if(!notesIn || notesIn.length < 1) return;
     let nRed = 0,
         nBlue = 0,
         nInvisRed = 0,
@@ -162,7 +163,7 @@ function calculateBalance(notesIn, htmlParent) {
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
-    if(notesIn.length < 1) return;
+    if(!notesIn || notesIn.length < 1) return;
     let maxScore = 0n;
     let tickDuration, addScore;
     let maxCombo = 0;

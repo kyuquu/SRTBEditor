@@ -5,7 +5,10 @@ let templateJSON;
 
 let chartFilename;
 
-
+function returnTemplate(filename) {
+    let templateData = JSON.stringify(chartTemplates[filename]);
+    return templateData;
+}
 
 function loadTemplate(filename) {
     let templateData = JSON.parse(JSON.stringify(chartTemplates))[filename];

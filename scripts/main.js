@@ -123,31 +123,37 @@ function updateChartData() {
     //scuffed hardcoded diff rating boxes
     for (var i = 0; i < 6; i++) {
         if(trackData.hasOwnProperty(i) && trackData[i].hasOwnProperty("difficultyRating")) {
-            updateBVValue(`difficultyRating-${i}`,trackData[i].difficultyRating);
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.remove("disabled");
-            //console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
+            updateBVValue(`difficultyRating${i}`,trackData[i].difficultyRating);
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.remove("disabled");
+            // console.log(`Diff rating ${i}: ${trackData[i].difficultyRating}`);
         } else {
             updateBVValue(`difficultyRating-${i}`, "");
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
-            //console.log(`Disabled diff ${i}`);
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
+            document.getElementById(`bv-difficultyRating${i}`).value = "";
+            // console.log(`Disabled diff ${i}`);
         }
         if(trackInfo.difficulties.length <= i  || !trackInfo.difficulties[i]._active) {
-            document.getElementById(`bv-difficultyRating-${i}`).parentElement.classList.add("disabled");
-            //console.log(`Disabled diff ${i}`);
+            document.getElementById(`bv-difficultyRating${i}`).parentElement.classList.add("disabled");
+            // console.log(`Disabled diff ${i}`);
         }
     }
+    //scuffed hardcoded diff enabled checkboxes
+    for(let i = 0; i < 6; i++) {
+        if(trackInfo.hasOwnProperty("difficulties")) {
+            if(trackInfo.difficulties.length > i) {
+                document.getElementById(`bv-difficulty-active${i}`).checked = trackInfo.difficulties[i]._active;
+            } else {
+                document.getElementById(`bv-difficulty-active${i}`).checked = false;
+            }
+        }
+    }
+
     //scuffed fallback cases
     if(!trackInfo.hasOwnProperty("allowCustomLeaderboardCreation")) {
         console.log("track doesn't have modern allowLeaderboard field, defaulting to true");
         document.getElementById("bv-allowCustomLeaderboardCreation").checked = true;
 
-        // if(trackInfo.hasOwnProperty("isReleasable")) {
-        //     console.log(`found isReleaseable = ${trackInfo.isReleasable}`)
-        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = trackInfo.isReleasable;
-        // } else {
-        //     console.log("no fallbacks found, defaulting to false");
-        //     document.getElementById("bv-allowCustomLeaderboardCreation").checked = false;
-        // }
+        // unsure if "isReleaseable" is a fallback metric for this
     }
 }
 
@@ -168,14 +174,9 @@ function updateTBValue(property, value) {
 function processBVInput(inputType, property, keyName, index) {
     var BVName = property;
     if(keyName == "TrackData") //special case for TrackData (make scaleable later)
-        BVName += "-" + index;
+        BVName += index;
     let BVElement = document.getElementById(`bv-${BVName}`);
 
-    //this technically works now, but needs a few improvements
-    //  number input visually needs to change
-    //  number input doesn't reject non-numbers gracefully
-    //  *all* text inputs should revert to most recent valid value upon failed input
-    //  build an actual ui for this
     const getValue = () => {
         if (inputType === "text") {
             return BVElement.value;
@@ -237,6 +238,78 @@ function processBVInput(inputType, property, keyName, index) {
     }
     updateJSONValue(val, property, value);
 }
+
+function toggleDifficultyActive(index) {
+    let checked = document.getElementById(`bv-difficulty-active${index}`).checked;
+    
+    if(trackInfo.difficulties.length > index) {
+        trackInfo.difficulties[index]._active = checked;
+        // console.log("toggled diff the easy way")
+        updateJSONValue(trackInfo.difficulties[index], "_active", checked);
+    }
+    else {
+        let fullJSON = JSON.parse(JSONEditor.getValue());
+        let trackInfoIndex = -1;
+
+        let jsonHeader = fullJSON.unityObjectValuesContainer.values;
+        let found = false;
+        for(let i = 0; i < jsonHeader.length; i++) {
+            if(jsonHeader[i].jsonKey.trim() == `SO_TrackData_TrackData_${index}`) {
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            console.log(`failed to find trackData${index} in the header, making one`);
+            let newHeader = returnTemplate("Diff Header.json");
+            newHeader = newHeader.replaceAll("$0", index);
+            jsonHeader[jsonHeader.length] = JSON.parse(newHeader);
+        }
+
+        let jsonBody = fullJSON.largeStringValuesContainer.values;
+        found = false;
+        for(let i = 0; i < jsonBody.length; i++) {
+            if(jsonBody[i].key.trim() === `SO_TrackData_TrackData_${index}`) {
+                found = true;
+            }
+            if(jsonBody[i].key.trim() === "SO_TrackInfo_TrackInfo") {
+                trackInfoIndex = i;
+            }
+        }
+        if(!found) {
+            console.log(`failed to find trackData${index} in the body, making one`);
+            let newBody = returnTemplate("Diff Body.json");
+            newBody = newBody.replaceAll("$0", index);
+            newBody = JSON.parse(newBody);
+            newBody.val.difficultyType = index + 2;
+            jsonBody[jsonBody.length] = newBody;
+        }
+        
+        if(trackInfoIndex < 0) {
+            console.error("failed to find trackInfo");
+            return;
+        }
+        let diffs = jsonBody[trackInfoIndex].val.difficulties;
+        found = false;
+        for(let i = 0; i < diffs.length; i++) {
+            if(diffs[i].assetName.trim() === `trackData_${index}`) {
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            console.log(`failed to find trackData${index} in trackData.difficulties, making one`);
+            let newIndex = returnTemplate("Diff Index.json");
+            newIndex = newIndex.replaceAll("$0", index);
+            diffs[diffs.length] = JSON.parse(newIndex);
+        }
+        loadChartData(fullJSON);
+    }
+    updateChartData();
+    renderBasicDiagnostics();
+}
+
+
 
 function updateBVValue(property, value) {
     if (document.getElementById(`bv-${property}`) !== null) {

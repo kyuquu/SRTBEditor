@@ -69,28 +69,28 @@
 
     },
     "number-inputs": {
-        "bv-difficultyRating-0": {
-            "text": "Easy:",
+        "bv-difficultyRating0": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '0')"
         },
-        "bv-difficultyRating-1": {
-            "text": "Normal:",
+        "bv-difficultyRating1": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '1')"
         },
-        "bv-difficultyRating-2": {
-            "text": "Hard:",
+        "bv-difficultyRating2": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '2')"
         },
-        "bv-difficultyRating-3": {
-            "text": "Expert:",
+        "bv-difficultyRating3": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '3')"
         },
-        "bv-difficultyRating-4": {
-            "text": "XD:",
+        "bv-difficultyRating4": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '4')"
         },
-        "bv-difficultyRating-5": {
-            "text": "RemiXD:",
+        "bv-difficultyRating5": {
+            "text": "",
             "function": "processBVInput('number', 'difficultyRating', 'TrackData', '5')"
         }
     },
@@ -98,6 +98,30 @@
         "bv-allowCustomLeaderboardCreation": {
             "text": "Allow Leaderboard Creation",
             "function": "processBVInput('checkbox', 'allowCustomLeaderboardCreation', 'TrackInfo')"
+        },
+        "bv-difficulty-active0": {
+            "text": "Easy:",
+            "function": "toggleDifficultyActive(0)"
+        },
+        "bv-difficulty-active1": {
+            "text": "Normal:",
+            "function": "toggleDifficultyActive(1)"
+        },
+        "bv-difficulty-active2": {
+            "text": "Hard:",
+            "function": "toggleDifficultyActive(2)"
+        },
+        "bv-difficulty-active3": {
+            "text": "Expert:",
+            "function": "toggleDifficultyActive(3)"
+        },
+        "bv-difficulty-active4": {
+            "text": "XD:",
+            "function": "toggleDifficultyActive(4)"
+        },
+        "bv-difficulty-active5": {
+            "text": "RemiXD:",
+            "function": "toggleDifficultyActive(5)"
         }
     },
     "file-inputs": {

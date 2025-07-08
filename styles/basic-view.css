@@ -1,22 +1,15 @@
 #tab0.active {
     display: flex;
     flex-direction: row;
-}
-
-@media screen and (max-width: 900px) {
-    #tab0.active {
-        display: inline;
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
+    overflow-y: auto;
+    flex-wrap: wrap;
 }
 
 .bv0 {
     display: flex;
     flex-direction: column;
-    flex: 2 1 0;
+    flex: 3 1 0;
     min-height: 12rem;
-    overflow: hidden;
 }
 
 .bv0 .checkbox > input {
@@ -27,7 +20,7 @@
     display: flex;
     gap: 4rem;
     padding: 1rem 1rem 2rem 1rem;
-    overflow: hidden;
+    overflow: auto;
 }
 
 #bv-categories {
@@ -36,34 +29,49 @@
 
 .category {
     display: none;
-    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
 }
 
 .category.active {
     display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 .bv1 {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
-    overflow: hidden;
+    flex: 2 1 0;
+}
+
+.bv1-title {
+    display: inline-block;
+    width: 16rem;
+    font-size: 1.75rem;
+    font-weight: bold
+}
+
+.bv1 .checkbox {
+    padding-top: 0.125rem;
+    padding-right: 0.5rem;
+    float: left;
+    align-content: top;
+}
+
+.bv1 .number-input {
+    float: right;
+    padding-left: 0.5rem;
 }
 
 .bv1 .checkbox > input {
     --size: 12;
 }
 
-.bv1 > div:first-child {
-    display: flex;
-    gap: 4rem;
-    padding: 1rem 1rem 2rem 1rem;
-}
-
-#bv-diffs {
-    overflow-y: auto;
+.bv1 .checkbox > label {
+    display: inline-block;
+    min-width: 7rem;
+    font-size: 1.5rem;
 }
 
 .bv2 {
@@ -72,7 +80,7 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    flex: 2 1 0;
+    flex: 3 1 0;
 }
 
 .bv2 > img {

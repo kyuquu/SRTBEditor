@@ -5,9 +5,8 @@ let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
 
-function restoreEditor() {
+function enableWriting() {
     JSONEditor.setReadOnly(false);
-    console.log("did a thing");
 }
 
 
@@ -15,7 +14,7 @@ async function init() {
     loadingMessage.textContent = "INITIALIZING TEMPLATES...";
 
     let requests = [];
-    let templateFilenames = ["Custom.json", "Custom.srtb", "Inertia.srtb", "CUTIEMARKS (And the Things That Bind Us).srtb"];
+    let templateFilenames = ["Custom.json", "Custom.srtb", "Inertia.srtb", "CUTIEMARKS (And the Things That Bind Us).srtb", "Diff Header.json", "Diff Index.json", "Diff Body.json"];
     for (let i = 0; i < templateFilenames.length; i++) {
         requests.push(
             fetch("./templates/" + templateFilenames[i]).then(response => response.json())
@@ -84,7 +83,7 @@ async function init() {
     // startup modifications
     // disable the save dropdown until a chart is loaded
     document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
-    
+
     // configure JSON editor to be readOnly when hitting escape, to allow tab navigation
     // restore writability when focusing back on it
     let editorElement = document.querySelector("#editor");
@@ -94,7 +93,7 @@ async function init() {
         }
     }); 
     let textArea = document.querySelector(".ace_text-input");
-    textArea.setAttribute("onfocus", "restoreWriting()");
+    textArea.setAttribute("onfocus", "enableWriting()");
     
     loadingScreen.classList.remove("active");
     
@@ -117,6 +116,15 @@ async function init() {
                 loadTemplate("CUTIEMARKS (And the Things That Bind Us).srtb");
             }
         }
+        if (e.ctrlKey && e.code === "KeyS" && activeTab === 1) {
+                e.preventDefault();
+                if(validateJSON(JSONEditor.getValue())) {
+                    saveEditorChanges();
+                }
+                else {
+                    console.warn("cannot save invalid JSON");
+                }
+            }
     });
 }
 

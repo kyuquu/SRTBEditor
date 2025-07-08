@@ -6,12 +6,12 @@
 }
 
 .checkbox > label {
-    display: block;
     font-size: 1.25rem;
     font-weight: bold;
 }
 
 .checkbox > input {
+    flex-shrink: 0;
     display: grid;
     place-content: center;
     appearance: none;
