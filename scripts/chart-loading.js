@@ -40,32 +40,33 @@ function loadTemplate(filename) {
 
 
 async function loadFromLink() {
-    let input = prompt("Please enter a SpinShare link or ID:");
+    let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
     let id = "";
 
     if (input !== null && input !== "") {
-        if (!isNaN(parseInt(input)) && parseInt(input) == input) { // expected format: 12345
+        if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: 12345
+                || input.trim().substring(0, "spinshare_".length) === "spinshare_") { // expected format: spinshare_123456abcde
             id = input;
         }
         else {
-            let i = input.lastIndexOf("/") + 1;
-            if (i === 0) { // expected format: spinshare_66f651eb93112
-                id = input;
-            }
-            else if (!isNaN(parseInt(input))) { // expected format: https://spinsha.re/song/12345
-                do {
-                    id += input[i];
-                    i++;
-                }
-                while (!isNaN(parseInt(input)) && input[i] !== undefined);
-            }
-            else { // expected format: https://spinsha.re/song/spinshare_66f651eb93112
+            input = input.substring(input.lastIndexOf('/') + 1);
+            let i = 0;
+            if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: https://spinsha.re/song/12345
+                    || input.includes("spinshare_", i)) { // expected format: https://spinsha.re/song/spinshare_66f651eb93112
                 do {
                     id += input[i];
                     i++;
                 }
                 while (input[i] !== "?" && input[i] !== undefined);
             }
+            else {
+                alert("Input is not a valid link");
+                return;
+            }
+        }
+        if(id.includes("spinshare_")) { //temporary rejecting these until laura implements them in the api
+            alert("SpinShare API doesn't support spinshare_ links (yet)");
+            return;
         }
 
         let link = `https://spinsha.re/api/song/${id}/download`;
@@ -78,7 +79,6 @@ async function loadFromLink() {
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
                 if(file.size < 50) {
-                    console.warn("SpinShare ID not found");
                     alert("Chart ID not found");
                 }
                 else {
