@@ -44,29 +44,29 @@ async function loadFromLink() {
     let id = "";
 
     if (input !== null && input !== "") {
+        if(id.includes("spinshare_")) { //temporarily rejecting these until laura implements them in the api
+            alert("SpinShare API doesn't support spinshare_ links (yet)");
+            return;
+        }
         if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: 12345
-                || input.trim().substring(0, "spinshare_".length) === "spinshare_") { // expected format: spinshare_123456abcde
+                || input.trim().substring(0, "spinshare_".length) === "spinshare_") { // expected format: spinshare_66f651eb93112
             id = input;
         }
         else {
             input = input.substring(input.lastIndexOf('/') + 1);
             let i = 0;
             if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: https://spinsha.re/song/12345
-                    || input.includes("spinshare_", i)) { // expected format: https://spinsha.re/song/spinshare_66f651eb93112
+                    || input.includes("spinshare_")) { // expected format: https://spinsha.re/song/spinshare_66f651eb93112
                 do {
                     id += input[i];
                     i++;
                 }
-                while (input[i] !== "?" && input[i] !== undefined);
+                while (input[i] && input[i] !== "?");
             }
             else {
                 alert("Input is not a valid link");
                 return;
             }
-        }
-        if(id.includes("spinshare_")) { //temporary rejecting these until laura implements them in the api
-            alert("SpinShare API doesn't support spinshare_ links (yet)");
-            return;
         }
 
         let link = `https://spinsha.re/api/song/${id}/download`;
@@ -102,14 +102,10 @@ function loadChartFile(file) {
                     let srtb = e.target.result;
                     let json = convertToJSON(JSON.parse(srtb));
                     loadChartData(json);
-                    document.getElementById("bv-album-art").src = "assets/images/Default_-_Cover.png";
-                    document.getElementById("bv-album-art").src = "assets/audio/Get Good.ogg";
                 }
                 else if (fileExtension === "json") {
                     let json = JSON.parse(e.target.result);
                     loadChartData(json);
-                    document.getElementById("bv-album-art").src = "assets/images/Default_-_Cover.png";
-                    document.getElementById("bv-album-art").src = "assets/audio/Get Good.ogg";
                 }
 
                 chartFilename = file.name;
