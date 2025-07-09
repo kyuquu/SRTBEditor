@@ -42,6 +42,7 @@
 .bv1 {
     display: flex;
     flex-direction: column;
+    gap: 1rem;
     flex: 2 1 0;
 }
 
@@ -71,7 +72,7 @@
 .bv1 .checkbox > label {
     display: inline-block;
     min-width: 7rem;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
 
 .bv2 {
@@ -88,7 +89,7 @@
     max-height: 16rem;
 }
 
-.bv0.disabled > #bv-categories > *, .bv1.disabled > #bv-diffs > *, .bv2.disabled > *{
+.bv0.disabled > #bv-categories > *, .bv1.disabled > .category > *, .bv2.disabled > * {
     opacity: 50%;
     pointer-events: none;
 }

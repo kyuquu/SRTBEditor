@@ -2,7 +2,7 @@
     display: inline;
     width: fit-content;
     padding-bottom: 0.25rem;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: bold;
 }
 
@@ -14,7 +14,7 @@
     border-radius: 0;
     box-sizing: border-box;
     outline: none;
-    font-size: 1.25rem;
+    font-size: 1rem;
     background: var(--color-main);
     transition: width 250ms ease-out;
 }
