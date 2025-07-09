@@ -53,7 +53,7 @@ async function loadFromLink() {
             id = input;
         }
         else {
-            if(input[-1] === '/') { // support for links ending in '/'
+            if(input[input.length-1] === '/') { // support for links ending in '/'
                 input = input.substring(0, input.length - 1);
             }
             input = input.substring(input.lastIndexOf('/') + 1);
