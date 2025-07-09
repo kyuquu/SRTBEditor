@@ -292,7 +292,7 @@ function toggleDifficultyActive(index) {
         let diffs = jsonBody[trackInfoIndex].val.difficulties;
         found = false;
         for(let i = 0; i < diffs.length; i++) {
-            if(diffs[i].assetName.trim() === `trackData_${index}`) {
+            if(diffs[i].assetName.trim() === `TrackData_${index}`) {
                 found = true;
                 break;
             }
