@@ -44,7 +44,7 @@ async function loadFromLink() {
     let id = "";
 
     if (input !== null && input !== "") {
-        if(id.includes("spinshare_")) { //temporarily rejecting these until laura implements them in the api
+        if(id.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
             alert("SpinShare API doesn't support spinshare_ links (yet)");
             return;
         }
@@ -53,6 +53,9 @@ async function loadFromLink() {
             id = input;
         }
         else {
+            if(input[-1] === '/') { // support for links ending in '/'
+                input = input.substring(0, input.length - 1);
+            }
             input = input.substring(input.lastIndexOf('/') + 1);
             let i = 0;
             if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: https://spinsha.re/song/12345
