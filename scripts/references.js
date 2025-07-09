@@ -8,12 +8,19 @@ function getReferences(json) {
     let values = json["largeStringValuesContainer"]["values"];
 
     let TI;
-    let TD = Array.from({length: 6}, () => ({}));
+    let TD = [];
     let CI = [];
+
+    let weird = false;
     
     for (let i = 0; i < values.length; i++) {
         const key = values[i]["key"];
         const val = values[i]["val"];
+
+        if((!key) || !val) {
+            weird = true;
+            continue;
+        }
         
         if (key === "SO_TrackInfo_TrackInfo") {
             TI = val;
@@ -50,6 +57,10 @@ function getReferences(json) {
         else {
             console.error("Unrecognized key: " + key);
         }
+    }
+    
+    if(weird || TD.length < 5 || CI.length < 1) {
+        console.warn("Oddities found in this SRTB file, SRTBE might not work as intended. Saving and loading in-game may help.")
     }
 
     return [TI, TD, CI];
