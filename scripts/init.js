@@ -94,8 +94,7 @@ async function init() {
     }); 
     let textArea = document.querySelector(".ace_text-input");
     textArea.setAttribute("onfocus", "enableWriting()");
-    
-    loadingMessage.textContent = "DONE!";
+
     loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {

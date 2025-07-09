@@ -79,7 +79,6 @@ async function loadFromLink() {
                 let file = new File([blob], `${id}.zip`);
                 loadChartFile(file);
                 
-                loadingMessage.textContent = "DONE!";
                 loadingScreen.classList.remove("active");
             });
     }
