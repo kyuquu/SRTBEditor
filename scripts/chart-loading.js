@@ -68,11 +68,17 @@ async function loadFromLink() {
             }
         }
 
+        loadingMessage.textContent = `LOADING CHART WITH ID "${id}"...`;
+        loadingScreen.classList.add("active");
+
         await fetch(`https://spinsha.re/api/song/${id}/download`)
             .then(response => response.blob())
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
                 loadChartFile(file);
+                
+                loadingMessage.textContent = "DONE!";
+                loadingScreen.classList.remove("active");
             });
     }
 }
