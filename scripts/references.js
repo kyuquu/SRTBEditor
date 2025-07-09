@@ -15,6 +15,10 @@ function getReferences(json) {
         const key = values[i]["key"];
         const val = values[i]["val"];
         
+        if(!key || !val) {
+            continue;
+        }
+        
         if (key === "SO_TrackInfo_TrackInfo") {
             TI = val;
         }
