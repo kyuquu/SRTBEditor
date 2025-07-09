@@ -44,7 +44,7 @@ async function loadFromLink() {
     let id = "";
 
     if (input !== null && input !== "") {
-        if (!isNaN(parseInt(input))) { // expected format: 12345
+        if (!isNaN(parseInt(input)) && parseInt(input) == input) { // expected format: 12345
             id = input;
         }
         else {
@@ -68,10 +68,12 @@ async function loadFromLink() {
             }
         }
 
+        let link = `https://spinsha.re/api/song/${id}/download`;
+
         loadingMessage.textContent = `LOADING CHART WITH ID "${id}"...`;
         loadingScreen.classList.add("active");
 
-        await fetch(`https://spinsha.re/api/song/${id}/download`)
+        await fetch(link)
             .then(response => response.blob())
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
