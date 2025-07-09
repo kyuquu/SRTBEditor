@@ -77,7 +77,13 @@ async function loadFromLink() {
             .then(response => response.blob())
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
-                loadChartFile(file);
+                if(file.size < 50) {
+                    console.warn("SpinShare ID not found");
+                    alert("Chart ID not found");
+                }
+                else {
+                    loadChartFile(file);
+                }
                 
                 loadingScreen.classList.remove("active");
             });
