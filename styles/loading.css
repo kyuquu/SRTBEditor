@@ -7,7 +7,7 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background: var(--color-bg);
+    background: rgba(var(--color-bg-values), 90%);
     pointer-events: none;
     opacity: 0;
     z-index: 10;
