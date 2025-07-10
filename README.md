@@ -21,7 +21,7 @@ https://kyuquu.github.io/SRTBEditor/
 ## Feedback
 If you encounter any bugs or other issues, you can:
 - create an issue in the GitHub repository
-- send a message in the thread attached to the pinned message in [`#charter-discussion`](https://discord.com/channels/638508804505337867/1392735727837778013)
+- send a message in the [thread](https://discord.com/channels/638508804505337867/1392735727837778013) attached to the pinned message in `#charter-discussion`
 - DM `@kyuquu` or `@gaviguy` on Discord
 
 ## Known Issues
