@@ -44,7 +44,7 @@ async function loadFromLink() {
     let id = "";
 
     if (input !== null && input !== "") {
-        if(id.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
+        if(input.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
             alert("SpinShare API doesn't support spinshare_ links (yet)");
             return;
         }
