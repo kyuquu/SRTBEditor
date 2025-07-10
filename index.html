@@ -37,6 +37,7 @@
     <script defer type="text/javascript" src="scripts/album-art.js"></script>
     <script defer type="text/javascript" src="scripts/audio-clips.js"></script>
     <script defer type="text/javascript" src="scripts/diagnostics.js"></script>
+    <script defer type="text/javascript" src="scripts/charter-utils.js"></script>
 
     <!-- - - - COMPONENTS - - - - - - -->
     <!-- button -->     <link rel="stylesheet" type="text/css" href="components/button/button.css">
@@ -178,7 +179,11 @@
 
             <div id="tab2" class="tab">
                 <div class="dv disabled">
-                    <div id="dv-root" class="dv"></div>
+                    <div class="dv dv-utils">
+                        <button class="button" id="dv-stack"
+                                title="Find any notes that are within 0.5ms and stack them." ></button>
+                    </div>
+                    <div id="dv-root" class="dv-root"></div>
                 </div>
             </div>
         </div>

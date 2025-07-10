@@ -43,6 +43,10 @@
         "jv-discard": {
             "text": "DISCARD CHANGES",
             "function": "discardEditorChanges()"
+        },
+        "dv-stack": {
+            "text": "Stack nearby notes",
+            "function": "stackNearbyNotesAllDiffs()"
         }
     },
     "text-inputs": {

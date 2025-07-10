@@ -117,14 +117,14 @@ async function init() {
             }
         }
         if (e.ctrlKey && e.code === "KeyS" && activeTab === 1) {
-                e.preventDefault();
-                if(validateJSON(JSONEditor.getValue())) {
-                    saveEditorChanges();
-                }
-                else {
-                    console.warn("cannot save invalid JSON");
-                }
+            e.preventDefault();
+            if(validateJSON(JSONEditor.getValue())) {
+                saveEditorChanges();
             }
+            else {
+                console.warn("cannot save invalid JSON");
+            }
+        }
     });
 }
 
