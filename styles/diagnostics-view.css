@@ -7,7 +7,7 @@
     pointer-events: none;
 }
 
-.dv {
+.dv-root {
     display: flex;
     flex-direction: row;
     gap: 2rem;
@@ -37,4 +37,17 @@
 .dv-box-subtitle {
     font-weight: bold;
     padding-top: 1rem;
+}
+
+.dv-utils {
+    display: flex;
+    flex-direction: horizontal;
+    gap: 1rem;
+    padding-left: 1rem;
+    width: 100%;
+    background: var(--color-bg);
+}
+
+.dv-utils > button {
+    --size: 0.625;
 }

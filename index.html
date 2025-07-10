@@ -9,9 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
-    <link rel="icon" type="image/x-icon" href="/favicon-16x16.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/x-icon" href="favicon-16x16.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 
     <!-- - - - LIBRARIES  - - - - - - -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.37.0/ace.min.js" integrity="sha512-ir9JaQR8EgducDjvBjP9spPK+QWvlQDRv3vWn8c1+PAd2+W1wswCI2XDGJSr8V7s3wS/8bKnvK86tNtLbTapdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -37,6 +37,7 @@
     <script defer type="text/javascript" src="scripts/album-art.js"></script>
     <script defer type="text/javascript" src="scripts/audio-clips.js"></script>
     <script defer type="text/javascript" src="scripts/diagnostics.js"></script>
+    <script defer type="text/javascript" src="scripts/charter-utils.js"></script>
 
     <!-- - - - COMPONENTS - - - - - - -->
     <!-- button -->     <link rel="stylesheet" type="text/css" href="components/button/button.css">
@@ -178,7 +179,11 @@
 
             <div id="tab2" class="tab">
                 <div class="dv disabled">
-                    <div id="dv-root" class="dv"></div>
+                    <div class="dv dv-utils">
+                        <button class="button" id="dv-stack"
+                                title="Find any notes that are within 0.5ms and stack them." ></button>
+                    </div>
+                    <div id="dv-root" class="dv-root"></div>
                 </div>
             </div>
         </div>
