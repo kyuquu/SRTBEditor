@@ -1,10 +1,17 @@
 function stackNearbyNotesAllDiffs() {
     let trackData = getReferences(chartJSON)[1];
+    let numChanges = 0;
+    let numDiffs = 0;
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active) {
-            stackNearbyNotes(trackData[i].notes);
+            let val = stackNearbyNotes(trackData[i].notes);
+            if(val) numDiffs++;
+            numChanges += val;
         }
+    }
+    if(numChanges) {
+        alert(`Moved ${numChanges} notes across ${numDiffs} difficulties`);
     }
     updateChartData();
     discardEditorChanges();
@@ -27,7 +34,18 @@ function stackNearbyNotes(noteData) {
             prevTime = noteData[i].time;
         }
     }
-    if(numChanges > 0) {
-        alert(`Changed the timings on ${numChanges} notes`);
+    return numChanges;
+}
+
+function copyToClipboard(index) {
+    let ret = "";
+    let elem = document.getElementById(`dv-diff${index}`);
+    if(elem) {
+        ret += trackInfo.title + '\t';
+        let line = elem.querySelector(".dv-max-score").textContent;
+        ret += line.substring(line.lastIndexOf(':') + 1).trim() + '\t';
+        line = elem.querySelector(".dv-max-combo").textContent
+        ret += line.substring(line.lastIndexOf(':') + 1).trim() + '\t';
     }
+    navigator.clipboard.writeText(ret);
 }
