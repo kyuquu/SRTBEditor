@@ -1,5 +1,6 @@
 #tab2.active {
-    display: flex;
+    display: block;
+    overflow-y: auto;
 }
 
 .dv.disabled * {
@@ -8,6 +9,7 @@
 }
 
 .dv-root {
+    width: 100%;
     display: flex;
     flex-direction: row;
     gap: 2rem;
@@ -15,7 +17,6 @@
     flex-wrap: wrap;
     padding: 1rem;
     box-sizing: border-box;
-    overflow-y: auto;
 }
 
 .dv-box {
@@ -44,10 +45,14 @@
     flex-direction: horizontal;
     gap: 1rem;
     padding-left: 1rem;
-    width: 100%;
     background: var(--color-bg);
 }
 
 .dv-utils > button {
     --size: 0.625;
+}
+
+.dv-box > button {
+    margin-top: 0.5rem;
+    --size: 0.375;
 }

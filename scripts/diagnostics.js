@@ -35,6 +35,7 @@ function renderBasicDiagnostics() {
                 continue;
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
+            mainContainer.setAttribute("id", `dv-diff${i}`)
 
             let title = mainContainer.appendChild(document.createElement("div"));
             title.textContent = diffTypeNames[trackData[i].difficultyType];
@@ -47,6 +48,12 @@ function renderBasicDiagnostics() {
             calculateBalance(notes, mainContainer);
 
             calculateMaxScoreAndCombo(notes, mainContainer);
+
+            let buttonElem = mainContainer.appendChild(document.createElement("button"));
+            buttonElem.setAttribute("class", "button");
+            buttonElem.setAttribute("onclick", `copyToClipboard(${i})`);
+            buttonElem.textContent = "Copy";
+
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
@@ -148,18 +155,25 @@ function calculateBalance(notesIn, htmlParent) {
 
     let matchElement = htmlParent.appendChild(document.createElement("div"));
     matchElement.textContent = `Matches: ${nMatch}`;
+    matchElement.setAttribute("class", "dv-match-count");
     let tapElement = htmlParent.appendChild(document.createElement("div"));
     tapElement.textContent = `Taps: ${nTap}`;
+    tapElement.setAttribute("class", "dv-tap-count");
     let beatElement = htmlParent.appendChild(document.createElement("div"));
     beatElement.textContent = `Beats: ${nBeat}`;
+    beatElement.setAttribute("class", "dv-beat-count");
     let holdElement = htmlParent.appendChild(document.createElement("div"));
     holdElement.textContent = `Holds: ${nSlider + nBeathold}`;
+    holdElement.setAttribute("class", "dv-hold-count");
     let releaseElement = htmlParent.appendChild(document.createElement("div"));
     releaseElement.textContent = `Releases: ${nBeatRelease + nSliderRelease}`;
+    releaseElement.setAttribute("class", "dv-release-count");
     let spinElement = htmlParent.appendChild(document.createElement("div"));
     spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
+    spinElement.setAttribute("class", "dv-spin-count");
     let scratchElement = htmlParent.appendChild(document.createElement("div"));
     scratchElement.textContent = `Scratches: ${nScratch}`;
+    scratchElement.setAttribute("class", "dv-scratch-count");
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
@@ -299,6 +313,8 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
 
     let scoreElement = htmlParent.appendChild(document.createElement("div"));
     scoreElement.textContent = `Max score: ${maxScore}`;
+    scoreElement.setAttribute("class", "dv-max-score");
     let comboElement = htmlParent.appendChild(document.createElement("div"));
     comboElement.textContent = `Max combo: ${maxCombo}`;
+    comboElement.setAttribute("class", "dv-max-combo");
 }
