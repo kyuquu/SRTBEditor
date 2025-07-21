@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A web-based application for viewing and editing .srtb files for Spin Rhythm XD">
+    <title>SRTB Editor (v2.0.0)</title>
+
+	<link rel="icon" type="image/x-icon" href="%sveltekit.assets%/favicon-16x16.ico">
+	<link rel="icon" type="image/png" sizes="16x16" href="%sveltekit.assets%/favicon-16x16.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="%sveltekit.assets%/favicon-32x32.png">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
+
+	<!-- ace editor -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.2/ace.js" integrity="sha512-ZIa+FlPaGDSM+lTl9JaxnQvcfma7ETsOHd9Thbhp5u4RX1uYiDNW7XvUrXv4dJSPetXbiTzWilHEkSg4YpmltQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<style>
+		:root {
+			--color-bg: rgb(16, 16, 16);
+			--color-bg-values: 16, 16, 16;
+			--color-main: rgb(255, 255, 255);
+			--color-main-values: 255, 255, 255;
+
+			color: var(--color-main);
+			background: var(--color-bg);
+
+			font-family: "Montserrat", sans-serif;
+			font-size: 16px;
+		}
+
+		* {
+			font-family: inherit;
+		}
+
+		body {
+			margin: 0;
+			user-select: none;
+			overflow: hidden;
+		}
+
+		a {
+			color: inherit;
+		}
+
+		input[type="file"] {
+			display: none;
+		}
+	</style>
+
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="off">
+	<div style="display: contents">%sveltekit.body%</div>
+</body>
+</html>
