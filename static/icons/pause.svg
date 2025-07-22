@@ -11,18 +11,12 @@
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1" />
-  <rect
-     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.79375;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-     id="rect1"
-     width="2.1166666"
-     height="10.583332"
-     x="2.1166666"
-     y="1.0583336" />
-  <rect
-     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.79375;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-     id="rect2"
-     width="2.1166658"
-     height="10.583332"
-     x="8.4666662"
-     y="1.0583333" />
+  <path
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 9.5249995,2.1166666 V 10.583333"
+     id="path1" />
+  <path
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 3.1749998,2.1166666 V 10.583333"
+     id="path1-8" />
 </svg>

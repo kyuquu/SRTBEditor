@@ -108,7 +108,7 @@
         left: 0;
         width: 0.75rem;
         height: 0.75rem;
-        margin: calc((100% - 0.75rem) / 2);
+        margin: 0.5rem;
         -webkit-mask-size: 0.75rem;
         mask-size: 0.75rem;
         background: var(--color-main);

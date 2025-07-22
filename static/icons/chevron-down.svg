@@ -12,9 +12,10 @@
   <defs
      id="defs1" />
   <g
-     id="layer1">
+     id="layer1"
+     style="fill:none;fill-opacity:1;stroke-width:2.11667;stroke-dasharray:none">
     <path
-       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="m 1.190625,3.9017775 5.1593747,4.896445 5.1593753,-4.896445"
        id="path1" />
   </g>
