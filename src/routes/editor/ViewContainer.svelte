@@ -1,5 +1,6 @@
 <script>
     import { chart, view } from "$lib/scripts/main.svelte.js";
+    import { getViewHeader } from "$lib/scripts/helper.svelte";
 
     let {children} = $props();
 </script>
@@ -18,7 +19,7 @@
                 <span class="featured" title={chart.trackInfo.featArtists}>{chart.trackInfo.featArtists}</span>
             </div>
         {:else}
-            <div class="top1" title={`${chart.trackInfo.title} - ${chart.trackInfo.artistName}`}>{chart.trackInfo.title} - {chart.trackInfo.artistName}</div>
+            <div class="top1" title={getViewHeader()}>{getViewHeader()}</div>
         {/if}
     </div>
 
@@ -34,13 +35,13 @@
 
     <div class="bottom">
         {#if chart.json !== undefined}
-            <div>
+            <div title={chart.trackInfo.charter}>
                 <span class="label">CHARTER</span>
-                <span class="value" title={chart.trackInfo.charter}>{chart.trackInfo.charter}</span>
+                <span class="value">{chart.trackInfo.charter}</span>
             </div>
-            <div>
+            <div title={chart.filename}>
                 <span class="label">FILENAME</span>
-                <span class="value" title={chart.filename}>{chart.filename}</span>
+                <span class="value">{chart.filename}</span>
             </div>
         {/if}
     </div>
@@ -71,6 +72,10 @@
         flex: 0 0 4rem;
     }
 
+    .top:not(.reduced) > div {
+        color: rgba(var(--color-bg-values), 50%);
+    }
+
     .top > div, .bottom > div {
         text-wrap: nowrap;
         text-overflow: ellipsis;
@@ -82,6 +87,10 @@
         font-size: 3rem;
         font-weight: 800;
         line-height: 4rem;
+    }
+
+    .top1 > span, .top2 > span {
+        color: var(--color-bg);
     }
 
     .top2 {
@@ -140,6 +149,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 1rem;
         flex: 0 0 2rem;
         padding: 0 2.25rem;
         font-size: 1.375rem;

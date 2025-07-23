@@ -19,10 +19,15 @@
 
 	<style>
 		:root {
-			--color-bg: rgb(16, 16, 16);
 			--color-bg-values: 16, 16, 16;
-			--color-main: rgb(255, 255, 255);
+			--color-bg: rgb(var(--color-bg-values));
 			--color-main-values: 255, 255, 255;
+			--color-main: rgb(var(--color-main-values));
+
+			--color-info: var(--color-main);
+			--color-success: rgb(64, 255, 64);
+			--color-warning: rgb(255, 255, 64);
+			--color-error: rgb(255, 64, 64);
 
 			color: var(--color-main);
 			background: var(--color-bg);

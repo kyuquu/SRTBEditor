@@ -1,7 +1,8 @@
 import JSZip from "jszip";
 
 import { chart } from "$lib/scripts/main.svelte.js";
-import { convertToJSON } from "$lib/scripts/helper.svelte.js";
+import { convertToJSON, getViewHeader } from "$lib/scripts/helper.svelte.js";
+import { createToast, deleteToast } from "../../routes/ToastContainer.svelte";
 
 import { templates } from "$lib/templates";
 
@@ -24,9 +25,12 @@ export function loadChartFile(file) {
                 chart.filename = file.name;
                 chart.albumArt = undefined;
                 chart.audioClips = undefined;
+
+                createToast("success", "Chart loaded successfully!", `${getViewHeader()}`);
             }
             catch (e) {
-                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+                createToast("error", `Invalid .${fileExtension} file.`, "Check console for details.");
+                console.error(`Invalid .${fileExtension} file.\n\n${e}`);
             }
         };
         reader.readAsText(file);
@@ -35,63 +39,83 @@ export function loadChartFile(file) {
         let zip = new JSZip();
         zip.loadAsync(file)
             .then(async (zip) => {
-                let srtbFilename;
-                let srtb;
-                let imageFilename;
-                let image;
-                let audioFilename;
-                let audio;
+                try {
+                    let srtbFilename;
+                    let srtb;
+                    let imageFilename;
+                    let image;
+                    let audioFilename;
+                    let audio;
 
-                let filenames = Object.keys(zip.files);
-                let nAudio = 0;
-                for (let i = 0; i < filenames.length; i++) {
-                    let filename = filenames[i];
-                    if (filename.slice(-4) === "srtb") {
-                        srtb = zip.files[filename];
-                        srtbFilename = filename;
-                    }
-                    else if (filename.slice(0, 8) === "AlbumArt") {
-                        image = zip.files[filename];
-                        imageFilename = filename;
-                    }
-                    else if (filename.slice(0, 10) === "AudioClips") {
-                        if(nAudio > 1) {
-                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
-                            continue;
+                    let filenames = Object.keys(zip.files);
+                    let numOfAudio = 0;
+                    for (let i = 0; i < filenames.length; i++) {
+                        let filename = filenames[i];
+                        if (filename.slice(-4) === "srtb") {
+                            srtb = zip.files[filename];
+                            srtbFilename = filename;
                         }
-                        audio = zip.files[filename];
-                        audioFilename = filename;
-                        nAudio++;
+                        else if (filename.slice(0, 8) === "AlbumArt") {
+                            image = zip.files[filename];
+                            imageFilename = filename;
+                        }
+                        else if (filename.slice(0, 10) === "AudioClips") {
+                            numOfAudio++;
+                            if(numOfAudio > 1) {
+                                continue;
+                            }
+                            audio = zip.files[filename];
+                            audioFilename = filename;
+                        }
+                    }
+
+                    let isLoadSuccessful = await loadZipSRTB(srtb);
+                    if (!isLoadSuccessful) {
+                        return;
+                    }
+
+                    chart.albumArt = undefined;
+                    chart.audioClips = undefined;
+
+                    if (image !== undefined) {
+                        await loadZipImage(image, imageFilename);
+                    }
+                    if (audio !== undefined) {
+                        await loadZipAudio(audio, audioFilename);
+                    }
+                    
+                    chart.filename = srtbFilename;
+
+                    createToast("success", "Chart loaded successfully!", `${getViewHeader()}`);
+                    if (numOfAudio > 1) {
+                        createToast("warning", "Multiple audio clips detected.", "SRTBEditor doesn't support multiple audio clips. Please be careful when saving as a .zip file.");
                     }
                 }
-
-                await loadZipSRTB(srtb);
-                if (image !== undefined) {
-                    await loadZipImage(image, imageFilename);
+                catch (e) {
+                    createToast("error", `Invalid .zip file.`, "Check console for details.");
+                    console.error(`Invalid .${fileExtension} file.\n\n${e}`);
                 }
-                if (audio !== undefined) {
-                    await loadZipAudio(audio, audioFilename);
-                }
-                
-                chart.filename = srtbFilename;
-            }, () => {
-                window.alert("Invalid .zip");
-            }); 
+            });
     }
     else {
-        window.alert(`Unrecognized file extension: .${fileExtension}`);
+        createToast("error", "Unrecognized file extension.", `${file.name}`);
     }
 }
 
 async function loadZipSRTB(srtb) {
+    let isLoadSuccessful;
     await srtb.async("string").then((content) => {
         try {
             chart.json = convertToJSON(JSON.parse(content));
+            isLoadSuccessful = true;
         }
         catch (e) {
-            window.alert(`.zip file contains invalid .srtb\n\n${e}`);
+            createToast("error", "Invalid .strb file.", "Check console for details.");
+            console.error(`Invalid .strb file.\n\n${e}`);
+            isLoadSuccessful = false;
         }
     });
+    return isLoadSuccessful;
 }
 
 async function loadZipImage(image, filename) {
@@ -139,11 +163,12 @@ export function loadTemplate(filename) {
             chart.audioClips = undefined;
         }
         catch (e) {
-            window.alert(`Template failed to load\n\n${e}`);
+            createToast("error", "Template failed to load.", "Check console for details.");
+            console.error(`Template failed to load.\n\n${e}`);
         }
     }
     else {
-        window.alert(`Unrecognized file extension: .${fileExtension}`);
+        createToast("error", "Unrecognized file extension.", `${filename}`);
     }
 }
 
@@ -160,10 +185,12 @@ export function loadFromFile() {
 }
 
 export async function loadFromLink() {
-    let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
+    let input = prompt("Please enter a SpinShare link or ID:");
     let id = "";
 
     if (input !== null && input !== "") {
+        input = input.toLowerCase();
+
         if(input.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
             alert("SpinShare API doesn't support spinshare_ links (yet)");
             return;
@@ -194,16 +221,20 @@ export async function loadFromLink() {
 
         let link = `https://spinsha.re/api/song/${id}/download`;
 
+        let toastID = createToast("info", "Fetching from SpinShare...", `Chart ID: ${id}`);
+
         await fetch(link)
             .then(response => response.blob())
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
                 if(file.size < 50) {
-                    alert("Chart ID not found");
+                    createToast("error", `ID "${id}" not found.`);
                 }
                 else {
                     loadChartFile(file);
                 }
+
+                deleteToast(toastID);
             });
     }
 }

@@ -13,10 +13,10 @@
      id="defs1" />
   <g
      id="layer1"
-     style="fill:none;fill-opacity:1;stroke-width:2.11667;stroke-dasharray:none">
+     style="fill:none;fill-opacity:1;stroke-width:1.5875;stroke-dasharray:none">
     <path
-       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-       d="m 1.190625,3.9017775 5.1593747,4.896445 5.1593753,-4.896445"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       d="M 1.0583333,3.9687498 6.3499997,8.7312495 11.641666,3.9687498"
        id="path1" />
   </g>
 </svg>

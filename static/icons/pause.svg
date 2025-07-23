@@ -12,11 +12,11 @@
   <defs
      id="defs1" />
   <path
-     style="fill:#ffffff;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-     d="M 9.5249995,2.1166666 V 10.583333"
-     id="path1" />
-  <path
-     style="fill:#ffffff;stroke:#ffffff;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-     d="M 3.1749998,2.1166666 V 10.583333"
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 2.9104165,1.8520832 V 10.847916 H 3.4395832 V 1.8520832 Z"
      id="path1-8" />
+  <path
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:1.5875;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 9.2604162,1.8520833 V 10.847916 H 9.7895827 V 1.8520833 Z"
+     id="path1-8-8" />
 </svg>

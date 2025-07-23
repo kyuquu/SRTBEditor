@@ -4,7 +4,7 @@
     let currentTime = $state(0);
 	let duration = $state(1);
 	let paused = $state(true);
-    let volume = $state(0.5);
+    let volume = $state(0.25);
 
 	function format(time) {
         if (isNaN(time)) return "--:--";

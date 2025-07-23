@@ -4,7 +4,6 @@ import diffIndex from "./Diff Index.json";
 import diffHeader from "./Diff Header.json";
 import diffBody from "./Diff Body.json";
 import inertia from "./Inertia.srtb?raw";
-import cutiemarks from "./CUTIEMARKS (And the Things That Bind Us).srtb?raw";
 
 export const templates = {
     "Custom.json": defaultJSON,
@@ -12,6 +11,5 @@ export const templates = {
     "Diff Index.json": diffIndex,
     "Diff Header.json": diffHeader,
     "Diff Body.json": diffBody,
-    "Inertia.srtb": JSON.parse(inertia),
-    "CUTIEMARKS (And the Things That Bind Us).srtb": JSON.parse(cutiemarks)
+    "Inertia.srtb": JSON.parse(inertia)
 }

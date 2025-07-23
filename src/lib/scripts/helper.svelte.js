@@ -39,6 +39,10 @@ export function validateJSON(json) {
     }
 }
 
+export function getViewHeader() {
+    return chart.trackInfo.title + " - " + chart.trackInfo.artistName;
+}
+
 async function readFileAsDataURL(file) {
     let dataURL = await new Promise((resolve) => {
         const reader = new FileReader();
