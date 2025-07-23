@@ -5,10 +5,6 @@ let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
 
-function enableWriting() {
-    JSONEditor.setReadOnly(false);
-}
-
 
 async function init() {
     loadingMessage.textContent = "INITIALIZING TEMPLATES...";
@@ -87,13 +83,13 @@ async function init() {
     // configure JSON editor to be readOnly when hitting escape, to allow tab navigation
     // restore writability when focusing back on it
     let editorElement = document.querySelector("#editor");
-    editorElement.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            JSONEditor.setReadOnly(true);
-        }
-    }); 
-    let textArea = document.querySelector(".ace_text-input");
-    textArea.setAttribute("onfocus", "enableWriting()");
+    // editorElement.addEventListener("keydown", (e) => {
+    //     if (e.key === "Escape") {
+    //         JSONEditor.setReadOnly(true);
+    //     }
+    // }); 
+    // let textArea = document.querySelector(".ace_text-input");
+    // textArea.setAttribute("onfocus", "enableWriting()");
 
     loadingScreen.classList.remove("active");
     
