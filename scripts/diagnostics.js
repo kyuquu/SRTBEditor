@@ -54,6 +54,11 @@ function renderBasicDiagnostics() {
             buttonElem.setAttribute("onclick", `copyToClipboard(${i})`);
             buttonElem.textContent = "Copy";
 
+            let mirrorTwistyButton = mainContainer.appendChild(document.createElement("button"));
+            mirrorTwistyButton.setAttribute("class", "button");
+            mirrorTwistyButton.setAttribute("onclick", `mirrorTwistyTrack(${i})`);
+            mirrorTwistyButton.textContent = "Mirror Twisty Track";
+
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
