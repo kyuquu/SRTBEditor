@@ -52,7 +52,7 @@ function renderBasicDiagnostics() {
             let buttonElem = mainContainer.appendChild(document.createElement("button"));
             buttonElem.setAttribute("class", "button");
             buttonElem.setAttribute("onclick", `copyToClipboard(${i})`);
-            buttonElem.textContent = "Copy";
+            buttonElem.textContent = "Copy Score Data";
 
             let mirrorTwistyButton = mainContainer.appendChild(document.createElement("button"));
             mirrorTwistyButton.setAttribute("class", "button");
