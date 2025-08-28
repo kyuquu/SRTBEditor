@@ -37,6 +37,17 @@ function stackNearbyNotes(noteData) {
     return numChanges;
 }
 
+function mirrorTwistyTrack(index) {
+    let trackData = getReferences(chartJSON)[1];
+    let trackTurns = trackData[index].references.RefIds[0].data.trackTurns;
+    for(let i = 0; i < trackTurns.length; i++) {
+        trackTurns[i].turnAmount.y *= -1;
+        trackTurns[i].turnAmount.z *= -1;
+    }
+    updateChartData();
+    discardEditorChanges();
+}
+
 function copyToClipboard(index) {
     let ret = "";
     let elem = document.getElementById(`dv-diff${index}`);
