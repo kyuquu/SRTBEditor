@@ -5,7 +5,6 @@ function stackNearbyNotesAllDiffs() {
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active) {
-            //todo: handle different encodings
             let val;
             switch(trackData[i].noteSerializationFormat) {
                 case 0:
