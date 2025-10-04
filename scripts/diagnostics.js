@@ -77,8 +77,6 @@ function renderBasicDiagnostics() {
                     warning.textContent = "Unknown note encoding; skipping diagnostics!";
                     warning.setAttribute("class", "dv-warning");
                     return;
-
-                    break;
             }
 
             calculateBalance(notes, mainContainer);
