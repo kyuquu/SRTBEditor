@@ -5,7 +5,19 @@ function stackNearbyNotesAllDiffs() {
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active) {
-            let val = stackNearbyNotes(trackData[i].notes);
+            //todo: handle different encodings
+            let val;
+            switch(trackData[i].noteSerializationFormat) {
+                case 0:
+                    val = stackNearbyNotes(trackData[i].notes, 0);
+                    break;
+                case 2:
+                    val = stackNearbyNotes(trackData[i].binaryNotes, 2);
+                    break;
+                default:
+                    console.warn("attempted to stack notes with unknown encoding, aborting");
+                    return;
+            }
             if(val) numDiffs++;
             numChanges += val;
         }
@@ -17,21 +29,37 @@ function stackNearbyNotesAllDiffs() {
     discardEditorChanges();
 }
 
-function stackNearbyNotes(noteData) {
+function stackNearbyNotes(noteData, encoding) {
     let prevTime = -1;
     let numChanges = 0;
     for(let i = 0; i < noteData.length; i++) {
-        if(noteData[i].time < prevTime) {
-            console.warn("Notes are out of order, aborting stack operation");
-            alert("Encountered notes that are out of order. Please save in-game and try again");
-            return;
-        }
-        if(noteData[i].time - prevTime < 0.0005 && noteData[i].time !== prevTime) {
-            noteData[i].time = prevTime;
-            numChanges++;
-        }
-        else {
-            prevTime = noteData[i].time;
+        if(encoding == 0) {
+            if(noteData[i].time < prevTime) {
+                console.warn("Notes are out of order, aborting stack operation");
+                alert("Encountered notes that are out of order. Please save in-game and try again");
+                return;
+            }
+            if(noteData[i].time - prevTime < 0.0005 && noteData[i].time !== prevTime) {
+                noteData[i].time = prevTime;
+                numChanges++;
+            }
+            else {
+                prevTime = noteData[i].time;
+            }
+        } else if (encoding == 2) {
+            if(noteData[i].tk < prevTime) {
+                console.warn("Notes are out of order, aborting stack operation");
+                alert("Encountered notes that are out of order. Please save in-game and try again");
+                return;
+            }
+            if(noteData[i].tk - prevTime < 50 && noteData[i].tk !== prevTime) {
+                noteData[i].tk = prevTime;
+                numChanges++;
+            }
+            else {
+                prevTime = noteData[i].tk;
+            }
+
         }
     }
     return numChanges;
