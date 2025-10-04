@@ -57,26 +57,31 @@ function renderBasicDiagnostics() {
 
             let encoding = trackData[i].noteSerializationFormat;
             let notes;
+            let warning;
             switch(encoding) {
-                case 0:
+                case 0: //floating-point encoding
                     notes = trackData[i].notes;
                     notes = convertToBinaryNotes(notes);
-                    //TODO: convert to binaryNotes encoding
-                    //TODO: print message warning that calc'd score might be inaccurate
+                    
+                    warning = mainContainer.appendChild(document.createElement("div"));
+                    warning.textContent = "Old note formatting; score values may be inaccurate!";
+                    warning.setAttribute("class", "dv-warning");
+
                     break;
-                case 1:
-                    notes = trackData[i].notesCompressed;
-                    //unknown if/how compressed works, print error and skip
-                    break;
-                case 2:
+                case 2: //binary encoding w/ integer tick values
                     notes = trackData[i].binaryNotes;
-                    //default state
+
+                    break;
+                default: //unknown or compressed (unused)
+                    warning = mainContainer.appendChild(document.createElement("div"));
+                    warning.textContent = "Unknown note encoding; skipping diagnostics!";
+                    warning.setAttribute("class", "dv-warning");
+                    return;
+
                     break;
             }
-            //TODO: change methods to use binary encoding
-            
-            calculateBalance(notes, mainContainer);
 
+            calculateBalance(notes, mainContainer);
             calculateMaxScoreAndCombo(notes, mainContainer);
 
             let buttonElem = mainContainer.appendChild(document.createElement("button"));
