@@ -22,6 +22,20 @@ function getClipInfo(index) {
     }
 }
 
+function convertToBinaryNotes(notes) {
+    let ret = [];
+    for(let i = 0; i < notes.length; i++) {
+        ret.push({
+            tk: Math.floor(notes[i].time * 100000),
+            tp: notes[i].type,
+            c: notes[i].color,
+            p: notes[i].column,
+            s: notes[i].m_size
+        });
+    }
+    return ret;
+}
+
 function renderBasicDiagnostics() {
     let diagnosticsRoot = document.getElementById(`dv-root`);
 
@@ -41,12 +55,31 @@ function renderBasicDiagnostics() {
             title.textContent = diffTypeNames[trackData[i].difficultyType];
             title.setAttribute("class", "dv-box-title");
 
-            let notes = trackData[i].notes;
-            //let notesEncoding = trackData[i].noteSerializationFormat;
-            // TODO: account for other serialization formats
-            
-            calculateBalance(notes, mainContainer);
+            let encoding = trackData[i].noteSerializationFormat;
+            let notes;
+            let warning;
+            switch(encoding) {
+                case 0: //floating-point encoding
+                    notes = trackData[i].notes;
+                    notes = convertToBinaryNotes(notes);
+                    
+                    warning = mainContainer.appendChild(document.createElement("div"));
+                    warning.textContent = "Old note formatting; score values may be inaccurate!";
+                    warning.setAttribute("class", "dv-warning");
 
+                    break;
+                case 2: //binary encoding w/ integer tick values
+                    notes = trackData[i].binaryNotes;
+
+                    break;
+                default: //unknown or compressed (unused)
+                    warning = mainContainer.appendChild(document.createElement("div"));
+                    warning.textContent = "Unknown note encoding; skipping diagnostics!";
+                    warning.setAttribute("class", "dv-warning");
+                    return;
+            }
+
+            calculateBalance(notes, mainContainer);
             calculateMaxScoreAndCombo(notes, mainContainer);
 
             let buttonElem = mainContainer.appendChild(document.createElement("button"));
@@ -81,19 +114,19 @@ function calculateBalance(notesIn, htmlParent) {
         nRightSpin = 0,
         nScratch = 0;
 
+    let beatRecent = false;
     for(let i = 0; i < notesIn.length; i++) {
-        switch(notesIn[i].type) {
+        switch(notesIn[i].tp) {
             case 0:
             case 4:
             case 8:
-                if(notesIn[i].colorIndex == 0) nBlue++;
-                else if(notesIn[i].colorIndex == 1) nRed++;
-                else if(notesIn[i].colorIndex % 2 == 0) nInvisBlue++;
+                if(notesIn[i].c == 0) nBlue++;
+                else if(notesIn[i].c == 1) nRed++;
+                else if(notesIn[i].c % 2 == 0) nInvisBlue++;
                 else nInvisRed++;
                 break;
         }
-        let beatRecent = false;
-        switch(notesIn[i].type) {
+        switch(notesIn[i].tp) {
             case 0:
                 nMatch++;
                 break;
@@ -113,9 +146,9 @@ function calculateBalance(notesIn, htmlParent) {
                 let prevMSize;
                 over = false;
                 for(let j = i + 1; j < notesIn.length; j++) {
-                    switch(notesIn[j].type) {
+                    switch(notesIn[j].tp) {
                         case 5: //note end
-                            prevMSize = notesIn[j].m_size;
+                            prevMSize = notesIn[j].s;
                             break;
                         case 2:
                         case 3:
@@ -139,7 +172,8 @@ function calculateBalance(notesIn, htmlParent) {
                 //logic for beathold
                 if(beatRecent) {
                     nBeathold++;
-                    if(notesIn[i].m_size != 2) nBeatRelease++;
+                    if(notesIn[i].s != 2) nBeatRelease++;
+                    beatRecent = false;
                 }
                 else
                     ;//error beathold endpoint
@@ -188,7 +222,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     let maxCombo = 0;
     for(let i = 0; i < notesIn.length; i++) {
         let bookmark, over, skip;
-        switch(notesIn[i].type) {
+        switch(notesIn[i].tp) {
             case 0: //match
                 maxScore += 16n;
                 maxCombo ++;
@@ -202,13 +236,13 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                 let prevMSize;
                 maxScore += 64n;
                 maxCombo ++;
-                bookmark = notesIn[i].time;
+                bookmark = notesIn[i].tk;
                 over = false;
                 for(let j = i + 1; j < notesIn.length; j++) {
-                    switch(notesIn[j].type) {
+                    switch(notesIn[j].tp) {
                         case 5: //note end
-                            bookmark = notesIn[j].time;
-                            prevMSize = notesIn[j].m_size;
+                            bookmark = notesIn[j].tk;
+                            prevMSize = notesIn[j].s;
                             break;
                         case 2:
                         case 3:
@@ -219,11 +253,11 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                     }
                     if(over) break;
                 }
-                if (bookmark - notesIn[i].time == 0) {
-                    console.log("erronous slider at " + notesIn[i].time)
+                if (bookmark - notesIn[i].tk == 0) {
+                    console.log("erronous slider at " + notesIn[i].tk / 100000)
                 }
-                tickDuration = BigInt(Math.floor(bookmark * 100000))
-                        - BigInt(Math.floor(notesIn[i].time * 100000));
+                tickDuration = BigInt(bookmark)
+                        - BigInt(notesIn[i].tk);
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -239,10 +273,10 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
             case 12: //scratch
                 maxScore += 48n;
                 maxCombo ++;
-                bookmark = notesIn[i].time;
+                bookmark = notesIn[i].tk;
                 over = false;
                 for(let j = i + 1; j < notesIn.length; j++) {
-                    switch(notesIn[j].type) {
+                    switch(notesIn[j].tp) {
                         case 0:
                         case 2:
                         case 3:
@@ -250,7 +284,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                         case 5:
                         case 8:
                         case 12:
-                            bookmark = notesIn[j].time;
+                            bookmark = notesIn[j].tk;
                             over = true;
                             break;
                     }
@@ -263,8 +297,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                     maxScore += 80n;
                     break;
                 }
-                tickDuration = BigInt(Math.floor(bookmark * 100000))
-                        - BigInt(Math.floor(notesIn[i].time * 100000));
+                tickDuration = BigInt(bookmark) - BigInt(notesIn[i].tk);
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
@@ -274,12 +307,12 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
             case 5: //note endpoint
                 break;
             case 11: //beathold
-                bookmark = notesIn[i].time;
+                bookmark = notesIn[i].tk;
                 over = false;
                 for(let j = i - 1; j >= 0; j--) {
-                    switch(notesIn[j].type) {
+                    switch(notesIn[j].tp) {
                         case 1:
-                            bookmark = notesIn[j].time;
+                            bookmark = notesIn[j].tk;
                             over = true;
                             break;
                         case 11:
@@ -291,18 +324,18 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                 }
                 
                 if(!over || skip) {
-                    console.log("erronous beathold end at " + notesIn[i].time);
+                    console.log("erronous beathold end at " + notesIn[i].tk / 100000);
                     break;
                 }
 
-                tickDuration = BigInt(Math.floor(notesIn[i].time * 100000))
-                        - BigInt(Math.floor(bookmark * 100000));
+                tickDuration = BigInt(notesIn[i].tk)
+                        - BigInt(bookmark);
                 addScore = tickDuration / 5000n;
                 if(addScore < 1n) {
                     addScore = 1n;
                 }
                 maxScore += addScore * 4n;
-                if(notesIn[i].m_size ==  1 || notesIn[i].m_size == 0) {
+                if(notesIn[i].s ==  1 || notesIn[i].s == 0) {
                     maxScore += 48n;
                     maxCombo ++;
                 }

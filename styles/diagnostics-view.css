@@ -35,6 +35,13 @@
     font-size: 1.25rem;
 }
 
+.dv-warning {
+    text-align: center;
+    font-weight:normal;
+    font-size: 1rem;
+    color: #CC0000;
+}
+
 .dv-box-subtitle {
     font-weight: bold;
     padding-top: 1rem;
