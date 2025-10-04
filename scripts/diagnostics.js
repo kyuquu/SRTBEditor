@@ -22,6 +22,20 @@ function getClipInfo(index) {
     }
 }
 
+function convertToBinaryNotes(notes) {
+    let ret = [];
+    for(let i = 0; i < notes.length; i++) {
+        ret.push({
+            tk: Math.floor(notes[i].time * 100000),
+            tp: notes[i].type,
+            c: notes[i].color,
+            p: notes[i].column,
+            s: notes[i].m_size
+        });
+    }
+    return ret;
+}
+
 function renderBasicDiagnostics() {
     let diagnosticsRoot = document.getElementById(`dv-root`);
 
@@ -46,7 +60,9 @@ function renderBasicDiagnostics() {
             switch(encoding) {
                 case 0:
                     notes = trackData[i].notes;
+                    notes = convertToBinaryNotes(notes);
                     //TODO: convert to binaryNotes encoding
+                    //TODO: print message warning that calc'd score might be inaccurate
                     break;
                 case 1:
                     notes = trackData[i].notesCompressed;
