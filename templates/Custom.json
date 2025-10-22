@@ -114,7 +114,7 @@
                 "val": {
                     "revisionVersion": 0,
                     "compatibilityVersion": 0,
-                    "noteSerializationFormat": 0,
+                    "noteSerializationFormat": 2,
                     "difficultyRating": 0,
                     "previewLoopBars": {
                         "min": 4,
@@ -183,7 +183,7 @@
                 "val": {
                     "revisionVersion": 0,
                     "compatibilityVersion": 0,
-                    "noteSerializationFormat": 0,
+                    "noteSerializationFormat": 2,
                     "difficultyRating": 0,
                     "previewLoopBars": {
                         "min": 4,
@@ -252,7 +252,7 @@
                 "val": {
                     "revisionVersion": 0,
                     "compatibilityVersion": 0,
-                    "noteSerializationFormat": 0,
+                    "noteSerializationFormat": 2,
                     "difficultyRating": 0,
                     "previewLoopBars": {
                         "min": 4,
@@ -321,7 +321,7 @@
                 "val": {
                     "revisionVersion": 0,
                     "compatibilityVersion": 0,
-                    "noteSerializationFormat": 0,
+                    "noteSerializationFormat": 2,
                     "difficultyRating": 0,
                     "previewLoopBars": {
                         "min": 4,
@@ -390,7 +390,7 @@
                 "val": {
                     "revisionVersion": 0,
                     "compatibilityVersion": 0,
-                    "noteSerializationFormat": 0,
+                    "noteSerializationFormat": 2,
                     "difficultyRating": 0,
                     "previewLoopBars": {
                         "min": 4,
