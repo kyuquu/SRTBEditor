@@ -95,6 +95,37 @@ async function loadFromLink() {
 
 
 
+function loadChartLyrics(file) {
+    let fileExtension = file.name.split('.').pop().toLowerCase();
+    if (fileExtension === "srtb" || fileExtension === "json") {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                let json;
+                if (fileExtension === "srtb") {
+                    let srtb = e.target.result;
+                    json = convertToJSON(JSON.parse(srtb));
+                }
+                else if (fileExtension === "json") {
+                    json = JSON.parse(e.target.result);
+                }
+
+                console.log(json);
+            }
+            catch (e) {
+                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+            }
+        };
+        reader.readAsText(file);
+    }
+    else if(fileExtension === "zip") {
+
+    }
+    else {
+        window.alert(`Unrecognized file extension: .${fileExtension}`);
+    }
+}
+
 function loadChartFile(file) {
     let fileExtension = file.name.split('.').pop().toLowerCase();
     if (fileExtension === "srtb" || fileExtension === "json") {
@@ -242,4 +273,11 @@ function loadChartData(data) {
 const fileInput = document.getElementById("tb-file-input");
 fileInput.onchange = () => {
     loadChartFile(fileInput.files[0]);
+}
+
+
+const lyricInput = document.getElementById("bv-import-lyrics");
+lyricInput.onchange = () => {
+    console.log("lyrics?");
+    loadChartLyrics(fileInput.files[0]);
 }
