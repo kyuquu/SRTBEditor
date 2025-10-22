@@ -94,23 +94,45 @@ async function loadFromLink() {
 }
 
 
+function fetchLyricsFromJson(json) {
+    let vals = json.largeStringValuesContainer.values;
+    let lyrics = "";
+    for(let i = 0; i < vals.length; i++) {
+        if(vals[i].key == "SO_ClipInfo_ClipInfo_0"){ 
+            lyrics = vals[i].val.lyrics;
+            break;
+        }
+    }
+    return lyrics;
+}
+
 
 function loadChartLyrics(file) {
+    //let file = document.getElementById("bv-import-lyrics").files[0];
     let fileExtension = file.name.split('.').pop().toLowerCase();
     if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                let json;
+                let lyricJson;
                 if (fileExtension === "srtb") {
-                    let srtb = e.target.result;
-                    json = convertToJSON(JSON.parse(srtb));
+                    let lyricSrtb = e.target.result;
+                    lyricJson = convertToJSON(JSON.parse(lyricSrtb));
                 }
                 else if (fileExtension === "json") {
-                    json = JSON.parse(e.target.result);
+                    lyricJson = JSON.parse(e.target.result);
                 }
 
-                console.log(json);
+                let lyrics = fetchLyricsFromJson(lyricJson);
+                console.log(lyrics);
+
+                let clipInfo = getReferences(chartJSON)[2][0];
+                clipInfo.lyrics = lyrics;
+                console.log(clipInfo);
+                updateChartData();
+                discardEditorChanges();
+                
+
             }
             catch (e) {
                 window.alert(`Invalid .${fileExtension}\n\n${e}`);
@@ -274,10 +296,7 @@ const fileInput = document.getElementById("tb-file-input");
 fileInput.onchange = () => {
     loadChartFile(fileInput.files[0]);
 }
-
-
-const lyricInput = document.getElementById("bv-import-lyrics");
+const lyricInput = document.getElementById("dv-lyric-input");
 lyricInput.onchange = () => {
-    console.log("lyrics?");
-    loadChartLyrics(fileInput.files[0]);
+    loadChartLyrics(lyricInput.files[0]);
 }

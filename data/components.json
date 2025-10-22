@@ -47,6 +47,10 @@
         "dv-stack": {
             "text": "Stack nearby notes",
             "function": "stackNearbyNotesAllDiffs()"
+        },
+        "dv-import-lyrics": {
+            "text": "Import lyrics",
+            "function": "lyricInput.click()"
         }
     },
     "text-inputs": {
@@ -138,11 +142,6 @@
             "text": "Audio Clips",
             "accept": ".mp3, .ogg",
             "function": "updateAudioClips()"
-        },
-        "bv-import-lyrics": {
-            "text": "Import Lyrics from another chart",
-            "accept": ".srtb, .json, .zip",
-            "function": "lyricInput.click()"
         }
     },
     "WAWA select-inputs": {

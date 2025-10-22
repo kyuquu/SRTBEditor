@@ -106,7 +106,6 @@
                             <div class="text-input" id="bv-charter"></div>
                             <div class="file-input" id="bv-album-art"></div>  
                             <div class="file-input" id="bv-audio-clips"></div>
-                            <div class="file-input" id="bv-import-lyrics"></div>
                         </div>
 
                         <div class="category">
@@ -182,8 +181,11 @@
                 <div class="dv disabled">
                     <div class="dv dv-utils">
                         <button class="button" id="dv-stack"
-                                title="Find any notes that are within 0.5ms and stack them." ></button>
+                                title="Find any notes that are within 0.5ms and stack them."></button>     
+                        <button class="button" id="dv-import-lyrics"
+                                title="Replace the lyrics in the loaded chart with lyrics from a new one."></button>
                     </div>
+                    <input type="file" accept=".srtb, .json, .zip" id="dv-lyric-input">
                     <div id="dv-root" class="dv-root"></div>
                 </div>
             </div>
