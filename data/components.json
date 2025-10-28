@@ -47,6 +47,10 @@
         "dv-stack": {
             "text": "Stack nearby notes",
             "function": "stackNearbyNotesAllDiffs()"
+        },
+        "dv-import-lyrics": {
+            "text": "Import lyrics",
+            "function": "lyricInput.click()"
         }
     },
     "text-inputs": {
