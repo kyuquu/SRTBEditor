@@ -42,6 +42,9 @@ function loadTemplate(filename) {
 async function loadFromLink() {
     let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
     let id = "";
+    if(input.indexOf("?") > 0) {
+        input = input.substring(0, input.indexOf("?"));
+    }
 
     if (input !== null && input !== "") {
         if(input.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
