@@ -16,7 +16,7 @@ https://kyuquu.github.io/SRTBEditor/
 
 ### Chart diagnostics
 - View additional information about your chart, such as precise note counts, max score, and max combo
-- Access various utility functions (currently just "Stack Nearby Notes")
+- Access various utility functions (note stacking, flight path mirroring, lyric importing)
 
 ## Feedback
 If you encounter any bugs or other issues, you can:
