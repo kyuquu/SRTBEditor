@@ -96,43 +96,36 @@ async function loadFromLink() {
 
 function fetchLyricsFromJson(json) {
     let vals = json.largeStringValuesContainer.values;
-    let lyrics = "";
     for(let i = 0; i < vals.length; i++) {
         if(vals[i].key == "SO_ClipInfo_ClipInfo_0"){ 
-            lyrics = vals[i].val.lyrics;
-            break;
+            return vals[i].val.lyrics;
         }
     }
-    return lyrics;
 }
 
+function replaceChartLyrics(lyricJson) {
+    if(!lyricJson) return;
+
+    let lyrics = fetchLyricsFromJson(lyricJson);
+
+    let clipInfo = getReferences(chartJSON)[2][0];
+    clipInfo.lyrics = lyrics;
+    updateChartData();
+    discardEditorChanges();
+
+}
 
 function loadChartLyrics(file) {
-    //let file = document.getElementById("bv-import-lyrics").files[0];
     let fileExtension = file.name.split('.').pop().toLowerCase();
     if (fileExtension === "srtb" || fileExtension === "json") {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                let lyricJson;
+                let lyricJson = JSON.parse(e.target.result);;
                 if (fileExtension === "srtb") {
-                    let lyricSrtb = e.target.result;
-                    lyricJson = convertToJSON(JSON.parse(lyricSrtb));
+                    lyricJson = convertToJSON(lyricJson);
                 }
-                else if (fileExtension === "json") {
-                    lyricJson = JSON.parse(e.target.result);
-                }
-
-                let lyrics = fetchLyricsFromJson(lyricJson);
-                console.log(lyrics);
-
-                let clipInfo = getReferences(chartJSON)[2][0];
-                clipInfo.lyrics = lyrics;
-                console.log(clipInfo);
-                updateChartData();
-                discardEditorChanges();
-                
-
+                replaceChartLyrics(lyricJson);
             }
             catch (e) {
                 window.alert(`Invalid .${fileExtension}\n\n${e}`);
@@ -141,11 +134,34 @@ function loadChartLyrics(file) {
         reader.readAsText(file);
     }
     else if(fileExtension === "zip") {
-
+        let zip = new JSZip();
+        zip.loadAsync(file)
+            .then(async (zip) => {
+                let filenames = Object.keys(zip.files);
+                for (let i = 0; i < filenames.length; i++) {
+                    if (filenames[i].slice(-4) === "srtb") {
+                        let srtb = zip.files[filenames[i]];
+                        await srtb.async("string").then((content) => {
+                            try {
+                                let lyricJson = convertToJSON(JSON.parse(content));
+                                replaceChartLyrics(lyricJson);
+                            }
+                            catch (e) {
+                                window.alert(`.zip file contains invalid .srtb\n\n${e}`);
+                            }
+                        });
+                        return;
+                    }
+                }
+                window.alert("Could not locate .srtb in .zip file");
+            }, () => {
+                window.alert("Invalid .zip");
+            }); 
     }
     else {
         window.alert(`Unrecognized file extension: .${fileExtension}`);
     }
+
 }
 
 function loadChartFile(file) {
