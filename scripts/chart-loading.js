@@ -17,11 +17,11 @@ async function passJsonToCallback(file, callback, args) {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                lyricJson = JSON.parse(e.target.result);;
+                readJson = JSON.parse(e.target.result);;
                 if (fileExtension === "srtb") {
-                    readJson = convertToJSON(lyricJson);
+                    readJson = convertToJSON(readJson);
                 }
-                callback(lyricJson, args);
+                callback(readJson, args);
             }
             catch (e) {
                 window.alert(`Invalid .${fileExtension}\n\n${e}`);
@@ -40,7 +40,7 @@ async function passJsonToCallback(file, callback, args) {
                         await srtb.async("string").then((content) => {
                             try {
                                 readJson = convertToJSON(JSON.parse(content));
-                                callback(lyricJson, args);
+                                callback(readJson, args);
                             }
                             catch (e) {
                                 window.alert(`.zip file contains invalid .srtb\n\n${e}`);
@@ -89,7 +89,7 @@ function loadTemplate(filename) {
 async function loadFromLink() {
     let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
     let id = "";
-    if(input.indexOf("?") > 0) {
+    if(input.indexOf("?") > 0) { // trim off search queries
         input = input.substring(0, input.indexOf("?"));
     }
 
