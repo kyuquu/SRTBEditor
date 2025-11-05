@@ -87,3 +87,51 @@ function copyToClipboard(index) {
     }
     navigator.clipboard.writeText(ret);
 }
+
+function replaceChartLyrics(lyricJson) {
+    if(!lyricJson) return;
+
+    let lyrics = fetchLyricsFromJson(lyricJson);
+
+    let clipInfo = getReferences(chartJSON)[2][0];
+    clipInfo.lyrics = lyrics;
+    updateChartData();
+    discardEditorChanges();
+}
+
+function replaceChartDifficulty(newJson, args) {
+    let diff = args[0];
+    if(!diff || diff < 0 || diff > 5) {
+        console.error(`attempted to replace an invalid difficulty ${diff}`);
+        return;
+    }
+    let newTrackData = fetchTrackDataByDifficulty(newJson, diff);
+    replaceTrackDataByDifficulty(newTrackData, diff);
+}
+
+function changeNoteEncodings(format) {
+    let cont = confirm("This action is destructive to leaderboards. Continue?");
+    if(!cont) return;
+    let diffs = getReferences(chartJSON)[1];
+    for(let i = 0; i < diffs.length; i++) {
+        if(format != 2) {
+            console.warn("Only changing to format 2 is supported at this time");
+        }
+        if(format == 2) {
+            for(let j = 0; j < diffs[i].notes.length; j++) {
+                let note = diffs[i].notes[j];
+                diffs[i].binaryNotes.push({
+                    "tk": Math.round(note.time * 100000),
+                    "tp": note.type,
+                    "c": note.colorIndex,
+                    "p": note.column,
+                    "s": note.m_size
+                });
+            }
+            diffs[i].noteSerializationFormat = format;
+            diffs[i].notes = [];
+        }
+    }
+    updateChartData();
+    discardEditorChanges();
+}
