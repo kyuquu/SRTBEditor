@@ -115,7 +115,7 @@ function changeNoteEncodings(format) {
     let diffs = getReferences(chartJSON)[1];
     for(let i = 0; i < diffs.length; i++) {
         if(format != 2) {
-            console.warn("nah");
+            console.warn("Only changing to format 2 is supported at this time");
         }
         if(format == 2) {
             for(let j = 0; j < diffs[i].notes.length; j++) {
