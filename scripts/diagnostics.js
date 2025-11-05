@@ -51,8 +51,10 @@ function renderBasicDiagnostics() {
             mainContainer.setAttribute("class", "dv-box");
             mainContainer.setAttribute("id", `dv-diff${i}`)
 
+            let diffType = trackData[i].difficultyType;
+
             let title = mainContainer.appendChild(document.createElement("div"));
-            title.textContent = diffTypeNames[trackData[i].difficultyType];
+            title.textContent = diffTypeNames[diffType];
             title.setAttribute("class", "dv-box-title");
 
             let encoding = trackData[i].noteSerializationFormat;
@@ -85,16 +87,29 @@ function renderBasicDiagnostics() {
             let buttonElem = mainContainer.appendChild(document.createElement("button"));
             buttonElem.setAttribute("class", "button");
             buttonElem.setAttribute("onclick", `copyToClipboard(${i})`);
+            buttonElem.setAttribute("title", `Copy a comma-separated summary to clipboard.`);
             buttonElem.textContent = "Copy Score Data";
 
             let mirrorTwistyButton = mainContainer.appendChild(document.createElement("button"));
             mirrorTwistyButton.setAttribute("class", "button");
             mirrorTwistyButton.setAttribute("onclick", `mirrorTwistyTrack(${i})`);
+            mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
+
+            let importDiffButton = mainContainer.appendChild(document.createElement("button"));
+            importDiffButton.setAttribute("class", "button");
+            importDiffButton.setAttribute("onclick", `handleImportDiffButtonPressed(${diffType - 2})`);
+            importDiffButton.setAttribute("title", `Replace this difficulty with the same one from another chart.`);
+            importDiffButton.textContent = "Replace with import";
 
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
+}
+
+function handleImportDiffButtonPressed(diff) {
+    diffInput.setAttribute("diffType", diff);
+    diffInput.click();
 }
 
 function calculateBalance(notesIn, htmlParent) {

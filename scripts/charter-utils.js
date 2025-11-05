@@ -87,3 +87,24 @@ function copyToClipboard(index) {
     }
     navigator.clipboard.writeText(ret);
 }
+
+function replaceChartLyrics(lyricJson) {
+    if(!lyricJson) return;
+
+    let lyrics = fetchLyricsFromJson(lyricJson);
+
+    let clipInfo = getReferences(chartJSON)[2][0];
+    clipInfo.lyrics = lyrics;
+    updateChartData();
+    discardEditorChanges();
+}
+
+function replaceChartDifficulty(newJson, args) {
+    let diff = args[0];
+    if(!diff || diff < 0 || diff > 5) {
+        console.error(`attempted to replace an invalid difficulty ${diff}`);
+        return;
+    }
+    let newTrackData = fetchTrackDataByDifficulty(newJson, diff);
+    replaceTrackDataByDifficulty(newTrackData, diff);
+}
