@@ -51,6 +51,10 @@
         "dv-import-lyrics": {
             "text": "Import lyrics",
             "function": "lyricInput.click()"
+        },
+        "dv-set-serialization": {
+            "text": "Modernize note format",
+            "function": "changeNoteEncodings(2)"
         }
     },
     "text-inputs": {

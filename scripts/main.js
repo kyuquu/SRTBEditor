@@ -155,6 +155,7 @@ function updateChartData() {
 
         // unsure if "isReleaseable" is a fallback metric for this
     }
+    renderBasicDiagnostics();
 }
 
 

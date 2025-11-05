@@ -83,12 +83,12 @@
         <div class="tab-buttons">
             <button onclick="switchToTab(0)" id="tab-button0" class="tab-button active">Basic View</button>
             <button onclick="switchToTab(1)" id="tab-button1" class="tab-button">Raw JSON View</button>
-            <button onclick="switchToTab(2)" id="tab-button2" class="tab-button">Chart Diagnostics</button>
+            <button onclick="switchToTab(2)" id="tab-button2" class="tab-button">Utilities</button>
         </div>
         <div class="tab-buttons-small">
             <button onclick="switchToTab(0)" id="tab-button-small0" class="tab-button active">BV</button>
             <button onclick="switchToTab(1)" id="tab-button-small1" class="tab-button">JSON</button>
-            <button onclick="switchToTab(2)" id="tab-button-small2" class="tab-button">Data</button>
+            <button onclick="switchToTab(2)" id="tab-button-small2" class="tab-button">Util</button>
         </div>
         <div class="tabs">
             <div id="tab0" class="tab active">
@@ -182,9 +182,11 @@
                 <div class="dv disabled">
                     <div class="dv dv-utils">
                         <button class="button" id="dv-stack"
-                                title="Find any notes that are within 0.5ms and stack them."></button>     
+                                title="Find any notes that are within 0.5ms and stack them."></button>
                         <button class="button" id="dv-import-lyrics"
                                 title="Replace the lyrics in the loaded chart with lyrics from a new one."></button>
+                        <button class="button" id="dv-set-serialization"
+                                title="Migrate all note data to the newest serialization format."></button>
                     </div>
                     <input type="file" accept=".srtb, .json, .zip" id="dv-lyric-input">
                     <input type="file" accept=".srtb, .json, .zip" id="dv-difficulty-input">

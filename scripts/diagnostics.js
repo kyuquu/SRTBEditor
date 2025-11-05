@@ -43,6 +43,8 @@ function renderBasicDiagnostics() {
         diagnosticsRoot.removeChild(diagnosticsRoot.firstChild);
     }
 
+    let enableMigrateButton = false;
+
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
             if(!trackData[i].difficultyType)
@@ -62,6 +64,7 @@ function renderBasicDiagnostics() {
             let warning;
             switch(encoding) {
                 case 0: //floating-point encoding
+                    enableMigrateButton = true;
                     notes = trackData[i].notes;
                     notes = convertToBinaryNotes(notes);
                     
@@ -105,6 +108,9 @@ function renderBasicDiagnostics() {
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
+    let migrateButton = document.getElementById(`dv-set-serialization`);
+    if(enableMigrateButton) migrateButton.classList.remove("disabled");
+    else migrateButton.classList.add("disabled");
 }
 
 function handleImportDiffButtonPressed(diff) {

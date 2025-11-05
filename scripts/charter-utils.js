@@ -108,3 +108,30 @@ function replaceChartDifficulty(newJson, args) {
     let newTrackData = fetchTrackDataByDifficulty(newJson, diff);
     replaceTrackDataByDifficulty(newTrackData, diff);
 }
+
+function changeNoteEncodings(format) {
+    let cont = confirm("This action is destructive to leaderboards. Continue?");
+    if(!cont) return;
+    let diffs = getReferences(chartJSON)[1];
+    for(let i = 0; i < diffs.length; i++) {
+        if(format != 2) {
+            console.warn("nah");
+        }
+        if(format == 2) {
+            for(let j = 0; j < diffs[i].notes.length; j++) {
+                let note = diffs[i].notes[j];
+                diffs[i].binaryNotes.push({
+                    "tk": Math.round(note.time * 100000),
+                    "tp": note.type,
+                    "c": note.colorIndex,
+                    "p": note.column,
+                    "s": note.m_size
+                });
+            }
+            diffs[i].noteSerializationFormat = format;
+            diffs[i].notes = [];
+        }
+    }
+    updateChartData();
+    discardEditorChanges();
+}
