@@ -7,10 +7,13 @@ function createToast (title, text, type, timeout, action) {
     toast.classList.add("toast");
     toast.classList.add(type);
     toast.setAttribute("id", `toast-${id}`);
-    if(action)
-        toast.setAttribute("onclick", () => {removeToast(id)});
-    else 
-        toast.setAttribute("onclick", `removeToast(${id})`);
+    // if(action)
+    //     toast.setAttribute("onclick", () => {
+    //         action();
+    //         removeToast(id);
+    //     }); //todo: use listeners instead of onclick
+    // else 
+    toast.setAttribute("onclick", `removeToast(${id})`);
 
     let toastTitle = document.createElement("div");
     toastTitle.textContent = title;
@@ -28,7 +31,5 @@ function createToast (title, text, type, timeout, action) {
 }
 
 function removeToast(id) {
-    let elem = document.getElementById(`toast-${id}`);
-    console.log("removed toast " + id);
-    elem.remove();
+    document.getElementById(`toast-${id}`).remove();
 }
