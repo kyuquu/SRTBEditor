@@ -61,6 +61,7 @@ function getReferences(json) {
     
     if(weird || TD.length < 5 || CI.length < 1) {
         console.warn("Oddities found in this SRTB file, SRTBE might not work as intended. Saving and loading in-game may help.")
+        //createToast("Notice", "Oddities found in this SRTB file, SRTBE might not work as intended. Saving and loading in-game may help.", "info", 10000);
     }
 
     return [TI, TD, CI];

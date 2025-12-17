@@ -24,7 +24,7 @@ async function passJsonToCallback(file, callback, args) {
                 callback(readJson, args);
             }
             catch (e) {
-                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+                createToast("Load failed", `Invalid .${fileExtension}`, "alert", 5000);
             }
         };
         reader.readAsText(file);
@@ -43,19 +43,19 @@ async function passJsonToCallback(file, callback, args) {
                                 callback(readJson, args);
                             }
                             catch (e) {
-                                window.alert(`.zip file contains invalid .srtb\n\n${e}`);
+                                createToast("Load failed", ".zip file contains invalid .srtb", "alert", 5000);
                             }
                         });
                         break;
                     }
                 }
-                window.alert("Could not locate .srtb in .zip file");
+                createToast("Load failed", "Could not locate .srtb in .zip file", "alert", 5000);
             }, () => {
-                window.alert("Invalid .zip");
+                createToast("Load failed", "Invalid .zip", "alert", 5000);
             }); 
     }
     else {
-        window.alert(`Unrecognized file extension: .${fileExtension}`);
+        createToast("Load failed", `Unrecognized file extension: .${fileExtension}`, "alert", 5000);
     }
 }
 
@@ -78,11 +78,11 @@ function loadTemplate(filename) {
             resetAudioClips();
         }
         catch (e) {
-            window.alert(`Template failed to load\n\n${e}`);
+            createToast("Load failed", "Template failed to load", "alert", 5000);
         }
     }
     else {
-        window.alert(`Unrecognized file extension: .${fileExtension}`);
+        createToast("Load failed", `Unrecognized file extension: .${fileExtension}`, "alert", 5000);
     }
 }
 
@@ -95,7 +95,7 @@ async function loadFromLink() {
 
     if (input !== null && input !== "") {
         if(input.includes("spinshare_")) { // temporarily rejecting these until laura implements them in the api
-            alert("SpinShare API doesn't support spinshare_ links (yet)");
+            createToast("Load failed", "SpinShare API doesn't support spinshare_ links (yet)", "alert", 5000);
             return;
         }
         if (!isNaN(parseInt(input)) && parseInt(input) == input // expected format: 12345
@@ -117,7 +117,7 @@ async function loadFromLink() {
                 while (input[i] && input[i] !== "?");
             }
             else {
-                alert("Input is not a valid link");
+                createToast("Load failed", `Invalid SpinShare link`, "alert", 5000);
                 return;
             }
         }
@@ -132,7 +132,7 @@ async function loadFromLink() {
             .then((blob) => {
                 let file = new File([blob], `${id}.zip`);
                 if(file.size < 50) {
-                    alert("Chart ID not found");
+                    createToast("Load failed", `Chart ID not found`, "alert", 5000);
                 }
                 else {
                     loadChartFile(file);
@@ -160,12 +160,13 @@ function loadChartFile(file) {
                 }
 
                 chartFilename = file.name;
+                createToast("Load successful", chartFilename, "success", 5000);
                 updateTBValue("filename", chartFilename);
                 resetAlbumArt();
                 resetAudioClips();
             }
             catch (e) {
-                window.alert(`Invalid .${fileExtension}\n\n${e}`);
+                createToast("Load failed", `Invalid .${fileExtension}\n\n${e}`, "alert", 5000);
             }
         };
         reader.readAsText(file);
@@ -204,6 +205,10 @@ function loadChartFile(file) {
                     }
                 }
 
+                if(!srtb) {
+                    createToast("Load failed", `No .srtb found in the .zip`, "alert", 5000);
+                    return;
+                }
                 await loadZipSRTB(srtb);
                 if (image !== undefined) {
                     await loadZipImage(image, imageFilename);
@@ -215,26 +220,27 @@ function loadChartFile(file) {
                 }
                 
                 chartFilename = srtbFilename;
+                createToast("Load successful", srtbFilename, "success", 5000);
                 updateTBValue("filename", srtbFilename);
             }, () => {
-                window.alert("Invalid .zip");
+                createToast("Load failed", "Invalid .zip", "alert", 5000);
             }); 
     }
     else {
-        window.alert(`Unrecognized file extension: .${fileExtension}`);
+        createToast("Load failed", `Unrecognized file extension: .${fileExtension}`, "alert", 5000);
     }
 }
 
 async function loadZipSRTB(srtb) {
-    await srtb.async("string").then((content) => {
-        try {
-            json = convertToJSON(JSON.parse(content));
-            loadChartData(json);
-        }
-        catch (e) {
-            window.alert(`.zip file contains invalid .srtb\n\n${e}`);
-        }
-    });
+    try {
+        await srtb.async("string").then((content) => {
+                json = convertToJSON(JSON.parse(content));
+                loadChartData(json);
+        });
+    }
+    catch (e) {
+        createToast("Load failed", `.zip file contains invalid .srtb\n\n${e}`, "alert", 5000);
+    }
 }
 
 async function loadZipImage(image, filename) {
