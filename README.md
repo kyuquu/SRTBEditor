@@ -12,7 +12,9 @@ https://kyuquu.github.io/SRTBEditor/
 ### Chart editing
 - **Basic View:** Update your chart's metadata, album art, audio, difficulty ratings, and more via a user-friendly interface
 
-- **Raw JSON View:** Inspect and edit the raw chart data in an organized and more accessible format
+- **JSON View:** Inspect and edit the raw chart data in an organized and more accessible format
+
+- **Utilities:** Access a variety of useful calculated values and helper functions, such as lyric import or note format update
 
 ### Chart diagnostics
 - View additional information about your chart, such as precise note counts, max score, and max combo
@@ -25,5 +27,5 @@ If you encounter any bugs or other issues, you can:
 - DM `@kyuquu` or `@gaviguy` on Discord
 
 ## Known Issues
-- Charts with multiple audio files are not supported
+- Charts with multiple audio files are not fully supported
 - Some edge cases might cause issues (eg. missing or out-of-order fields, ancient .srtb formats, etc.)
