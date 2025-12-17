@@ -122,6 +122,56 @@ async function init() {
             }
         }
     });
+
+    // handle dragging files in
+    window.addEventListener("drop", (e) => { //process drag&drop behavior
+        if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
+            e.preventDefault();
+            processFileDrop(e);
+        }
+    });
+    document.addEventListener("dragover", (e) => { //UI to reflect drag&drop ability
+        const fileItems = [...e.dataTransfer.items].filter(
+            (item) => item.kind === "file",
+        );
+        if (fileItems.length > 0) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "copy";
+        }
+    });
+
 }
 
 init();
+
+function processFileDrop(e) {
+    let file = e.dataTransfer.files[0];
+    let extension = file.name.split('.')[1];
+
+    if (file.type.startsWith("image/")) {
+        if(!trackData) alert("Please create or load a chart before changing album art.")
+        else if(extension == "jpg" || extension == "jpeg" || extension == "png") {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById("bv-album-art").files = dataTransfer.files;
+            updateAlbumArt();
+        }
+        else alert("Only .jpg and .png image files are supported.");
+    }
+    else if (file.type.startsWith("audio/")) {
+        if(!trackData) alert("Please create or load a chart before changing audio.")
+        else if(extension == "ogg" || extension == "mp3") {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById("bv-audio-clips").files = dataTransfer.files;
+            updateAudioClips();
+        }
+        else alert("Only .ogg and .mp3 audio files are supported.");
+    }
+    else if (extension == "srtb" || extension == "zip" || extension == "json") {
+        loadChartFile(file);
+    }
+    else {
+        alert("Unrecognized filetype: " + file.name);
+    }
+}
