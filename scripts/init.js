@@ -169,7 +169,9 @@ function processFileDrop(e) {
         else alert("Only .ogg and .mp3 audio files are supported.");
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
-        loadChartFile(file);
+        if(!trackData || confirm("This action will discard all current changes and load a new chart. Are you sure?")) {
+            loadChartFile(file);
+        }
     }
     else {
         alert("Unrecognized filetype: " + file.name);
