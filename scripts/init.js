@@ -1,8 +1,6 @@
 const loadingScreen = document.getElementById("loading-screen");
 const loadingMessage = document.getElementById("loading-message");
 
-const dropElement = document.body;
-
 let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
