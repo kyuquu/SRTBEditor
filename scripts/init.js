@@ -146,10 +146,10 @@ init();
 
 function processFileDrop(e) {
     let file = e.dataTransfer.files[0];
-    let extension = file.name.split('.')[1];
+    let extension = file.name.split('.');
+    extension = extension[extension.length-1];
 
     if (file.type.startsWith("image/")) {
-        // if(!trackData) alert("Please create or load a chart before changing album art.");
         if(!trackData) createToast("Upload failed", "Please load or create a chart before uploading an image", "warning", 5000);
         else if(extension == "jpg" || extension == "jpeg" || extension == "png") {
             const dataTransfer = new DataTransfer();
@@ -157,11 +157,9 @@ function processFileDrop(e) {
             document.getElementById("bv-album-art").files = dataTransfer.files;
             updateAlbumArt();
         }
-        // else alert("Only .jpg and .png image files are supported.");
         else createToast("Upload failed", "Only .jpg and .png images are supported", "warning", 5000);
     }
-    else if (file.type.startsWith("audio/")) {
-        // if(!trackData) alert("Please create or load a chart before changing audio.")
+    else if (file.type.startsWith("audio/") || extension == "ogg") {
         if(!trackData) createToast("Upload failed", "Please load or create a chart before uploading audio", "warning", 5000);
         else if(extension == "ogg" || extension == "mp3") {
             const dataTransfer = new DataTransfer();
@@ -169,14 +167,13 @@ function processFileDrop(e) {
             document.getElementById("bv-audio-clips").files = dataTransfer.files;
             updateAudioClips();
         }
-        // else alert("Only .ogg and .mp3 audio files are supported.");
         else createToast("Upload failed", "Only .ogg and .mp3 audio files are supported", "warning", 5000);
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
-        loadChartFile(file);
+        if(!trackData || confirm("This will discard all changes and load a new chart. Are you sure?"))
+            loadChartFile(file);
     }
     else {
-        // alert("Unrecognized filetype: " + file.name);
         createToast("Upload failed", "Unrecognized file type: " + file.name, "warning", 5000);
     }
 }

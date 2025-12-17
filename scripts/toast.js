@@ -7,12 +7,7 @@ function createToast (title, text, type, timeout, action) {
     toast.classList.add("toast");
     toast.classList.add(type);
     toast.setAttribute("id", `toast-${id}`);
-    // if(action)
-    //     toast.setAttribute("onclick", () => {
-    //         action();
-    //         removeToast(id);
-    //     }); //todo: use listeners instead of onclick
-    // else 
+    //todo: implement action handling with listener events
     toast.setAttribute("onclick", `removeToast(${id})`);
 
     let toastTitle = document.createElement("div");
@@ -26,10 +21,21 @@ function createToast (title, text, type, timeout, action) {
 
     document.getElementById("toast-container").appendChild(toast);
 
-    if(timeout && timeout > 0)
-        setTimeout(removeToast, timeout, id);
+    if(!timeout && timeout != 0)
+        setTimeout(fadeToast, 5000, id);
+    else if(timeout > 0)
+        setTimeout(fadeToast, timeout, id);
+}
+
+function fadeToast(id) {
+    let elem = document.getElementById(`toast-${id}`);
+    if(elem) {
+        elem.classList.add("fadeout");
+        setTimeout(removeToast, 250, id);
+    }
 }
 
 function removeToast(id) {
-    document.getElementById(`toast-${id}`).remove();
+    let elem = document.getElementById(`toast-${id}`);
+    if(elem) elem.remove();
 }
