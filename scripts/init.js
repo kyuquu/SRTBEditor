@@ -80,17 +80,6 @@ async function init() {
     // disable the save dropdown until a chart is loaded
     document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
 
-    // configure JSON editor to be readOnly when hitting escape, to allow tab navigation
-    // restore writability when focusing back on it
-    let editorElement = document.querySelector("#editor");
-    // editorElement.addEventListener("keydown", (e) => {
-    //     if (e.key === "Escape") {
-    //         JSONEditor.setReadOnly(true);
-    //     }
-    // }); 
-    // let textArea = document.querySelector(".ace_text-input");
-    // textArea.setAttribute("onfocus", "enableWriting()");
-
     loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {
@@ -140,6 +129,9 @@ async function init() {
         }
     });
 
+    popup("Sample popup", "this is a test popup. please close it",
+        [{text: "Close", action: "closePopup()", type: 0}]);
+
 }
 
 init();
@@ -157,6 +149,7 @@ function processFileDrop(e) {
             updateAlbumArt();
         }
         else alert("Only .jpg and .png image files are supported.");
+        //todo: make this a toast instead
     }
     else if (file.type.startsWith("audio/")) {
         if(!trackData) alert("Please create or load a chart before changing audio.")
@@ -167,13 +160,17 @@ function processFileDrop(e) {
             updateAudioClips();
         }
         else alert("Only .ogg and .mp3 audio files are supported.");
+        //todo: make this a toast instead
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
         if(!trackData || confirm("This action will discard all current changes and load a new chart. Are you sure?")) {
             loadChartFile(file);
         }
+        //todo: replace with custom popup and allow supressing this warning
+        //todo: allow replacing components of a chart like this? hmmm
     }
     else {
         alert("Unrecognized filetype: " + file.name);
+        //todo: make this a toast instead
     }
 }
