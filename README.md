@@ -14,9 +14,7 @@ https://kyuquu.github.io/SRTBEditor/
 
 - **JSON View:** Inspect and edit the raw chart data in an organized and more accessible format
 
-- **Utilities:** Access a variety of useful calculated values and helper functions, such as lyric import or note format update
-
-### Chart diagnostics
+### Chart utilities
 - View additional information about your chart, such as precise note counts, max score, and max combo
 - Access various utility functions (note stacking, flight path mirroring, lyric importing)
 
