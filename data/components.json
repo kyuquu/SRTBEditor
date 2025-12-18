@@ -58,7 +58,7 @@
         },
         "popup": {
             "text": "create popup",
-            "function": "popup('title', 'content', [{text: 'Cancel', action: 'closePopup()', type: 0}])"
+            "function": "confirmLoad()"
         }
     },
     "text-inputs": {

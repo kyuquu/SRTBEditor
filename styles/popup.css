@@ -44,3 +44,11 @@
 #popup-options {
     margin-top: 2rem;
 }
+
+#popup-result {
+    display: none;
+}
+
+#popup-remember{ 
+    padding:0.5rem;
+}

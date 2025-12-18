@@ -129,8 +129,8 @@ async function init() {
         }
     });
 
-    popup("Sample popup", "this is a test popup. please close it",
-        [{text: "Close", action: "closePopup()", type: 0}]);
+    // popup("Sample popup", "this is a test popup. please close it",
+    //     [{text: "Close", action: "closePopup()", type: 0}]);
 
 }
 
@@ -162,7 +162,11 @@ function processFileDrop(e) {
         else createToast("Upload failed", "Only .ogg and .mp3 audio files are supported", "warning", 5000);
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
-        if(!trackData || confirm("This will discard all changes and load a new chart. Are you sure?"))
+        if(trackData) //confirm if overwriting
+            confirmLoad().then((ret) => {
+                if(ret) loadChartFile(file);
+            });
+        else
             loadChartFile(file);
     }
     else {
