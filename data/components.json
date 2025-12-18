@@ -58,7 +58,7 @@
         },
         "popup": {
             "text": "create popup",
-            "function": "confirmLoad()"
+            "function": "popupConfirmLoad()"
         }
     },
     "text-inputs": {

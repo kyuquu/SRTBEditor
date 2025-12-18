@@ -163,7 +163,7 @@ function processFileDrop(e) {
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
         if(trackData) //confirm if overwriting
-            confirmLoad().then((ret) => {
+            popupConfirmLoad().then((ret) => {
                 if(ret) loadChartFile(file);
             });
         else

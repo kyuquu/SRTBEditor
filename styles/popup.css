@@ -51,13 +51,17 @@
 .popup-input{
     margin-left: 1rem;
     margin-right: 1rem;
-    font-size:1.5rem;
+    font-size:1.25rem;
 }
 
 #popup-result {
     display: none;
 }
 
-#popup-remember{ 
-    padding:0.5rem;
+#popup-remember { 
+    padding: 0.5rem;
+}
+
+.hidden {
+    display: none;
 }

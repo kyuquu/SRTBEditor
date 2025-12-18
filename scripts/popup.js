@@ -17,6 +17,10 @@ async function popup(title, content, options, allowRemember) {
     }
 
     //if allowremember, show a checkbox
+    if(allowRemember)
+        document.getElementById("popup-remember").classList.remove("hidden");
+    else
+        document.getElementById("popup-remember").classList.add("hidden");
 
     let elem = document.getElementById("popup-result");
     await (async () => {
@@ -33,7 +37,7 @@ function closePopup() {
     document.getElementById("popup-background").classList.remove("active");
 }
 
-async function confirmLoad() {
+async function popupConfirmLoad() {
     console.log(rememberedActions);
     if(rememberedActions.confirmLoad == 1)
         return true;
@@ -41,7 +45,7 @@ async function confirmLoad() {
     let options = ["Load", "Cancel"];
     return popup("Load New Chart",
         "Are you sure you want to load a new chart? All unsaved progress will be lost.",
-        options).then((result) => {
+        options, true).then((result) => {
             if(result == 1) return false;
             
             //if allowRemember, store the remembered value in a global array
