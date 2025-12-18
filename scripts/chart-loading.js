@@ -198,8 +198,10 @@ function loadChartFile(file) {
                         imageFilename = filename;
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
-                        audio = zip.files[filename];
-                        audioFilename = filename;
+                        if(nAudio < 1) {
+                            audio = zip.files[filename];
+                            audioFilename = filename;
+                        }
                         nAudio++;
                     }
                 }
