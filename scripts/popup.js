@@ -1,9 +1,3 @@
-const cancelOption = {
-    text: "Cancel",
-    action: closePopup,
-    type: 0
-}
-
 let rememberedActions = {};
 
 async function popup(title, content, options, allowRemember) {
@@ -16,6 +10,7 @@ async function popup(title, content, options, allowRemember) {
         cont.removeChild(cont.firstChild);
     for(i in options) {
         let newButton = document.createElement("button");
+        newButton.classList.add("popup-input");
         newButton.textContent = options[i];
         newButton.setAttribute("onclick", `resolvePopup(${i})`);
         cont.appendChild(newButton);
@@ -39,13 +34,21 @@ function closePopup() {
 }
 
 async function confirmLoad() {
-    let options = ["Save First", "Don't Save", "Cancel"];
+    console.log(rememberedActions);
+    if(rememberedActions.confirmLoad == 1)
+        return true;
+
+    let options = ["Load", "Cancel"];
     return popup("Load New Chart",
         "Are you sure you want to load a new chart? All unsaved progress will be lost.",
         options).then((result) => {
+            if(result == 1) return false;
+            
             //if allowRemember, store the remembered value in a global array
-            if(result == 0) return true;
-            return false;
+            let remElem = document.getElementById("popup-checkbox");
+            if(remElem.checked)
+                rememberedActions.confirmLoad = 1;
+            return true;
         });
 }
 

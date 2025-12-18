@@ -38,11 +38,20 @@
 }
 
 #popup-content {
+    margin-top: 0.5rem;
     font-size: 1rem;
 }
 
 #popup-options {
+    display: flex;
+    justify-content: space-evenly;
     margin-top: 2rem;
+}
+
+.popup-input{
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-size:1.5rem;
 }
 
 #popup-result {
