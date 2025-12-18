@@ -120,6 +120,12 @@ async function init() {
             e.preventDefault();
             resolvePopup(-1);
         }
+
+        // ctrl-h for testing
+        if (e.ctrlKey && e.key === "h") {
+            e.preventDefault();
+            console.log(popupInput("title", "content"));
+        }
     });
 
     // handle clicking outside of a popup

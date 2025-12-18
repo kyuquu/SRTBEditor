@@ -54,6 +54,10 @@
     font-size:1.25rem;
 }
 
+.small {
+    font-size: 0.75rem;
+}
+
 #popup-result {
     display: none;
 }

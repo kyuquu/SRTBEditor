@@ -87,7 +87,10 @@ function loadTemplate(filename) {
 }
 
 async function loadFromLink() {
-    let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
+    let input = await popupLoadFromSpinshare();
+    if(!input) return;
+    input = input.toLowerCase();
+
     let id = "";
     if(input.indexOf("?") > 0) { // trim off search queries
         input = input.substring(0, input.indexOf("?"));
