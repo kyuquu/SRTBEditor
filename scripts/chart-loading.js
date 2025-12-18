@@ -87,7 +87,10 @@ function loadTemplate(filename) {
 }
 
 async function loadFromLink() {
-    let input = prompt("Please enter a SpinShare link or ID:").toLowerCase();
+    let input = await popupLoadFromSpinshare();
+    if(!input) return;
+    input = input.toLowerCase();
+
     let id = "";
     if(input.indexOf("?") > 0) { // trim off search queries
         input = input.substring(0, input.indexOf("?"));
@@ -195,14 +198,15 @@ function loadChartFile(file) {
                         imageFilename = filename;
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
-                        if(nAudio > 1) {
-                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
-                            continue;
+                        if(nAudio < 1) {
+                            audio = zip.files[filename];
+                            audioFilename = filename;
                         }
-                        audio = zip.files[filename];
-                        audioFilename = filename;
                         nAudio++;
                     }
+                }
+                if(nAudio > 1) {
+                    createToast("Unsupported Feature", "SRTBE doesn't support multiple audio clips. You will only get 1 audio if you download as a .zip file.", "warning", 10000);
                 }
 
                 if(!srtb) {

@@ -29,6 +29,7 @@
     <link rel="stylesheet" type="text/css" href="styles/bottom-bar.css">
     <link rel="stylesheet" type="text/css" href="styles/diagnostics-view.css">
     <link rel="stylesheet" type="text/css" href="styles/toast.css">
+    <link rel="stylesheet" type="text/css" href="styles/popup.css">
 
     <!-- - - - MAIN SCRIPTS - - - - - -->
     <script defer type="text/javascript" src="scripts/main.js"></script>
@@ -41,6 +42,7 @@
     <script defer type="text/javascript" src="scripts/charter-utils.js"></script>
     <script defer type="text/javascript" src="scripts/backend-utils.js"></script>
     <script defer type="text/javascript" src="scripts/toast.js"></script>
+    <script defer type="text/javascript" src="scripts/popup.js"></script>
 
     <!-- - - - COMPONENTS - - - - - - -->
     <!-- button -->     <link rel="stylesheet" type="text/css" href="components/button/button.css">
@@ -207,7 +209,7 @@
         </span>
 
         <span class="bb bb1">
-            <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v1.0.8</a>
+            <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v1.0.9</a>
             <span>&#8226;</span>
             <span>Up to date with SRXD v1.7.0</span>
         </span>
@@ -218,6 +220,18 @@
         <span id="loading-message"></span>
     </div>
     <div id="toast-container">
+    </div>
+    <div id="popup-background">
+        <span class="popup-container">
+            <span id="popup-title"></span>
+            <span id="popup-content"></span>
+            <span id="popup-options"></span>
+            <input id="popup-result"></input>
+            <span id="popup-remember">
+                <label>Remember this decision</label>
+                <input type="checkbox" id="popup-checkbox"></input>
+            </span>
+        </span>
     </div>
 </body>
 </html>

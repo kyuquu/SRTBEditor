@@ -80,20 +80,11 @@ async function init() {
     // disable the save dropdown until a chart is loaded
     document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
 
-    // configure JSON editor to be readOnly when hitting escape, to allow tab navigation
-    // restore writability when focusing back on it
-    let editorElement = document.querySelector("#editor");
-    // editorElement.addEventListener("keydown", (e) => {
-    //     if (e.key === "Escape") {
-    //         JSONEditor.setReadOnly(true);
-    //     }
-    // }); 
-    // let textArea = document.querySelector(".ace_text-input");
-    // textArea.setAttribute("onfocus", "enableWriting()");
-
     loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {
+
+        // Ctrl-Shift-0 through 3 to quick load templates
         if (isDevModeEnabled) {
             if (e.ctrlKey && e.shiftKey && e.code === "Digit0") {
                 e.preventDefault();
@@ -112,15 +103,35 @@ async function init() {
                 loadTemplate("CUTIEMARKS (And the Things That Bind Us).srtb");
             }
         }
-        if (e.ctrlKey && e.code === "KeyS" && activeTab === 1) {
+
+        // Ctrl-S to save in the JSON editor
+        if (e.ctrlKey && e.key === "s" && activeTab === 1) {
             e.preventDefault();
             if(validateJSON(JSONEditor.getValue())) {
                 saveEditorChanges();
             }
             else {
-                console.warn("cannot save invalid JSON");
+                createToast("Save failed", "Check for JSON syntax errors and try again.", "warning", 5000);
             }
         }
+
+        // Escape to close an active popup
+        if (e.key == "Escape" && document.getElementById("popup-background").classList.contains("active")) {
+            e.preventDefault();
+            resolvePopup(-1);
+        }
+
+        // ctrl-h for testing
+        // if (e.ctrlKey && e.key === "h") {
+        //     e.preventDefault();
+        //     console.log(popupInput("title", "content"));
+        // }
+    });
+
+    // handle clicking outside of a popup
+    document.getElementById("popup-background").addEventListener("click", (e) => {
+        if(e.target === document.getElementById("popup-background"))
+            resolvePopup(-2);
     });
 
     // handle dragging files in
@@ -139,7 +150,6 @@ async function init() {
             e.dataTransfer.dropEffect = "copy";
         }
     });
-
 }
 
 init();
@@ -170,7 +180,11 @@ function processFileDrop(e) {
         else createToast("Upload failed", "Only .ogg and .mp3 audio files are supported", "warning", 5000);
     }
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
-        if(!trackData || confirm("This will discard all changes and load a new chart. Are you sure?"))
+        if(trackData) //confirm if overwriting
+            popupConfirmLoad().then((ret) => {
+                if(ret) loadChartFile(file);
+            });
+        else
             loadChartFile(file);
     }
     else {

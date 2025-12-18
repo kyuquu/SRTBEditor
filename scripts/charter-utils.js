@@ -22,10 +22,10 @@ function stackNearbyNotesAllDiffs() {
         }
     }
     if(numChanges) {
-        createToast("Stack", `Moved ${numChanges} notes across ${numDiffs} difficulties`, "info", 5000);
+        createToast("Stack", `Moved ${numChanges} note${numChanges>1?"s":""} across ${numDiffs} difficult${numDiffs>1?"ies":"y"}`, "info", 5000);
     }
     else {
-        createToast("Stack", `Didn't find any notes to stack`, "info", 5000);
+        createToast("Stack", "Didn't find any notes to stack", "info", 5000);
     }
     updateChartData();
     discardEditorChanges();
