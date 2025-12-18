@@ -17,8 +17,10 @@ async function popup(title, content, options, allowRemember) {
     }
 
     //if allowremember, show a checkbox
-    if(allowRemember)
+    if(allowRemember) {
         document.getElementById("popup-remember").classList.remove("hidden");
+        document.getElementById("popup-checkbox").checked = false;
+    }
     else
         document.getElementById("popup-remember").classList.add("hidden");
 
@@ -28,9 +30,8 @@ async function popup(title, content, options, allowRemember) {
             elem.onclick= () => res(true);
         });
     })();
-    let result = elem.value;
     closePopup();
-    return result;
+    return elem.value;
 }
 
 function closePopup() {
@@ -38,7 +39,6 @@ function closePopup() {
 }
 
 async function popupConfirmLoad() {
-    console.log(rememberedActions);
     if(rememberedActions.confirmLoad == 1)
         return true;
 
@@ -46,7 +46,7 @@ async function popupConfirmLoad() {
     return popup("Load New Chart",
         "Are you sure you want to load a new chart? All unsaved progress will be lost.",
         options, true).then((result) => {
-            if(result == 1) return false;
+            if(result != 0) return false;
             
             //if allowRemember, store the remembered value in a global array
             let remElem = document.getElementById("popup-checkbox");

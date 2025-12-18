@@ -195,14 +195,13 @@ function loadChartFile(file) {
                         imageFilename = filename;
                     }
                     else if (filename.slice(0, 10) === "AudioClips") {
-                        if(nAudio > 1) {
-                            window.alert("SRTBEditor doesn't support multiple audio files. Please be careful when saving as a ZIP file.");
-                            continue;
-                        }
                         audio = zip.files[filename];
                         audioFilename = filename;
                         nAudio++;
                     }
+                }
+                if(nAudio > 1) {
+                    createToast("Unsupported Feature", "SRTBE doesn't support multiple audio clips. You will only get 1 audio if you download as a .zip file.", "warning", 10000);
                 }
 
                 if(!srtb) {

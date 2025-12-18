@@ -83,6 +83,8 @@ async function init() {
     loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {
+
+        // Ctrl-Shift-0 through 3 to quick load templates
         if (isDevModeEnabled) {
             if (e.ctrlKey && e.shiftKey && e.code === "Digit0") {
                 e.preventDefault();
@@ -101,15 +103,29 @@ async function init() {
                 loadTemplate("CUTIEMARKS (And the Things That Bind Us).srtb");
             }
         }
-        if (e.ctrlKey && e.code === "KeyS" && activeTab === 1) {
+
+        // Ctrl-S to save in the JSON editor
+        if (e.ctrlKey && e.key === "s" && activeTab === 1) {
             e.preventDefault();
             if(validateJSON(JSONEditor.getValue())) {
                 saveEditorChanges();
             }
             else {
-                console.warn("cannot save invalid JSON");
+                createToast("Save failed", "Check for JSON syntax errors and try again.", "warning", 5000);
             }
         }
+
+        // Escape to close an active popup
+        if (e.key == "Escape" && document.getElementById("popup-background").classList.contains("active")) {
+            e.preventDefault();
+            resolvePopup(-1);
+        }
+    });
+
+    // handle clicking outside of a popup
+    document.getElementById("popup-background").addEventListener("click", (e) => {
+        if(e.target === document.getElementById("popup-background"))
+            resolvePopup(-2);
     });
 
     // handle dragging files in
@@ -128,10 +144,6 @@ async function init() {
             e.dataTransfer.dropEffect = "copy";
         }
     });
-
-    // popup("Sample popup", "this is a test popup. please close it",
-    //     [{text: "Close", action: "closePopup()", type: 0}]);
-
 }
 
 init();

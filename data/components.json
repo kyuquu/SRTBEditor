@@ -55,10 +55,6 @@
         "dv-set-serialization": {
             "text": "Modernize note format",
             "function": "changeNoteEncodings(2)"
-        },
-        "popup": {
-            "text": "create popup",
-            "function": "popupConfirmLoad()"
         }
     },
     "text-inputs": {
