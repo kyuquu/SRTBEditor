@@ -166,6 +166,7 @@ function processFileDrop(e) {
             dataTransfer.items.add(file);
             document.getElementById("bv-album-art").files = dataTransfer.files;
             updateAlbumArt();
+            createToast("Upload successful", "Set album art to uploaded file", "success", 5000);
         }
         else createToast("Upload failed", "Only .jpg and .png images are supported", "warning", 5000);
     }
@@ -176,6 +177,7 @@ function processFileDrop(e) {
             dataTransfer.items.add(file);
             document.getElementById("bv-audio-clips").files = dataTransfer.files;
             updateAudioClips();
+            createToast("Upload successful", "Set audio to uploaded file", "success", 5000);
         }
         else createToast("Upload failed", "Only .ogg and .mp3 audio files are supported", "warning", 5000);
     }
