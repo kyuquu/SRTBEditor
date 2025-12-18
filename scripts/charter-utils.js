@@ -14,7 +14,7 @@ function stackNearbyNotesAllDiffs() {
                     val = stackNearbyNotes(trackData[i].binaryNotes, 2);
                     break;
                 default:
-                    console.warn("attempted to stack notes with unknown encoding, aborting");
+                    createToast("Stack", "Aborting stack: note encoding format is unsupported", "warning", 5000);
                     return;
             }
             if(val) numDiffs++;
@@ -22,7 +22,10 @@ function stackNearbyNotesAllDiffs() {
         }
     }
     if(numChanges) {
-        alert(`Moved ${numChanges} notes across ${numDiffs} difficulties`);
+        createToast("Stack", `Moved ${numChanges} notes across ${numDiffs} difficulties`, "info", 5000);
+    }
+    else {
+        createToast("Stack", `Didn't find any notes to stack`, "info", 5000);
     }
     updateChartData();
     discardEditorChanges();
@@ -35,7 +38,7 @@ function stackNearbyNotes(noteData, encoding) {
         if(encoding == 0) {
             if(noteData[i].time < prevTime) {
                 console.warn("Notes are out of order, aborting stack operation");
-                alert("Encountered notes that are out of order. Please save in-game and try again");
+                createToast("Stack", "Aborting stack: notes are out of order. Please save in-game and try again.", "warning", 5000);
                 return;
             }
             if(noteData[i].time - prevTime < 0.0005 && noteData[i].time !== prevTime) {
@@ -48,7 +51,7 @@ function stackNearbyNotes(noteData, encoding) {
         } else if (encoding == 2) {
             if(noteData[i].tk < prevTime) {
                 console.warn("Notes are out of order, aborting stack operation");
-                alert("Encountered notes that are out of order. Please save in-game and try again");
+                createToast("Stack", "Aborting stack: notes are out of order. Please save in-game and try again.", "warning", 5000);
                 return;
             }
             if(noteData[i].tk - prevTime < 50 && noteData[i].tk !== prevTime) {
@@ -67,25 +70,33 @@ function stackNearbyNotes(noteData, encoding) {
 function mirrorTwistyTrack(index) {
     let trackData = getReferences(chartJSON)[1];
     let trackTurns = trackData[index].references.RefIds[0].data.trackTurns;
-    for(let i = 0; i < trackTurns.length; i++) {
-        trackTurns[i].turnAmount.y *= -1;
-        trackTurns[i].turnAmount.z *= -1;
+    if(trackTurns && trackTurns.length) {
+        for(let i = 0; i < trackTurns.length; i++) {
+            trackTurns[i].turnAmount.y *= -1;
+            trackTurns[i].turnAmount.z *= -1;
+        }
+        updateChartData();
+        discardEditorChanges();
+        createToast("Mirror", `Mirrored ${trackTurns.length} flight path${trackTurns.length>1?"s":""}`, "success", 5000);
     }
-    updateChartData();
-    discardEditorChanges();
+    else
+        createToast("Mirror", "No flight paths found.", "info", 5000);
 }
 
 function copyToClipboard(index) {
     let ret = "";
     let elem = document.getElementById(`dv-diff${index}`);
-    if(elem) {
+    if(elem && elem.querySelector(".dv-max-score")) {
         ret += trackInfo.title + '\t';
         let line = elem.querySelector(".dv-max-score").textContent;
         ret += line.substring(line.lastIndexOf(':') + 1).trim() + '\t';
         line = elem.querySelector(".dv-max-combo").textContent
         ret += line.substring(line.lastIndexOf(':') + 1).trim() + '\t';
+        navigator.clipboard.writeText(ret);
+        createToast("Copy", "Score data copied to clipboard.", "success", 5000);
     }
-    navigator.clipboard.writeText(ret);
+    else 
+        createToast("Copy", "No score data to copy.", "info", 5000);
 }
 
 function replaceChartLyrics(lyricJson) {
@@ -97,6 +108,7 @@ function replaceChartLyrics(lyricJson) {
     clipInfo.lyrics = lyrics;
     updateChartData();
     discardEditorChanges();
+    createToast("Lyrics", "Successfully imported lyrics.", "success", 5000);
 }
 
 function replaceChartDifficulty(newJson, args) {
@@ -134,4 +146,5 @@ function changeNoteEncodings(format) {
     }
     updateChartData();
     discardEditorChanges();
+    createToast("Format", "Note format successfully changed.", "success", 5000);
 }

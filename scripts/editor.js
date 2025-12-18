@@ -28,10 +28,10 @@ function saveEditorChanges() {
     chartJSON = JSON.parse(JSONEditor.getValue());
 
     if (trackInfo["albumArtReference"]["assetName"] !== document.getElementById("bv-album-art-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
-        window.alert("WARNING:\nChanging the album art reference may prevent the chart from loading the album art if you download as ZIP.");
+        createToast("Warning", "Changing the album art reference may prevent the chart from having a cover. Double-check before uploading as a ZIP.", "warning", 10000);
     }
-    else if (clipInfo[0]["clipAssetReference"]["assetName"] !== document.getElementById("bv-audio-clips-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-audio-clips-filename").textContent !== "No file selected") {
-        window.alert("WARNING:\nChanging the audio asset reference may prevent the chart from loading the audio if you download as ZIP.");
+    else if (clipInfo[0]["clipAssetReference"]["assetName"] !== document.getElementById("bv-audio-clips-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-audio-clips-filename").textContent !== "No file selected") {        
+        createToast("Warning", "Changing the audio asset reference may prevent the chart from having audio. Double-check before uploading as a ZIP.", "warning", 10000);
     }
 
     loadChartData(chartJSON);

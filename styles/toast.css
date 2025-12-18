@@ -1,0 +1,79 @@
+#toast-container {
+    position: absolute;
+    top: 10vh;
+    left: 75vw;
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    justify-content: end;
+    width: 20vw;
+    height: 75vh;
+    pointer-events: none;
+    user-select: none;
+}
+
+.toast {
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--color-main);
+    border-radius: 4px;
+    padding: 0.25rem;
+    margin-top: 0.5rem;
+    pointer-events: all;
+    z-index: 9;
+    cursor: pointer;
+
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+}
+
+.fadeout {
+    -webkit-animation: fadeout 0.25s;
+    animation: fadeout 0.25s;
+}
+
+@-webkit-keyframes fadein {
+  from {left: 30px; opacity: 0;}
+  to {left: 0px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {left: 30px; opacity: 0;}
+  to {left: 0px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+
+
+.toast-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.toast-content {
+    font-size: 1rem;
+}
+
+.alert {
+    background-color: #B33;
+}
+
+.warning {
+    background-color: #872;
+}
+
+.success {
+    background-color: #191;
+}
+
+.info {
+    background-color: #555;
+}
