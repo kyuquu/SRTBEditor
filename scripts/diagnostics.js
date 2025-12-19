@@ -47,7 +47,7 @@ function renderBasicDiagnostics() {
 
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
-            if(!trackData[i].difficultyType)
+            if(!trackData[i] || !trackData[i].difficultyType)
                 continue;
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
