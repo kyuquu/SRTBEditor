@@ -174,14 +174,21 @@ async function popupMergeChart() {
     popupElem.appendChild(mergeContElem);
 
     for(i in importData) {
-        let iElem = createCheckboxSpan(importData[i], 1)
+        let iElem = createCheckboxSpan(importData[i], 1);
+        iElem.id = `merge-${i}`;
         mergeContElem.appendChild(iElem);
         if(importData[i].subfields) {
             let subElem = document.createElement("span");
             for(j in importData[i].subfields) {
-                subElem.appendChild(createCheckboxSpan(importData[i].subfields[j], 2));
+                let jElem = createCheckboxSpan(importData[i].subfields[j], 2);
+                jElem.id = `merge-${i}-${j}`;
+                subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
+            //todo: disable and check subfield checkboxes if higher box is checked
+            //todo: disable checkboxes for disabled diffs
+            //todo: show identifying details of the incoming chart (name, artist, charter)
+
         }
     }
 
@@ -191,12 +198,14 @@ async function popupMergeChart() {
 
     let confirmButton = document.createElement("button");
     confirmButton.innerText = "Confirm";
-    confirmButton.onclick = "resolvePopup(1)";
+    confirmButton.setAttribute("onclick", "resolvePopup(1)");
+    confirmButton.classList.add("popup-button");
     buttonSpan.appendChild(confirmButton);
 
     let cancelButton = document.createElement("button");
     cancelButton.innerText = "Cancel";
-    cancelButton.onclick = "resolvePopup(0)";
+    cancelButton.setAttribute("onclick", "resolvePopup(0)");
+    cancelButton.classList.add("popup-button");
     buttonSpan.appendChild(cancelButton);
     
     let resultElem = document.getElementById("popup-result");
@@ -207,19 +216,7 @@ async function popupMergeChart() {
         });
     })();
     closePopup();
-
-    //what do you want to import from this chart?
-    /*
-    long checklist:
-        main metadata
-        difficulty
-            clipdata
-            notes
-            twisty track
-        clipdata
-            tempomap
-            lyrics
-    */
+    return resultElem.value;
 }
 
 function closePopup() {
@@ -253,8 +250,15 @@ async function popupLoadFromSpinshare() {
         });
 }
 
+async function popupRoll() {
+    let rando = Math.floor(Math.random() * 100 + 1);
+    return popupButtons("@everyone",
+        rando, []).then();
+}
+
 function resolvePopup (val) {
     let elem = document.getElementById("popup-result");
     elem.value = val;
     elem.click();
 }
+

@@ -307,6 +307,12 @@ lyricInput.onchange = () => {
     passJsonToCallback(lyricInput.files[0], replaceChartLyrics);
 }
 
+const mergeInput = document.getElementById("dv-merge-input");
+mergeInput.onchange = () => {
+    console.log('wawa');
+    passJsonToCallback(mergeInput.files[0], mergeChartJson);
+}
+
 const diffInput = document.getElementById("dv-difficulty-input");
 diffInput.onchange = () => {
     let diff = diffInput.getAttribute("diffType");

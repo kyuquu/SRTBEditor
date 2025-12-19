@@ -68,10 +68,12 @@
 }
 
 .merge-container {
-    max-width: 30rem;
+    width: 40rem;
+    max-height: min(32rem, 80vh);
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column wrap;
     justify-content: center;
+    align-content: center;
     column-gap: 4rem;
     row-gap: 2rem;
 }
@@ -80,6 +82,7 @@
     font-size: 1.25rem;
     margin-top: 1rem;
     margin-left: 1rem;
+    height: 4rem;
 }
 
 .merge-2 {

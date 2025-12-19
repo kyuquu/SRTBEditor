@@ -155,8 +155,75 @@ function mergeChart(newFile) {
 
 function mergeChartJson(newJson) {
     //let 
-    popupMergeChart().then(() => {
-        
+    popupMergeChart().then((ret) => {
+        if(ret != 1) return;
+        console.log("newJson");
+        let elem;
+
+        elem = document.getElementById("merge-0");
+        if(elem || elem.checked) {
+            let oldValues = chartJSON.largeStringValuesContainer.values;
+            let newValues = newJson.largeStringValuesContainer.values;
+            let oldInd, newInd;
+            for(i in oldValues) {
+                if(oldValues[i].key == "SO_TrackInfo_TrackInfo") {
+                    oldInd = i;
+                    break;
+                }
+            }
+            for(i in newValues) {
+                if(newValues[i].key == "SO_TrackInfo_TrackInfo") {
+                    newInd = i;
+                    break;
+                }
+            }
+            let diffs = oldValues[oldInd].val.difficulties;
+            oldValues[oldInd] = newValues[newInd];
+            oldValues[oldInd].val.difficulties = diffs;
+            
+            console.log(oldValues);
+            console.log(chartJSON);
+
+            //snapshot enabled diffs, load new trackData, reload old enabled diffs
+        }
+        for(let i = 1; i < 6; i++) {
+            elem = document.getElementById(`merge-${i}`);
+            if(elem) {
+                if(elem.checked) {
+                    //the entire i diff
+                    let newDiff = fetchTrackDataByDifficulty(newJson, i-1);
+                    replaceTrackDataByDifficulty(newDiff, i-1);
+
+                    //todo: enable/disable this diff
+                }
+                else {
+                    //check i's clipdata, notes, and twisty checkboxes
+                }
+            }
+        }
+
+
+        //if merge-i, do i
+        //else if merge-i-j, do j
+        //select a checkbox, then do a thing
+
+        /*
+        merge-0: snapshot enabled diffs, load new trackData, load old enabled diffs
+        merge-1: the entire easy diff
+        merge-x-0: easy's clipdata and clipinfoassetreference
+        merge-x-1: easy's noteSerializationFormat, notes, and binarynotes
+        merge-x-2: easy's splinePath and references.refIds
+        merge-2: the entire normal diff
+        merge-3: the entire hard diff
+        merge-4: the entire expert diff
+        merge-5: the entire xd diff
+        merge-6: the entire remixd diff
+        merge-7: the entire clipdata
+        merge-7-0: clipdata's bpmmarkers and timesigmarkers
+        merge-7-1: clipdata's cuepoints
+        merge-7-2: clipdata's lyrics
+
+        */
     });
     //imports is an array, each checked box from the popup is an item in the array
 }

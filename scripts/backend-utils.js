@@ -30,3 +30,9 @@ function replaceTrackDataByDifficulty(newTrackData, diff) {
         }
     }
 }
+
+function fetchTrackInfo(json) {
+    for(i in json.largeStringValuesContainer.values)
+        if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo")
+            return json.largeStringValuesContainer.values[i].val;
+}
