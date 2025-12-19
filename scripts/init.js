@@ -4,6 +4,7 @@ const loadingMessage = document.getElementById("loading-message");
 let templateTrackInfo;
 let templateTrackData;
 let templateClipInfo;
+let importData;
 
 
 async function init() {
@@ -33,7 +34,9 @@ async function init() {
     templateTrackData = references[1];
     templateClipInfo = references[2];
 
-
+    await fetch("./data/imports.json").then(response => response.json().then((ret) => {
+        importData = ret;
+    }));
 
     loadingMessage.textContent = "INITIALIZING COMPONENTS...";
 
@@ -74,13 +77,13 @@ async function init() {
             for (let selectInput in selectInputs) {
                 initializeSelectInput(selectInput, selectInputs[selectInput]);
             }
-        });
+    });
+        
+    loadingMessage.textContent = "INITIALIZING INTERFACE...";
     
     // startup modifications
     // disable the save dropdown until a chart is loaded
     document.querySelector(".dropdown.disabled > button").setAttribute("disabled", "true");
-
-    loadingScreen.classList.remove("active");
     
     document.addEventListener("keydown", (e) => {
 
@@ -122,10 +125,10 @@ async function init() {
         }
 
         // ctrl-h for testing
-        // if (e.ctrlKey && e.key === "h") {
-        //     e.preventDefault();
-        //     console.log(popupInput("title", "content"));
-        // }
+        if (e.ctrlKey && e.key === "h") {
+            e.preventDefault();
+            console.log(popupMergeChart());
+        }
     });
 
     // handle clicking outside of a popup
@@ -150,6 +153,8 @@ async function init() {
             e.dataTransfer.dropEffect = "copy";
         }
     });
+
+    loadingScreen.classList.remove("active");
 }
 
 init();
@@ -184,7 +189,8 @@ function processFileDrop(e) {
     else if (extension == "srtb" || extension == "zip" || extension == "json") {
         if(trackData) //confirm if overwriting
             popupConfirmLoad().then((ret) => {
-                if(ret) loadChartFile(file);
+                if(ret == 0) loadChartFile(file);
+                if(ret == 1) mergeChart(file);
             });
         else
             loadChartFile(file);

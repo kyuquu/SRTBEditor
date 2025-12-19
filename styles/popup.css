@@ -20,10 +20,10 @@
     opacity: 100%;
 }
 
-.popup-container {
+#popup-container {
     display: flex;
     flex-direction: column;
-    width: 20rem;
+    max-width: 50rem;
     padding:2rem;
     align-items: center;
     background-color: var(--color-bg);
@@ -42,13 +42,13 @@
     font-size: 1rem;
 }
 
-#popup-options {
+#popup-answer {
     display: flex;
     justify-content: space-evenly;
     margin-top: 2rem;
 }
 
-.popup-input{
+.popup-button{
     margin-left: 1rem;
     margin-right: 1rem;
     font-size:1.25rem;
@@ -63,9 +63,31 @@
 }
 
 #popup-remember { 
+    margin-top: 0.5rem;
     padding: 0.5rem;
 }
 
-.hidden {
-    display: none;
+.merge-container {
+    max-width: 30rem;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    column-gap: 4rem;
+    row-gap: 2rem;
+}
+
+.merge-1 {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.merge-2 {
+    font-size: 1rem;
+    margin-left: 1rem;
+}
+
+.merge-label {
+    display: inline-block;
+    width: calc(4em + 2rem);
 }

@@ -148,3 +148,15 @@ function changeNoteEncodings(format) {
     discardEditorChanges();
     createToast("Format", "Note format successfully changed.", "success", 5000);
 }
+
+function mergeChart(newFile) {
+    passJsonToCallback(newFile, mergeChartJson);
+}
+
+function mergeChartJson(newJson) {
+    //let 
+    popupMergeChart().then(() => {
+        
+    });
+    //imports is an array, each checked box from the popup is an item in the array
+}

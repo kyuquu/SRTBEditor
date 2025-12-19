@@ -37,3 +37,12 @@ button {
 input[type="file"] {
     display: none;
 }
+
+.hint {
+    display: inline-block;
+    text-align: center;
+    font-size: 0.5em;
+    border: 2px solid var(--color-main);
+    border-radius: 100px;
+    width: 1em;
+}

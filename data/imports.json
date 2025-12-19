@@ -1,0 +1,132 @@
+[
+    {
+        "name": "Metadata",
+        "hint": "General metadata, such as title, artist, charter, background, etc."
+    },
+    {
+        "name": "Easy",
+        "hint": "The entire Easy diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "Normal",
+        "hint": "The entire Normal diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "Hard",
+        "hint": "The entire Hard diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "Expert",
+        "hint": "The entire Expert diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "XD",
+        "hint": "The entire XD diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "RemiXD",
+        "hint": "The entire RemiXD diff, including all of the below and more",
+        "subfields": [
+            {
+                "name": "Clip Data",
+                "hint": "Information about what parts of the audio are used in this diff, when to fade in/out, etc."
+            },
+            {
+                "name": "Notes",
+                "hint": "Note data and note encoding format"
+            },
+            {
+                "name": "Track Turns",
+                "hint": "Twisty track data"
+            }
+        ]
+    },
+    {
+        "name": "Clip Info",
+        "hint": "The entire Clip Info, including all of the below",
+        "subfields": [
+            {
+                "name": "Tempomap",
+                "hint": "BPM and time signature markers"
+            },
+            {
+                "name": "Cuepoints",
+                "hint": "Cuepoint names and timings"
+            },
+            {
+                "name": "Lyrics",
+                "hint": "Lyric events and the whole lyric string"
+            }
+        ]
+    }
+]
