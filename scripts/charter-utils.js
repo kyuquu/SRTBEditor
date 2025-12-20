@@ -119,6 +119,7 @@ function replaceChartDifficulty(newJson, args) {
     }
     let newTrackData = fetchTrackDataByDifficulty(newJson, diff);
     replaceTrackDataByDifficulty(newTrackData, diff);
+    console.warn("using old method, pls fix");
 }
 
 function changeNoteEncodings(format) {
@@ -172,7 +173,6 @@ function mergeChartJson(newJson) {
             oldInfo = newInfo;
             oldInfo.difficulties = diffs;
 
-            console.log("replacing metadata");
             replaceTrackInfo(oldInfo);
             loadChartData(chartJSON);
         }
@@ -190,7 +190,7 @@ function mergeChartJson(newJson) {
                 if(elem.checked) {
                     //if old chart doesn't have this diff, create it
                     if(oldDiff == -1) {
-                        loadChartData(generateTrackData("", i));
+                        loadChartData(generateTrackData("", i-1));
                         oldDiff = fetchTrackDataByDiff("", i-1);
                         console.warn("generating a diff first!");
                     }
@@ -199,7 +199,15 @@ function mergeChartJson(newJson) {
                     oldDiff = newDiff;
                     rep = true;
 
-                    //todo: enable/disable this diff
+                    //enable/disable according to the imported diff
+                    let oldKey = chartJSON.largeStringValuesContainer.values[fetchTrackDataIndexByDiff("", i-1)].key;
+                    let newKey = newJson.largeStringValuesContainer.values[fetchTrackDataIndexByDiff(newJson, i-1)].key;
+                    let active = isDiffActiveByKey(newJson, newKey);
+
+                    // console.log(`oldkey: ${oldKey}`);
+                    // console.log(`newkey: ${newKey}`);
+                    // console.log(`active: ${active}`);
+                    loadChartData(setDiffActiveByKey("", oldKey, active));
                 }
                 else {
 
@@ -207,7 +215,7 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
-                            loadChartData(generateTrackData("", i));
+                            loadChartData(generateTrackData("", i-1));
                             oldDiff = fetchTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
@@ -221,7 +229,7 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
-                            loadChartData(generateTrackData("", i));
+                            loadChartData(generateTrackData("", i-1));
                             oldDiff = fetchTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
@@ -236,7 +244,7 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
-                            generateTrackData("", i)
+                            loadChartData(generateTrackData("", i-1));
                             oldDiff = fetchTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
@@ -247,8 +255,7 @@ function mergeChartJson(newJson) {
                     }
                 }
                 if(rep) {
-                    console.log("replacing diff " + i);
-                    replaceTrackDataByDiff(oldDiff, i-1);
+                    loadChartData(replaceTrackDataByDiff(oldDiff, i-1));
                     rep = false;
                 }
             }
@@ -289,34 +296,9 @@ function mergeChartJson(newJson) {
                 }
             }
             if(rep) {
-                console.log("replacing clipinfo");
                 replaceLargeStringByKey(oldClip, "SO_ClipInfo_ClipInfo_0");
                 rep = false;
             }
         }
-
-
-        //if merge-i, do i
-        //else if merge-i-j, do j
-        //select a checkbox, then do a thing
-
-        /*
-        merge-0: snapshot enabled diffs, load new trackData, load old enabled diffs
-        merge-1: the entire easy diff
-        merge-x-0: easy's clipdata and clipinfoassetreference
-        merge-x-1: easy's noteSerializationFormat, notes, and binarynotes
-        merge-x-2: easy's splinePath and references.refIds
-        merge-2: the entire normal diff
-        merge-3: the entire hard diff
-        merge-4: the entire expert diff
-        merge-5: the entire xd diff
-        merge-6: the entire remixd diff
-        merge-7: the entire clipdata
-        merge-7-0: clipdata's bpmmarkers and timesigmarkers
-        merge-7-1: clipdata's cuepoints
-        merge-7-2: clipdata's lyrics
-
-        */
     });
-    //imports is an array, each checked box from the popup is an item in the array
 }

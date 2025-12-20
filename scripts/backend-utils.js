@@ -106,8 +106,7 @@ function replaceTrackDataByDiff(replace, diffType, json) {
         if(values[i].key.includes("SO_TrackData_TrackData_")
                 && values[i].val && values[i].val.difficultyType - 2 == diffType) {
             json.largeStringValuesContainer.values[i].val = replace;
-            loadChartData(chartJSON);
-            return true;
+            return json;
         }
     }
 
@@ -122,7 +121,6 @@ function generateTrackData(json, diffType) {
         if(key.includes("SO_TrackData_TrackData_"))
             taken.push(key[key.length-1]);
     }
-    console.log(taken);
     let ind = taken.length;
     for(i in taken) {
         if(taken.indexOf(i) == -1) {
@@ -162,7 +160,7 @@ function generateTrackData(json, diffType) {
         let newBody = returnTemplate("Diff Body.json");
         newBody = newBody.replaceAll("$0", ind);
         newBody = JSON.parse(newBody);
-        newBody.val.difficultyType = diffType + 1;
+        newBody.val.difficultyType = diffType + 2;
         values[values.length] = newBody;
     }
 
@@ -180,7 +178,35 @@ function generateTrackData(json, diffType) {
     if(!found) {
         let newIndex = returnTemplate("Diff Index.json");
         newIndex = newIndex.replaceAll("$0", ind);
-        trackInfo.difficulties[trackInfo.difficulties] = JSON.parse(newIndex);
+        trackInfo.difficulties[trackInfo.difficulties.length] = JSON.parse(newIndex);
     }
     return json;
+}
+
+function isDiffActiveByKey(json, key) {
+    if(!json) json = chartJSON;
+    key = key.substring("SO_TrackData_".length);
+    let diffs = fetchTrackInfo(json).difficulties;
+    for(i in diffs) {
+        if(diffs[i].assetName == key)
+            return diffs[i]._active;
+    }
+    console.warn("key not found");
+}
+
+function setDiffActiveByKey(json, key, active) {
+    if(!json) json = chartJSON;
+    key = key.substring("SO_TrackData_".length);
+    let diffs = json.largeStringValuesContainer.values[fetchTrackInfoIndex(json)].val.difficulties;
+    for(i in diffs) {
+        if(diffs[i].assetName == key) {
+            //if active isn't given, toggle
+            if(!active && active != false)
+                diffs[i]._active = !diffs[i]._active;
+            else
+                diffs[i]._active = active;
+        }
+    }
+    return json;
+
 }
