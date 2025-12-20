@@ -187,13 +187,14 @@ function mergeChartJson(newJson) {
                 //if new chart doesn't have this diff, skip it
                 if(newDiff == -1) continue;
 
-                //if old chart doesn't have this diff, create it
-                if(oldDiff == -1) {
-                    console.warn("creating diffs not implemented yet!");
-                    continue;
-                }
-
                 if(elem.checked) {
+                    //if old chart doesn't have this diff, create it
+                    if(oldDiff == -1) {
+                        loadChartData(generateTrackData("", i));
+                        oldDiff = fetchTrackDataByDiff("", i-1);
+                        console.warn("generating a diff first!");
+                    }
+
                     //the entire diff
                     oldDiff = newDiff;
                     rep = true;
@@ -204,6 +205,12 @@ function mergeChartJson(newJson) {
 
                     elem = document.getElementById(`merge-${i}-0`);
                     if(elem && elem.checked) {
+                        //if old chart doesn't have this diff, create it
+                        if(oldDiff == -1) {
+                            loadChartData(generateTrackData("", i));
+                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        }
                         //clip data
                         oldDiff.clipInfoAssetReferences = newDiff.clipInfoAssetReferences;
                         oldDiff.clipData = newDiff.clipData;
@@ -212,6 +219,12 @@ function mergeChartJson(newJson) {
 
                     elem = document.getElementById(`merge-${i}-1`);
                     if(elem && elem.checked) {
+                        //if old chart doesn't have this diff, create it
+                        if(oldDiff == -1) {
+                            loadChartData(generateTrackData("", i));
+                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        }
                         //notes
                         oldDiff.noteSerializationFormat = newDiff.noteSerializationFormat;
                         oldDiff.notes = newDiff.notes;
@@ -221,6 +234,12 @@ function mergeChartJson(newJson) {
                     }
                     elem = document.getElementById(`merge-${i}-2`);
                     if(elem && elem.checked) {
+                        //if old chart doesn't have this diff, create it
+                        if(oldDiff == -1) {
+                            generateTrackData("", i)
+                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        }
                         //track turns
                         oldDiff.splinePathData = newDiff.splinePathData;
                         oldDiff.references.refIds = newDiff.references.refIds;

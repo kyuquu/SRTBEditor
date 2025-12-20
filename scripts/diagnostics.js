@@ -345,7 +345,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                 }
                 
                 if(!over || skip) {
-                    console.log("erronous beathold end at " + notesIn[i].tk / 100000);
+                    // console.log("erronous beathold end at " + notesIn[i].tk / 100000);
                     break;
                 }
 

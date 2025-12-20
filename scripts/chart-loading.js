@@ -309,7 +309,6 @@ lyricInput.onchange = () => {
 
 const mergeInput = document.getElementById("dv-merge-input");
 mergeInput.onchange = () => {
-    console.log('wawa');
     passJsonToCallback(mergeInput.files[0], mergeChartJson);
 }
 

@@ -42,9 +42,16 @@ function replaceTrackInfo(replace, json) {
 
 function fetchTrackInfo(json) {
     if(!json) json = chartJSON;
+    let ind = fetchTrackInfoIndex(json, "SO_TrackInfo_TrackInfo");
+    return json.largeStringValuesContainer.values[ind].val;
+}
+
+function fetchTrackInfoIndex(json) {
+    if(!json) json = chartJSON;
     for(i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo")
-            return json.largeStringValuesContainer.values[i].val;
+            return i
+
 }
 
 function fetchLargeStringByKey(json, key) {
@@ -104,4 +111,76 @@ function replaceTrackDataByDiff(replace, diffType, json) {
         }
     }
 
+}
+
+function generateTrackData(json, diffType) {
+    if(!json) json = chartJSON;
+    let values = json.largeStringValuesContainer.values;
+    let taken = [];
+    for(i in values) {
+        let key = values[i].key;
+        if(key.includes("SO_TrackData_TrackData_"))
+            taken.push(key[key.length-1]);
+    }
+    console.log(taken);
+    let ind = taken.length;
+    for(i in taken) {
+        if(taken.indexOf(i) == -1) {
+            ind = i;
+            break;
+        }
+    }
+
+    let newKey = `SO_TrackData_TrackData_${ind}`;
+    
+    //search for a TrackData_ind in the header
+    //if not found, make one
+    let headerVals = json.unityObjectValuesContainer.values;
+    let found = false;
+    for(i in headerVals) {
+        if(headerVals[i].key == newKey) {
+            found = true;
+            break;
+        }
+    }
+    if(!found) {
+        let newHeader = returnTemplate("Diff Header.json");
+        newHeader = newHeader.replaceAll("$0", ind);
+        headerVals[headerVals.length] = JSON.parse(newHeader);
+    }
+
+    //search for a TrackData_ind in the body
+    //if not found, make one
+    found = false;
+    for(i in values) {
+        if(values[i].key == newKey) {
+            found = true;
+            break;
+        }
+    }
+    if(!found) {
+        let newBody = returnTemplate("Diff Body.json");
+        newBody = newBody.replaceAll("$0", ind);
+        newBody = JSON.parse(newBody);
+        newBody.val.difficultyType = diffType + 1;
+        values[values.length] = newBody;
+    }
+
+    //search for a TrackData_ind in the difficulties
+    //if not found, make one
+    found = false;
+    let trackInfo = fetchTrackInfoIndex(json);
+    trackInfo = json.largeStringValuesContainer.values[trackInfo].val;
+    for(i in trackInfo.difficulties) {
+        if(trackInfo.difficulties[i].assetName == newKey) {
+            found = true;
+            break;
+        }
+    }
+    if(!found) {
+        let newIndex = returnTemplate("Diff Index.json");
+        newIndex = newIndex.replaceAll("$0", ind);
+        trackInfo.difficulties[trackInfo.difficulties] = JSON.parse(newIndex);
+    }
+    return json;
 }
