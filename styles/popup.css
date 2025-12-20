@@ -97,8 +97,8 @@
 .merge-faded {
     color: rgba(var(--color-main-values), 30%);
 }
-input[type=checkbox]:checked::before {
-  background-color: #00AEEF;
+input.merge-faded, .merge-faded input  {
+    opacity: 50%;
 }
 
 .merge-1 {
