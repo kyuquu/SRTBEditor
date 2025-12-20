@@ -97,6 +97,7 @@
 .merge-faded {
     color: rgba(var(--color-main-values), 30%);
 }
+
 input.merge-faded, .merge-faded input  {
     opacity: 50%;
 }

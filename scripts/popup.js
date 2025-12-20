@@ -165,6 +165,25 @@ function createCheckboxSpan (obj, i, j) {
     return spanElem;
 }
 
+function propogateCheck(elem) {
+    let checked = elem.checked;
+    let subChecks = elem.parentElement.querySelectorAll(".merge-check");
+    for(let i in subChecks) {
+        if(subChecks[i].id && subChecks[i].id != elem.id) {
+            if(checked) {
+                subChecks[i].setAttribute("prevState", subChecks[i].checked);
+                subChecks[i].checked = true;
+                subChecks[i].setAttribute("disabled", true);
+            }
+            else {
+                let prevState = subChecks[i].getAttribute("prevState");
+                subChecks[i].checked = (prevState === "true");
+                subChecks[i].removeAttribute("disabled");
+            }
+        }
+    }
+}
+
 async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
@@ -173,11 +192,6 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
 
     while(popupElem.hasChildNodes())
         popupElem.removeChild(popupElem.firstChild);
-
-    // let titleElem = document.createElement("span");
-    // titleElem.id = "popup-title";
-    // titleElem.textContent = "Chart Merging";
-    // popupElem.appendChild(titleElem);
 
     let contentElem = document.createElement("span");
     contentElem.id = "popup-content";
@@ -208,17 +222,17 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
             iElem.classList.add("merge-faded");
             iElem.querySelector("input").classList.add("merge-faded");
         }
-        // iElem.id = `merge-${i}`;
         if(importData[i].subfields) {
+            iElem.querySelector("input").addEventListener("change", (e) => {
+                propogateCheck(e.target);
+            });
             let subElem = document.createElement("span");
             for(let j in importData[i].subfields) {
                 let jElem = createCheckboxSpan(importData[i].subfields[j], i, j);
-                // jElem.id = `merge-${i}-${j}`;
                 subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
             //todo: disable and check subfield checkboxes if higher box is checked
-            //todo: fade checkboxes for disabled diffs
             //todo: remember checkboxes for repeat instances
 
         }
