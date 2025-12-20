@@ -160,10 +160,12 @@ function mergeChartJson(newJson) {
         if(ret != 1) return;
         let elem;
         let rep = false;
+        let numActions = 0;
 
         //primary metadata
         elem = document.getElementById("merge-0");
         if(elem && elem.checked) {
+            numActions++;
 
             let oldInfo = fetchTrackInfo();
             let newInfo = fetchTrackInfo(newJson);
@@ -188,6 +190,7 @@ function mergeChartJson(newJson) {
                 if(newDiff == -1) continue;
 
                 if(elem.checked) {
+                    numActions++;
                     //if old chart doesn't have this diff, create it
                     if(oldDiff == -1) {
                         loadChartData(generateTrackData("", i-1));
@@ -213,6 +216,7 @@ function mergeChartJson(newJson) {
 
                     elem = document.getElementById(`merge-${i}-0`);
                     if(elem && elem.checked) {
+                        numActions++;
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
                             loadChartData(generateTrackData("", i-1));
@@ -227,6 +231,7 @@ function mergeChartJson(newJson) {
 
                     elem = document.getElementById(`merge-${i}-1`);
                     if(elem && elem.checked) {
+                        numActions++;
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
                             loadChartData(generateTrackData("", i-1));
@@ -242,6 +247,7 @@ function mergeChartJson(newJson) {
                     }
                     elem = document.getElementById(`merge-${i}-2`);
                     if(elem && elem.checked) {
+                        numActions++;
                         //if old chart doesn't have this diff, create it
                         if(oldDiff == -1) {
                             loadChartData(generateTrackData("", i-1));
@@ -269,6 +275,7 @@ function mergeChartJson(newJson) {
             let newClip = fetchLargeStringByKey(newJson, "SO_ClipInfo_ClipInfo_0");
 
             if(elem.checked) {
+                numActions++;
                 //the entire clip info
                 oldClip = newClip;
                 rep = true;
@@ -276,6 +283,7 @@ function mergeChartJson(newJson) {
             else {
                 elem = document.getElementById("merge-7-0");
                 if(elem && elem.checked) {
+                    numActions++;
                     //tempomap
                     oldClip.timeSignatureMarkers = newClip.timeSignatureMarkers;
                     oldClip.bpmMarkers = newClip.bpmMarkers;
@@ -284,12 +292,14 @@ function mergeChartJson(newJson) {
 
                 elem = document.getElementById("merge-7-1");
                 if(elem && elem.checked) {
+                    numActions++;
                     //cuepoints
                     oldClip.cuePoints = newClip.cuePoints;
                     rep = true;
                 }
                 elem = document.getElementById("merge-7-2");
                 if(elem && elem.checked) {
+                    numActions++;
                     //lyrics
                     oldClip.lyrics = newClip.lyrics;
                     rep = true;
@@ -300,5 +310,9 @@ function mergeChartJson(newJson) {
                 rep = false;
             }
         }
+        if(numActions)
+            createToast("Import successful", `Completed ${numActions} operation${numActions!=1?"s":""}`, "success", 5000);
+        else
+            createToast("Import skipped", "Found nothing to import", "info", 5000);
     });
 }

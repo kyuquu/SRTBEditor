@@ -99,11 +99,11 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
 
-            let importDiffButton = mainContainer.appendChild(document.createElement("button"));
-            importDiffButton.setAttribute("class", "button");
-            importDiffButton.setAttribute("onclick", `handleImportDiffButtonPressed(${diffType - 2})`);
-            importDiffButton.setAttribute("title", `Replace this difficulty with the same one from another chart.`);
-            importDiffButton.textContent = "Replace with import";
+            // let importDiffButton = mainContainer.appendChild(document.createElement("button"));
+            // importDiffButton.setAttribute("class", "button");
+            // importDiffButton.setAttribute("onclick", `handleImportDiffButtonPressed(${diffType - 2})`);
+            // importDiffButton.setAttribute("title", `Replace this difficulty with the same one from another chart.`);
+            // importDiffButton.textContent = "Replace with import";
 
             diagnosticsRoot.appendChild(mainContainer);
         }

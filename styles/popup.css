@@ -78,6 +78,22 @@
     row-gap: 2rem;
 }
 
+.merge-title {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.merge-subtitle {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    margin-left: 0.5em;
+    color: rgba(var(--color-main-values), 70%)
+}
+
 .merge-1 {
     font-size: 1.25rem;
     margin-top: 1rem;

@@ -172,10 +172,10 @@ async function popupMergeChart(chartTitle, chartSubtitle) {
     while(popupElem.hasChildNodes())
         popupElem.removeChild(popupElem.firstChild);
 
-    let titleElem = document.createElement("span");
-    titleElem.id = "popup-title";
-    titleElem.textContent = "Chart Merging";
-    popupElem.appendChild(titleElem);
+    // let titleElem = document.createElement("span");
+    // titleElem.id = "popup-title";
+    // titleElem.textContent = "Chart Merging";
+    // popupElem.appendChild(titleElem);
 
     let contentElem = document.createElement("span");
     contentElem.id = "popup-content";
@@ -185,12 +185,14 @@ async function popupMergeChart(chartTitle, chartSubtitle) {
     let summaryElem = document.createElement("span");
     popupElem.appendChild(summaryElem);
 
-    let summaryTitle = document.createElement("p");
+    let summaryTitle = document.createElement("span");
     summaryTitle.innerText = `${chartTitle}`;
+    summaryTitle.classList.add("merge-title");
     summaryElem.appendChild(summaryTitle);
 
-    let summarySubtitle = document.createElement("p");
-    summarySubtitle.innerText = `${chartSubtitle?chartSubtitle:""}`;
+    let summarySubtitle = document.createElement("span");
+    summarySubtitle.innerText = ` ${chartSubtitle?chartSubtitle:""}`;
+    summarySubtitle.classList.add("merge-subtitle");
     summaryElem.appendChild(summarySubtitle);
 
     let mergeContElem = document.createElement("span");
@@ -278,7 +280,7 @@ async function popupLoadFromSpinshare() {
 async function popupRoll() {
     let rando = Math.floor(Math.random() * 100 + 1);
     return popupButtons("",
-        "@user, " + rando, []).then();
+        "@you, " + rando, []).then();
 }
 
 function resolvePopup (val) {
