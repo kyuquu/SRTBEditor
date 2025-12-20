@@ -6,6 +6,7 @@
     {
         "name": "Easy",
         "hint": "The entire Easy diff, including all of the below and more",
+        "difftype": 0,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -24,6 +25,7 @@
     {
         "name": "Normal",
         "hint": "The entire Normal diff, including all of the below and more",
+        "difftype": 1,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -42,6 +44,7 @@
     {
         "name": "Hard",
         "hint": "The entire Hard diff, including all of the below and more",
+        "difftype": 2,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -60,6 +63,7 @@
     {
         "name": "Expert",
         "hint": "The entire Expert diff, including all of the below and more",
+        "difftype": 3,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -78,6 +82,7 @@
     {
         "name": "XD",
         "hint": "The entire XD diff, including all of the below and more",
+        "difftype": 4,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -96,6 +101,7 @@
     {
         "name": "RemiXD",
         "hint": "The entire RemiXD diff, including all of the below and more",
+        "difftype": 5,
         "subfields": [
             {
                 "name": "Clip Data",
@@ -113,7 +119,7 @@
     },
     {
         "name": "Clip Info",
-        "hint": "The entire Clip Info, including all of the below",
+        "hint": "The entire Clip Info, including all of the below and more",
         "subfields": [
             {
                 "name": "Tempomap",

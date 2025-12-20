@@ -37,7 +37,7 @@ async function popupButtons(title, content, options, allowRemember) {
         inputContElem.id = "popup-answer";
         popupElem.appendChild(inputContElem);
 
-        for(i in options) {
+        for(let i in options) {
             let newButton = document.createElement("button");
             newButton.classList.add("popup-button");
             newButton.textContent = options[i];
@@ -137,11 +137,12 @@ async function popupInput(title, content, placeholder) {
 
 function createCheckboxSpan (obj, i, j) {
     let depth = 1;
-    if(j) depth = 2;
+    if(j || j == 0) depth = 2;
 
     let spanElem = document.createElement("div");
-    spanElem.classList.add("popup-merge-span");
     spanElem.classList.add(`merge-${depth}`);
+    if(obj.difftype || obj.difftype == 0)
+        spanElem.setAttribute("diff", obj.difftype);
 
     let labelElem = document.createElement("label");
     labelElem.innerText = obj.name;
@@ -149,6 +150,7 @@ function createCheckboxSpan (obj, i, j) {
     spanElem.appendChild(labelElem);
 
     let checkElem = document.createElement("input");
+    checkElem.classList.add("merge-check");
     checkElem.type = "checkbox";
     checkElem.title = obj.hint;
     checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
@@ -163,7 +165,7 @@ function createCheckboxSpan (obj, i, j) {
     return spanElem;
 }
 
-async function popupMergeChart(chartTitle, chartSubtitle) {
+async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
 
@@ -199,24 +201,28 @@ async function popupMergeChart(chartTitle, chartSubtitle) {
     mergeContElem.classList.add("merge-container");
     popupElem.appendChild(mergeContElem);
 
-    for(i in importData) {
+    for(let i = 0; i < importData.length; i++) {
         let iElem = createCheckboxSpan(importData[i], i);
+        let diff = iElem.getAttribute("diff");
+        if((diff || diff == 0) && !isDiffActiveByDiff(newJson, diff)) {
+            iElem.classList.add("merge-faded");
+            iElem.querySelector("input").classList.add("merge-faded");
+        }
         // iElem.id = `merge-${i}`;
-        mergeContElem.appendChild(iElem);
         if(importData[i].subfields) {
             let subElem = document.createElement("span");
-            for(j in importData[i].subfields) {
+            for(let j in importData[i].subfields) {
                 let jElem = createCheckboxSpan(importData[i].subfields[j], i, j);
                 // jElem.id = `merge-${i}-${j}`;
                 subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
             //todo: disable and check subfield checkboxes if higher box is checked
-            //todo: disable checkboxes for disabled diffs
-            //todo: show identifying details of the incoming chart (name, artist, charter)
+            //todo: fade checkboxes for disabled diffs
             //todo: remember checkboxes for repeat instances
 
         }
+        mergeContElem.appendChild(iElem);
     }
 
     let buttonSpan = document.createElement("span");

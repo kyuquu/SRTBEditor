@@ -33,7 +33,7 @@ function replaceTrackDataByDifficulty(newTrackData, diff) {
 
 function replaceTrackInfo(replace, json) {
     if(!json) json = chartJSON;
-    for(i in json.largeStringValuesContainer.values)
+    for(let i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo") {
             json.largeStringValuesContainer.values[i].val = replace;
             loadChartData(json);
@@ -48,7 +48,7 @@ function fetchTrackInfo(json) {
 
 function fetchTrackInfoIndex(json) {
     if(!json) json = chartJSON;
-    for(i in json.largeStringValuesContainer.values)
+    for(let i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo")
             return i
 
@@ -62,7 +62,7 @@ function fetchLargeStringByKey(json, key) {
 
 function fetchLargeStringIndexByKey(json, key) {
     if(!json) json = chartJSON;
-    for(i in json.largeStringValuesContainer.values) {
+    for(let i in json.largeStringValuesContainer.values) {
         if(json.largeStringValuesContainer.values[i].key == key)
             return i;
     }
@@ -71,7 +71,7 @@ function fetchLargeStringIndexByKey(json, key) {
 
 function replaceLargeStringByKey(replace, key, json) {
     if(!json) json = chartJSON;
-    for(i in json.largeStringValuesContainer.values) {
+    for(let i in json.largeStringValuesContainer.values) {
         if(json.largeStringValuesContainer.values[i].key == key) {
             json.largeStringValuesContainer.values[i].val = replace;
             loadChartData(chartJSON);
@@ -83,7 +83,7 @@ function replaceLargeStringByKey(replace, key, json) {
 function fetchTrackDataIndexByDiff(json, diffType) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values;
-    for(i in values) {
+    for(let i in values) {
         if(values[i].key.includes("SO_TrackData_TrackData_")
                 && values[i].val && values[i].val.difficultyType - 2 == diffType) {
             return i;
@@ -102,7 +102,7 @@ function fetchTrackDataByDiff(json, diffType) {
 function replaceTrackDataByDiff(replace, diffType, json) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values
-    for(i in values) {
+    for(let i in values) {
         if(values[i].key.includes("SO_TrackData_TrackData_")
                 && values[i].val && values[i].val.difficultyType - 2 == diffType) {
             json.largeStringValuesContainer.values[i].val = replace;
@@ -116,13 +116,13 @@ function generateTrackData(json, diffType) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values;
     let taken = [];
-    for(i in values) {
+    for(let i in values) {
         let key = values[i].key;
         if(key.includes("SO_TrackData_TrackData_"))
             taken.push(key[key.length-1]);
     }
     let ind = taken.length;
-    for(i in taken) {
+    for(let i in taken) {
         if(taken.indexOf(i) == -1) {
             ind = i;
             break;
@@ -135,7 +135,7 @@ function generateTrackData(json, diffType) {
     //if not found, make one
     let headerVals = json.unityObjectValuesContainer.values;
     let found = false;
-    for(i in headerVals) {
+    for(let i in headerVals) {
         if(headerVals[i].key == newKey) {
             found = true;
             break;
@@ -150,7 +150,7 @@ function generateTrackData(json, diffType) {
     //search for a TrackData_ind in the body
     //if not found, make one
     found = false;
-    for(i in values) {
+    for(let i in values) {
         if(values[i].key == newKey) {
             found = true;
             break;
@@ -169,7 +169,7 @@ function generateTrackData(json, diffType) {
     found = false;
     let trackInfo = fetchTrackInfoIndex(json);
     trackInfo = json.largeStringValuesContainer.values[trackInfo].val;
-    for(i in trackInfo.difficulties) {
+    for(let i in trackInfo.difficulties) {
         if(trackInfo.difficulties[i].assetName == newKey) {
             found = true;
             break;
@@ -185,20 +185,28 @@ function generateTrackData(json, diffType) {
 
 function isDiffActiveByKey(json, key) {
     if(!json) json = chartJSON;
-    key = key.substring("SO_TrackData_".length);
+    let newKey = key.substring("SO_TrackData_".length);
     let diffs = fetchTrackInfo(json).difficulties;
-    for(i in diffs) {
-        if(diffs[i].assetName == key)
+    for(let i in diffs) {
+        if(diffs[i].assetName == newKey)
             return diffs[i]._active;
     }
     console.warn("key not found");
+}
+
+function isDiffActiveByDiff(json, diffType) {
+    if(!json) json = chartJSON;
+    let ind = fetchTrackDataIndexByDiff(json, diffType);
+    if(ind < 0) return false;
+    let key = json.largeStringValuesContainer.values[ind].key;
+    return isDiffActiveByKey(json, key);
 }
 
 function setDiffActiveByKey(json, key, active) {
     if(!json) json = chartJSON;
     key = key.substring("SO_TrackData_".length);
     let diffs = json.largeStringValuesContainer.values[fetchTrackInfoIndex(json)].val.difficulties;
-    for(i in diffs) {
+    for(let i in diffs) {
         if(diffs[i].assetName == key) {
             //if active isn't given, toggle
             if(!active && active != false)

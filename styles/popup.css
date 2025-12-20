@@ -91,7 +91,14 @@
     font-size: 1.25rem;
     margin-top: 0.5rem;
     margin-left: 0.5em;
-    color: rgba(var(--color-main-values), 70%)
+    color: rgba(var(--color-main-values), 70%);
+}
+
+.merge-faded {
+    color: rgba(var(--color-main-values), 30%);
+}
+input[type=checkbox]:checked::before {
+  background-color: #00AEEF;
 }
 
 .merge-1 {

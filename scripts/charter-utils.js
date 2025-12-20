@@ -156,7 +156,7 @@ function mergeChart(newFile) {
 
 function mergeChartJson(newJson) {
     let newTrackData = fetchTrackInfo(newJson);
-    popupMergeChart(newTrackData.title, newTrackData.subtitle).then((ret) => {
+    popupMergeChart(newTrackData.title, newTrackData.subtitle, newJson).then((ret) => {
         if(ret != 1) return;
         let elem;
         let rep = false;
