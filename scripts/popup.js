@@ -18,29 +18,34 @@ async function popupButtons(title, content, options, allowRemember) {
     while(popupElem.hasChildNodes())
         popupElem.removeChild(popupElem.firstChild);
 
-    let titleElem = document.createElement("span");
-    titleElem.id = "popup-title";
-    titleElem.textContent = title;
-    popupElem.appendChild(titleElem);
-
-    let contentElem = document.createElement("span");
-    contentElem.id = "popup-content";
-    contentElem.textContent = content;
-    popupElem.appendChild(contentElem);
-
-    let inputContElem = document.createElement("span");
-    inputContElem.id = "popup-answer";
-    popupElem.appendChild(inputContElem);
-
-    for(i in options) {
-        let newButton = document.createElement("button");
-        newButton.classList.add("popup-button");
-        newButton.textContent = options[i];
-        newButton.setAttribute("onclick", `resolvePopup(${i})`);
-        inputContElem.appendChild(newButton);
+    if(title) {
+        let titleElem = document.createElement("span");
+        titleElem.id = "popup-title";
+        titleElem.textContent = title;
+        popupElem.appendChild(titleElem);
     }
 
-    //if allowremember, show a checkbox
+    if(content) {
+        let contentElem = document.createElement("span");
+        contentElem.id = "popup-content";
+        contentElem.textContent = content;
+        popupElem.appendChild(contentElem);
+    }
+
+    if(options && options.length > 0) {
+        let inputContElem = document.createElement("span");
+        inputContElem.id = "popup-answer";
+        popupElem.appendChild(inputContElem);
+
+        for(i in options) {
+            let newButton = document.createElement("button");
+            newButton.classList.add("popup-button");
+            newButton.textContent = options[i];
+            newButton.setAttribute("onclick", `resolvePopup(${i})`);
+            inputContElem.appendChild(newButton);
+        }
+    }
+
     if(allowRemember) {
         let rememberElem = document.createElement("span");
         rememberElem.id = "popup-remember";
@@ -84,15 +89,19 @@ async function popupInput(title, content, placeholder) {
     while(popupElem.hasChildNodes())
         popupElem.removeChild(popupElem.firstChild);
 
-    let titleElem = document.createElement("span");
-    titleElem.id = "popup-title";
-    titleElem.textContent = title;
-    popupElem.appendChild(titleElem);
+    if(title) {
+        let titleElem = document.createElement("span");
+        titleElem.id = "popup-title";
+        titleElem.textContent = title;
+        popupElem.appendChild(titleElem);
+    }
 
-    let contentElem = document.createElement("span");
-    contentElem.id = "popup-content";
-    contentElem.textContent = content;
-    popupElem.appendChild(contentElem);
+    if(content) {
+        let contentElem = document.createElement("span");
+        contentElem.id = "popup-content";
+        contentElem.textContent = content;
+        popupElem.appendChild(contentElem);
+    }
 
     let inputContElem = document.createElement("span");
     inputContElem.id = "popup-answer";
@@ -126,7 +135,10 @@ async function popupInput(title, content, placeholder) {
     return resultElem.value;
 }
 
-function createCheckboxSpan (obj, depth) {
+function createCheckboxSpan (obj, i, j) {
+    let depth = 1;
+    if(j) depth = 2;
+
     let spanElem = document.createElement("div");
     spanElem.classList.add("popup-merge-span");
     spanElem.classList.add(`merge-${depth}`);
@@ -139,6 +151,7 @@ function createCheckboxSpan (obj, depth) {
     let checkElem = document.createElement("input");
     checkElem.type = "checkbox";
     checkElem.title = obj.hint;
+    checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
     spanElem.appendChild(checkElem);
     
     let hintElem = document.createElement("span");
@@ -150,7 +163,7 @@ function createCheckboxSpan (obj, depth) {
     return spanElem;
 }
 
-async function popupMergeChart() {
+async function popupMergeChart(chartTitle, chartSubtitle) {
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
 
@@ -166,28 +179,40 @@ async function popupMergeChart() {
 
     let contentElem = document.createElement("span");
     contentElem.id = "popup-content";
-    contentElem.textContent = "Check the box of each item you wish to import from the new chart:";
+    contentElem.textContent = `Check the box of each item you wish to import from`;
     popupElem.appendChild(contentElem);
+
+    let summaryElem = document.createElement("span");
+    popupElem.appendChild(summaryElem);
+
+    let summaryTitle = document.createElement("p");
+    summaryTitle.innerText = `${chartTitle}`;
+    summaryElem.appendChild(summaryTitle);
+
+    let summarySubtitle = document.createElement("p");
+    summarySubtitle.innerText = `${chartSubtitle?chartSubtitle:""}`;
+    summaryElem.appendChild(summarySubtitle);
 
     let mergeContElem = document.createElement("span");
     mergeContElem.classList.add("merge-container");
     popupElem.appendChild(mergeContElem);
 
     for(i in importData) {
-        let iElem = createCheckboxSpan(importData[i], 1);
-        iElem.id = `merge-${i}`;
+        let iElem = createCheckboxSpan(importData[i], i);
+        // iElem.id = `merge-${i}`;
         mergeContElem.appendChild(iElem);
         if(importData[i].subfields) {
             let subElem = document.createElement("span");
             for(j in importData[i].subfields) {
-                let jElem = createCheckboxSpan(importData[i].subfields[j], 2);
-                jElem.id = `merge-${i}-${j}`;
+                let jElem = createCheckboxSpan(importData[i].subfields[j], i, j);
+                // jElem.id = `merge-${i}-${j}`;
                 subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
             //todo: disable and check subfield checkboxes if higher box is checked
             //todo: disable checkboxes for disabled diffs
             //todo: show identifying details of the incoming chart (name, artist, charter)
+            //todo: remember checkboxes for repeat instances
 
         }
     }
@@ -252,8 +277,8 @@ async function popupLoadFromSpinshare() {
 
 async function popupRoll() {
     let rando = Math.floor(Math.random() * 100 + 1);
-    return popupButtons("@everyone",
-        rando, []).then();
+    return popupButtons("",
+        "@user, " + rando, []).then();
 }
 
 function resolvePopup (val) {

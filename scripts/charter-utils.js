@@ -154,51 +154,125 @@ function mergeChart(newFile) {
 }
 
 function mergeChartJson(newJson) {
-    //let 
-    popupMergeChart().then((ret) => {
+    let newTrackData = fetchTrackInfo(newJson);
+    popupMergeChart(newTrackData.title, newTrackData.subtitle).then((ret) => {
         if(ret != 1) return;
-        console.log("newJson");
         let elem;
+        let rep = false;
 
+        //primary metadata
         elem = document.getElementById("merge-0");
-        if(elem || elem.checked) {
-            let oldValues = chartJSON.largeStringValuesContainer.values;
-            let newValues = newJson.largeStringValuesContainer.values;
-            let oldInd, newInd;
-            for(i in oldValues) {
-                if(oldValues[i].key == "SO_TrackInfo_TrackInfo") {
-                    oldInd = i;
-                    break;
-                }
-            }
-            for(i in newValues) {
-                if(newValues[i].key == "SO_TrackInfo_TrackInfo") {
-                    newInd = i;
-                    break;
-                }
-            }
-            let diffs = oldValues[oldInd].val.difficulties;
-            oldValues[oldInd] = newValues[newInd];
-            oldValues[oldInd].val.difficulties = diffs;
-            
-            console.log(oldValues);
-            console.log(chartJSON);
+        if(elem && elem.checked) {
+
+            let oldInfo = fetchTrackInfo();
+            let newInfo = fetchTrackInfo(newJson);
 
             //snapshot enabled diffs, load new trackData, reload old enabled diffs
+            let diffs = oldInfo.difficulties;
+            oldInfo = newInfo;
+            oldInfo.difficulties = diffs;
+
+            console.log("replacing metadata");
+            replaceTrackInfo(oldInfo);
+            loadChartData(chartJSON);
         }
-        for(let i = 1; i < 6; i++) {
+
+        //for each diff
+        for(let i = 1; i < 7; i++) {
             elem = document.getElementById(`merge-${i}`);
             if(elem) {
+                let oldDiff = fetchTrackDataByDiff("", i-1);
+                let newDiff = fetchTrackDataByDiff(newJson, i-1);
+
+                //if new chart doesn't have this diff, skip it
+                if(newDiff == -1) continue;
+
+                //if old chart doesn't have this diff, create it
+                if(oldDiff == -1) {
+                    console.warn("creating diffs not implemented yet!");
+                    continue;
+                }
+
                 if(elem.checked) {
-                    //the entire i diff
-                    let newDiff = fetchTrackDataByDifficulty(newJson, i-1);
-                    replaceTrackDataByDifficulty(newDiff, i-1);
+                    //the entire diff
+                    oldDiff = newDiff;
+                    rep = true;
 
                     //todo: enable/disable this diff
                 }
                 else {
-                    //check i's clipdata, notes, and twisty checkboxes
+
+                    elem = document.getElementById(`merge-${i}-0`);
+                    if(elem && elem.checked) {
+                        //clip data
+                        oldDiff.clipInfoAssetReferences = newDiff.clipInfoAssetReferences;
+                        oldDiff.clipData = newDiff.clipData;
+                        rep = true;
+                    }
+
+                    elem = document.getElementById(`merge-${i}-1`);
+                    if(elem && elem.checked) {
+                        //notes
+                        oldDiff.noteSerializationFormat = newDiff.noteSerializationFormat;
+                        oldDiff.notes = newDiff.notes;
+                        oldDiff.notesCompressed = newDiff.notesCompressed;
+                        oldDiff.binaryNotes = newDiff.binaryNotes;
+                        rep = true;
+                    }
+                    elem = document.getElementById(`merge-${i}-2`);
+                    if(elem && elem.checked) {
+                        //track turns
+                        oldDiff.splinePathData = newDiff.splinePathData;
+                        oldDiff.references.refIds = newDiff.references.refIds;
+                        rep = true;
+                    }
                 }
+                if(rep) {
+                    console.log("replacing diff " + i);
+                    replaceTrackDataByDiff(oldDiff, i-1);
+                    rep = false;
+                }
+            }
+        }
+        
+        //clip info
+        elem = document.getElementById("merge-7");
+        if(elem) {
+
+            let oldClip = fetchLargeStringByKey("", "SO_ClipInfo_ClipInfo_0");
+            let newClip = fetchLargeStringByKey(newJson, "SO_ClipInfo_ClipInfo_0");
+
+            if(elem.checked) {
+                //the entire clip info
+                oldClip = newClip;
+                rep = true;
+            }
+            else {
+                elem = document.getElementById("merge-7-0");
+                if(elem && elem.checked) {
+                    //tempomap
+                    oldClip.timeSignatureMarkers = newClip.timeSignatureMarkers;
+                    oldClip.bpmMarkers = newClip.bpmMarkers;
+                    rep = true;
+                }
+
+                elem = document.getElementById("merge-7-1");
+                if(elem && elem.checked) {
+                    //cuepoints
+                    oldClip.cuePoints = newClip.cuePoints;
+                    rep = true;
+                }
+                elem = document.getElementById("merge-7-2");
+                if(elem && elem.checked) {
+                    //lyrics
+                    oldClip.lyrics = newClip.lyrics;
+                    rep = true;
+                }
+            }
+            if(rep) {
+                console.log("replacing clipinfo");
+                replaceLargeStringByKey(oldClip, "SO_ClipInfo_ClipInfo_0");
+                rep = false;
             }
         }
 
