@@ -49,16 +49,21 @@ async function popupButtons(title, content, options, allowRemember) {
     if(allowRemember) {
         let rememberElem = document.createElement("span");
         rememberElem.id = "popup-remember";
-        popupElem.appendChild(rememberElem);
 
         let labelElem = document.createElement("label");
         labelElem.innerText = "Remember this decision";
-        rememberElem.appendChild(labelElem);
 
         let checkElem = document.createElement("input");
         checkElem.type = "checkbox";
         checkElem.checked = false;
         checkElem.id = "popup-checkbox";
+
+        labelElem.addEventListener("click", (e) => {
+            checkElem.click();
+        });
+
+        popupElem.appendChild(rememberElem);
+        rememberElem.appendChild(labelElem);
         rememberElem.appendChild(checkElem);
     }
 
@@ -149,19 +154,24 @@ function createCheckboxSpan (obj, i, j) {
     let labelElem = document.createElement("label");
     labelElem.innerText = obj.name;
     labelElem.classList.add("merge-label");
-    spanElem.appendChild(labelElem);
 
     let checkElem = document.createElement("input");
     checkElem.classList.add("merge-check");
     checkElem.type = "checkbox";
     checkElem.title = obj.hint;
     checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
-    spanElem.appendChild(checkElem);
     
     let hintElem = document.createElement("span");
     hintElem.classList.add("hint");
     hintElem.title = obj.hint;
     hintElem.innerText = "?";
+
+    labelElem.addEventListener("click", (e) => {
+        checkElem.click();
+    });
+
+    spanElem.appendChild(labelElem);
+    spanElem.appendChild(checkElem);
     spanElem.appendChild(hintElem);
 
     return spanElem;
@@ -275,14 +285,14 @@ function closePopup() {
 async function popupConfirmLoad() {
     document.getElementById("popup-container").classList.remove("inactive");
     document.getElementById("popup-merge-container").classList.add("inactive");
-    if(rememberedActions.dropAction)
+    if(rememberedActions.dropAction == 0 || rememberedActions.dropAction == 1)
         return rememberedActions.dropAction;
 
     let options = ["Load", "Merge", "Cancel"];
     return popupButtons("Load New Chart",
         "What would you like to do with this new chart?",
         options, true).then((result) => {
-            if(result == 2) return;
+            if(result == 2 || result < 0) return;
             
             //if allowRemember, store the remembered value in a global array
             let remElem = document.getElementById("popup-checkbox");

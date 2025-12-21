@@ -127,10 +127,10 @@ async function init() {
         }
 
         // ctrl-h for testing
-        if (e.ctrlKey && e.key === "h") {
-            e.preventDefault();
-            console.log(popupMergeChart());
-        }
+        // if (e.ctrlKey && e.key === "h") {
+        //     e.preventDefault();
+        //     console.log(rememberedActions);
+        // }
     });
 
     // handle clicking outside of a popup
