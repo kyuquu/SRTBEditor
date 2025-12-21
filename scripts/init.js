@@ -78,6 +78,8 @@ async function init() {
                 initializeSelectInput(selectInput, selectInputs[selectInput]);
             }
     });
+
+    initializeMergeCheckboxes();
         
     loadingMessage.textContent = "INITIALIZING INTERFACE...";
     

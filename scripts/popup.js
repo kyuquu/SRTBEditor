@@ -80,6 +80,8 @@ async function popupButtons(title, content, options, allowRemember) {
  * @returns {promise<string>}
  */
 async function popupInput(title, content, placeholder) {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
     //there's no shot this is the 'correct' way to do this.
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
@@ -187,55 +189,22 @@ function propogateCheck(elem) {
 function uncheckAll(elem) {
     let checks = elem.parentElement.querySelectorAll(".merge-check");
     for(let i in checks) {
-        checks[i].checked = false;
+        if(typeof checks[i] == "object") {
+            checks[i].checked = false;
+            checks[i].removeAttribute("disabled");
+        }
     }
 }
 
-async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
-    let bgElem = document.getElementById("popup-background")
-    bgElem.classList.add("active");
+function initializeMergeCheckboxes() {
+    let container = document.getElementById("merge-checkbox-container");
 
-    let popupElem = document.getElementById("popup-container");
-
-    while(popupElem.hasChildNodes())
-        popupElem.removeChild(popupElem.firstChild);
-
-    let contentElem = document.createElement("span");
-    contentElem.id = "popup-content";
+    let contentElem = document.getElementById("merge-instruction");
     contentElem.textContent = `Check the box of each item you wish to import from`;
-    popupElem.appendChild(contentElem);
-
-    let summaryElem = document.createElement("span");
-    popupElem.appendChild(summaryElem);
-
-    let summaryTitle = document.createElement("span");
-    summaryTitle.innerText = `${chartTitle}`;
-    summaryTitle.classList.add("merge-title");
-    summaryElem.appendChild(summaryTitle);
-
-    let summarySubtitle = document.createElement("span");
-    summarySubtitle.innerText = ` ${chartSubtitle?chartSubtitle:""}`;
-    summarySubtitle.classList.add("merge-subtitle");
-    summaryElem.appendChild(summarySubtitle);
-
-    let mergeContElem = document.createElement("span");
-    mergeContElem.classList.add("merge-container");
-    popupElem.appendChild(mergeContElem);
 
     for(let i = 0; i < importData.length; i++) {
         let iElem = createCheckboxSpan(importData[i], i);
-        mergeContElem.appendChild(iElem);
-        let diff = iElem.getAttribute("diff");
-        if(diff || diff == 0) {
-            if(!diffExistsByDiff(newJson, diff)) {//diff doesn't exist
-                uncheckAll(iElem);
-                iElem.classList.add("merge-disabled");
-            }
-            else if(!isDiffActiveByDiff(newJson, diff)) {
-                iElem.classList.add("merge-faded");
-                iElem.querySelector("input").classList.add("merge-faded");
-            }
-        }
+        container.appendChild(iElem);
         if(importData[i].subfields) {
             iElem.querySelector("input").addEventListener("change", (e) => {
                 propogateCheck(e.target);
@@ -246,27 +215,47 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
                 subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
-            //todo: remember checkboxes for repeat instances
-            //BUG: inertia <- toaster vid (metadata + remixd) results in disabled remixd diff
-
         }
     }
 
-    let buttonSpan = document.createElement("span");
-    buttonSpan.id = "popup-answer";
-    popupElem.appendChild(buttonSpan);
-
-    let confirmButton = document.createElement("button");
-    confirmButton.innerText = "Confirm";
+    let confirmButton = document.getElementById("merge-confirm");
     confirmButton.setAttribute("onclick", "resolvePopup(1)");
-    confirmButton.classList.add("popup-button");
-    buttonSpan.appendChild(confirmButton);
 
-    let cancelButton = document.createElement("button");
-    cancelButton.innerText = "Cancel";
+    let cancelButton = document.getElementById("merge-cancel");
     cancelButton.setAttribute("onclick", "resolvePopup(0)");
-    cancelButton.classList.add("popup-button");
-    buttonSpan.appendChild(cancelButton);
+
+}
+
+async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
+    document.getElementById("popup-merge-container").classList.remove("inactive");
+    document.getElementById("popup-container").classList.add("inactive");
+
+    let bgElem = document.getElementById("popup-background")
+    bgElem.classList.add("active");
+
+    let summaryTitle = document.getElementById("merge-title");
+    summaryTitle.innerText = `${chartTitle?chartTitle:"no title"}`;
+
+    let summarySubtitle = document.getElementById("merge-subtitle");
+    summarySubtitle.innerText = ` ${chartSubtitle?chartSubtitle:""}`;
+
+    for(let i = 0; i < importData.length; i++) {
+        let iElem = document.getElementById(`merge-${i}`);
+        let diff = iElem.parentElement.getAttribute("diff");
+        iElem.parentElement.classList.remove("merge-disabled");
+        iElem.parentElement.querySelector("input").classList.remove("merge-faded");
+
+        if(diff || diff == 0) {
+            if(!diffExistsByDiff(newJson, diff)) { //diff doesn't exist
+                uncheckAll(iElem);
+                iElem.parentElement.classList.add("merge-disabled");
+            }
+            else if(!isDiffActiveByDiff(newJson, diff)) { //diff is disabled
+                iElem.parentElement.classList.add("merge-faded");
+                iElem.parentElement.querySelector("input").classList.add("merge-faded");
+            }
+        }
+    }
     
     let resultElem = document.getElementById("popup-result");
 
@@ -284,6 +273,8 @@ function closePopup() {
 }
 
 async function popupConfirmLoad() {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
     if(rememberedActions.dropAction)
         return rememberedActions.dropAction;
 
@@ -302,6 +293,8 @@ async function popupConfirmLoad() {
 }
 
 async function popupLoadFromSpinshare() {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
     return popupInput("Load from SpinShare",
         "Enter a SpinShare link or ID:",
         "spinsha.re/song/#####").then((result) => {
@@ -311,6 +304,8 @@ async function popupLoadFromSpinshare() {
 }
 
 async function popupRoll() {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
     let rando = Math.floor(Math.random() * 100 + 1);
     return popupButtons("",
         "@you, " + rando, []).then();
