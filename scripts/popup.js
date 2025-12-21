@@ -302,6 +302,26 @@ async function popupConfirmLoad() {
         });
 }
 
+async function popupConfirmModernizeFormat() {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
+    if(rememberedActions.modernize == true)
+        return true;
+
+    let options = ["Confirm", "Cancel"];
+    return popupButtons("Modernize Note Format",
+        "The modern note format is more accurate and less prone to float error. However, this change will wipe leaderboards. Continue?",
+        options, true).then((result) => {
+            if(result != 0) return false;
+            
+            //if allowRemember, store the remembered value in a global array
+            let remElem = document.getElementById("popup-checkbox");
+            if(remElem && remElem.checked)
+                rememberedActions.modernize = true;
+            return true;
+        });
+}
+
 async function popupLoadFromSpinshare() {
     document.getElementById("popup-container").classList.remove("inactive");
     document.getElementById("popup-merge-container").classList.add("inactive");

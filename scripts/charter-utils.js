@@ -123,31 +123,32 @@ function replaceChartDifficulty(newJson, args) {
 }
 
 function changeNoteEncodings(format) {
-    let cont = confirm("This action is destructive to leaderboards. Continue?");
-    if(!cont) return;
-    let diffs = getReferences(chartJSON)[1];
-    for(let i = 0; i < diffs.length; i++) {
-        if(format != 2) {
-            console.warn("Only changing to format 2 is supported at this time");
-        }
-        if(format == 2) {
-            for(let j = 0; j < diffs[i].notes.length; j++) {
-                let note = diffs[i].notes[j];
-                diffs[i].binaryNotes.push({
-                    "tk": Math.round(note.time * 100000),
-                    "tp": note.type,
-                    "c": note.colorIndex,
-                    "p": note.column,
-                    "s": note.m_size
-                });
+    popupConfirmModernizeFormat().then((result) => {
+        if(!result) return;
+        let diffs = getReferences(chartJSON)[1];
+        for(let i = 0; i < diffs.length; i++) {
+            if(format != 2) {
+                console.warn("Only changing to format 2 is supported at this time");
             }
-            diffs[i].noteSerializationFormat = format;
-            diffs[i].notes = [];
+            if(format == 2) {
+                for(let j = 0; j < diffs[i].notes.length; j++) {
+                    let note = diffs[i].notes[j];
+                    diffs[i].binaryNotes.push({
+                        "tk": Math.round(note.time * 100000),
+                        "tp": note.type,
+                        "c": note.colorIndex,
+                        "p": note.column,
+                        "s": note.m_size
+                    });
+                }
+                diffs[i].noteSerializationFormat = format;
+                diffs[i].notes = [];
+            }
         }
-    }
-    updateChartData();
-    discardEditorChanges();
-    createToast("Format", "Note format successfully changed.", "success", 5000);
+        updateChartData();
+        discardEditorChanges();
+        createToast("Format", "Note format successfully changed.", "success", 5000);
+    });
 }
 
 function mergeChart(newFile) {
@@ -174,7 +175,7 @@ function mergeChartJson(newJson) {
             let diffs = oldInfo.difficulties;
             oldInfo = JSON.parse(JSON.stringify(newInfo));
             oldInfo.difficulties = diffs;
-            
+
             loadChartData(replaceTrackInfo("", oldInfo));
         }
 
