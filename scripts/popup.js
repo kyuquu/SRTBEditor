@@ -43,6 +43,7 @@ async function popupButtons(title, content, options, allowRemember) {
             newButton.textContent = options[i];
             newButton.setAttribute("onclick", `resolvePopup(${i})`);
             inputContElem.appendChild(newButton);
+            if(i == 0) newButton.focus();
         }
     }
 
@@ -266,6 +267,8 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
             }
         }
     }
+
+    document.getElementById("merge-0").focus();
     
     let resultElem = document.getElementById("popup-result");
 
