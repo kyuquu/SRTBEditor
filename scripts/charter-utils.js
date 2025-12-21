@@ -172,11 +172,10 @@ function mergeChartJson(newJson) {
 
             //snapshot enabled diffs, load new trackData, reload old enabled diffs
             let diffs = oldInfo.difficulties;
-            oldInfo = newInfo;
+            oldInfo = JSON.parse(JSON.stringify(newInfo));
             oldInfo.difficulties = diffs;
-
-            replaceTrackInfo(oldInfo);
-            loadChartData(chartJSON);
+            
+            loadChartData(replaceTrackInfo("", oldInfo));
         }
 
         //for each diff
@@ -203,13 +202,12 @@ function mergeChartJson(newJson) {
                     rep = true;
 
                     //enable/disable according to the imported diff
-                    let oldKey = chartJSON.largeStringValuesContainer.values[fetchTrackDataIndexByDiff("", i-1)].key;
-                    let newKey = newJson.largeStringValuesContainer.values[fetchTrackDataIndexByDiff(newJson, i-1)].key;
+                    let oldInd = fetchTrackDataIndexByDiff("", i-1);
+                    let newInd = fetchTrackDataIndexByDiff(newJson, i-1);
+                    let oldKey = chartJSON.largeStringValuesContainer.values[oldInd].key;
+                    let newKey = newJson.largeStringValuesContainer.values[newInd].key;
                     let active = isDiffActiveByKey(newJson, newKey);
 
-                    // console.log(`oldkey: ${oldKey}`);
-                    // console.log(`newkey: ${newKey}`);
-                    // console.log(`active: ${active}`);
                     loadChartData(setDiffActiveByKey("", oldKey, active));
                 }
                 else {

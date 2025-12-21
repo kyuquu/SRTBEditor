@@ -224,6 +224,7 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
 
     for(let i = 0; i < importData.length; i++) {
         let iElem = createCheckboxSpan(importData[i], i);
+        mergeContElem.appendChild(iElem);
         let diff = iElem.getAttribute("diff");
         if(diff || diff == 0) {
             if(!diffExistsByDiff(newJson, diff)) {//diff doesn't exist
@@ -249,7 +250,6 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
             //BUG: inertia <- toaster vid (metadata + remixd) results in disabled remixd diff
 
         }
-        mergeContElem.appendChild(iElem);
     }
 
     let buttonSpan = document.createElement("span");

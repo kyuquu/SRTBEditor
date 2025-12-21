@@ -31,12 +31,12 @@ function replaceTrackDataByDifficulty(newTrackData, diff) {
     }
 }
 
-function replaceTrackInfo(replace, json) {
+function replaceTrackInfo(json, replace) {
     if(!json) json = chartJSON;
     for(let i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo") {
             json.largeStringValuesContainer.values[i].val = replace;
-            loadChartData(json);
+            return json
         }
 }
 
@@ -50,7 +50,7 @@ function fetchTrackInfoIndex(json) {
     if(!json) json = chartJSON;
     for(let i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo")
-            return i
+            return i;
 
 }
 
