@@ -46,7 +46,7 @@ async function passJsonToCallback(file, callback, args) {
                                 createToast("Load failed", ".zip file contains invalid .srtb", "alert", 5000);
                             }
                         });
-                        break;
+                        return;
                     }
                 }
                 createToast("Load failed", "Could not locate .srtb in .zip file", "alert", 5000);

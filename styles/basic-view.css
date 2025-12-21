@@ -93,3 +93,11 @@
     opacity: 50%;
     pointer-events: none;
 }
+
+.filename {
+    display: inline-block;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    overflow-x: hidden;
+    max-width: 20vw;
+}

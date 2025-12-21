@@ -162,10 +162,10 @@ function createCheckboxSpan (obj, i, j) {
     checkElem.title = obj.hint;
     checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
     
-    let hintElem = document.createElement("span");
+    let hintElem = document.createElement("svg");
     hintElem.classList.add("hint");
     hintElem.title = obj.hint;
-    hintElem.innerText = "?";
+    hintElem.innerText = "---";
 
     labelElem.addEventListener("click", (e) => {
         checkElem.click();

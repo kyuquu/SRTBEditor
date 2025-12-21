@@ -39,10 +39,13 @@ input[type="file"] {
 }
 
 .hint {
-    display: inline-block;
-    text-align: center;
-    font-size: 0.5em;
-    border: 2px solid;
-    border-radius: 100px;
-    width: 1em;
+    position: absolute;
+    margin-top: 0.3em;
+    margin-left: 0.25rem;
+    --webkit-mask-image: url(../assets/icons/hint.svg);
+    mask-image: url(../assets/icons/hint.svg);
+    --webkit-mask-size: 0.75em;
+    mask-size: 0.75em;
+    mask-repeat: no-repeat;
+    background: currentColor;
 }
