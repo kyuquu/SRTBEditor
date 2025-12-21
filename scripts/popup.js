@@ -184,6 +184,13 @@ function propogateCheck(elem) {
     }
 }
 
+function uncheckAll(elem) {
+    let checks = elem.parentElement.querySelectorAll(".merge-check");
+    for(let i in checks) {
+        checks[i].checked = false;
+    }
+}
+
 async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
@@ -218,9 +225,15 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
     for(let i = 0; i < importData.length; i++) {
         let iElem = createCheckboxSpan(importData[i], i);
         let diff = iElem.getAttribute("diff");
-        if((diff || diff == 0) && !isDiffActiveByDiff(newJson, diff)) {
-            iElem.classList.add("merge-faded");
-            iElem.querySelector("input").classList.add("merge-faded");
+        if(diff || diff == 0) {
+            if(!diffExistsByDiff(newJson, diff)) {//diff doesn't exist
+                uncheckAll(iElem);
+                iElem.classList.add("merge-disabled");
+            }
+            else if(!isDiffActiveByDiff(newJson, diff)) {
+                iElem.classList.add("merge-faded");
+                iElem.querySelector("input").classList.add("merge-faded");
+            }
         }
         if(importData[i].subfields) {
             iElem.querySelector("input").addEventListener("change", (e) => {
@@ -232,8 +245,8 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
                 subElem.appendChild(jElem);
             }
             iElem.appendChild(subElem);
-            //todo: disable and check subfield checkboxes if higher box is checked
             //todo: remember checkboxes for repeat instances
+            //BUG: inertia <- toaster vid (metadata + remixd) results in disabled remixd diff
 
         }
         mergeContElem.appendChild(iElem);

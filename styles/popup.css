@@ -90,12 +90,12 @@
     font-weight: bold;
     font-size: 1.25rem;
     margin-top: 0.5rem;
-    margin-left: 0.5em;
+    margin-left: 0.3em;
     color: rgba(var(--color-main-values), 70%);
 }
 
 .merge-faded {
-    color: rgba(var(--color-main-values), 30%);
+    color: rgba(var(--color-main-values), 70%);
 }
 
 input.merge-faded, .merge-faded input  {
@@ -117,4 +117,9 @@ input.merge-faded, .merge-faded input  {
 .merge-label {
     display: inline-block;
     width: calc(4em + 2rem);
+}
+
+.merge-disabled {
+    pointer-events: none;
+    opacity: 10%;
 }

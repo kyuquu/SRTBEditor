@@ -109,7 +109,6 @@ function replaceTrackDataByDiff(replace, diffType, json) {
             return json;
         }
     }
-
 }
 
 function generateTrackData(json, diffType) {
@@ -181,6 +180,18 @@ function generateTrackData(json, diffType) {
         trackInfo.difficulties[trackInfo.difficulties.length] = JSON.parse(newIndex);
     }
     return json;
+}
+
+function diffExistsByDiff(json, diffType) {
+    if(!json) json = chartJSON;
+    let values = json.largeStringValuesContainer.values
+    for(let i in values) {
+        if(values[i].key.includes("SO_TrackData_TrackData_")
+                && values[i].val && values[i].val.difficultyType - 2 == diffType) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function isDiffActiveByKey(json, key) {
