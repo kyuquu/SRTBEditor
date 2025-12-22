@@ -34,6 +34,8 @@
     background-color: var(--color-bg);
     border: 2px solid var(--color-main);
     border-radius: 0.5rem;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 #popup-title {
@@ -73,7 +75,6 @@
 }
 
 #merge-checkbox-container {
-    width: 40rem;
     max-height: min(32rem, 80vh);
     display: flex;
     flex-flow: column wrap;

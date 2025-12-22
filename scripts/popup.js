@@ -254,6 +254,7 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
         let iElem = document.getElementById(`merge-${i}`);
         let diff = iElem.parentElement.getAttribute("diff");
         iElem.parentElement.classList.remove("merge-disabled");
+        iElem.parentElement.classList.remove("merge-faded");
         iElem.parentElement.querySelector("input").classList.remove("merge-faded");
 
         if(diff || diff == 0) {
