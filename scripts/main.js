@@ -11,28 +11,44 @@ function switchToTab(index) {
     if (activeTab !== index) {
         
         // prompt if unsaved changes in the JSON editor
+        updateEditorButtons(validateJSON(JSONEditor.getValue()));
         if (activeTab === 1
                 && !(document.getElementById("json-editor").classList.contains("disabled"))
                 && !(document.getElementById("jv-discard").classList.contains("disabled"))) {
-            if(confirm("Leave and discard JSON Editor changes?")) {
-                discardEditorChanges();
-            } else {
-                return;
+            popupConfirmLeaveTab().then((result) => {
+                if(result < 0 || result == 2) return;
+                if(result == 1) discardEditorChanges();
+                if(result == 0) {
+                    if(!saveEditorChanges())
+                        return;
+                }
+                
+                document.getElementById(`tab-button${activeTab}`).classList.remove("active");
+                document.getElementById(`tab-button-small${activeTab}`).classList.remove("active");
+                document.getElementById(`tab${activeTab}`).classList.remove("active");
+                document.getElementById(`tab-button${index}`).classList.add("active");
+                document.getElementById(`tab-button-small${index}`).classList.add("active");
+                document.getElementById(`tab${index}`).classList.add("active");
+
+                activeTab = index;
+
+            });
+        }
+        else {
+            document.getElementById(`tab-button${activeTab}`).classList.remove("active");
+            document.getElementById(`tab-button-small${activeTab}`).classList.remove("active");
+            document.getElementById(`tab${activeTab}`).classList.remove("active");
+            document.getElementById(`tab-button${index}`).classList.add("active");
+            document.getElementById(`tab-button-small${index}`).classList.add("active");
+            document.getElementById(`tab${index}`).classList.add("active");
+
+            activeTab = index;
+            
+            if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
+                document.getElementById("tab-button1").focus();
+                JSONEditor.focus();
             }
         }
-
-        document.getElementById(`tab-button${activeTab}`).classList.remove("active");
-        document.getElementById(`tab-button-small${activeTab}`).classList.remove("active");
-        document.getElementById(`tab${activeTab}`).classList.remove("active");
-        document.getElementById(`tab-button${index}`).classList.add("active");
-        document.getElementById(`tab-button-small${index}`).classList.add("active");
-        document.getElementById(`tab${index}`).classList.add("active");
-
-        if (index === 1 && !document.getElementById("json-editor").classList.contains("disabled")) {
-            JSONEditor.focus();
-        }
-
-        activeTab = index;
     }
 }
 

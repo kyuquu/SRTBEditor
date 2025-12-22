@@ -305,6 +305,28 @@ async function popupConfirmLoad() {
         });
 }
 
+async function popupConfirmLeaveTab() {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
+    if(rememberedActions.leaveEditor == 0 || rememberedActions.leaveEditor == 1)
+        return rememberedActions.leaveEditor;
+
+    let options = ["Save", "Don't Save", "Cancel"];
+    return popupButtons("Unsaved Changes",
+        "Are you sure you want to leave this tab? All unsaved changes will be lost.",
+        options, true).then((result) => {
+            if(result == 2 || result < 0) return result;
+            
+            //if allowRemember, store the remembered value in a global array
+            let remElem = document.getElementById("popup-checkbox");
+            if(remElem && remElem.checked)
+                rememberedActions.leaveEditor = result;
+            return result;
+        });
+
+
+}
+
 async function popupConfirmModernizeFormat() {
     document.getElementById("popup-container").classList.remove("inactive");
     document.getElementById("popup-merge-container").classList.add("inactive");
@@ -341,7 +363,7 @@ async function popupRoll() {
     document.getElementById("popup-merge-container").classList.add("inactive");
     let rando = Math.floor(Math.random() * 100 + 1);
     return popupButtons("",
-        "@you, " + rando, []).then();
+        "@you, " + rando, ["ok"]).then();
 }
 
 function resolvePopup (val) {
@@ -349,4 +371,3 @@ function resolvePopup (val) {
     elem.value = val;
     elem.click();
 }
-

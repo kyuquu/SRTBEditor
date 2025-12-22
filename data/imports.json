@@ -1,7 +1,13 @@
 [
     {
         "name": "Metadata",
-        "hint": "General metadata, such as title, artist, charter, background, etc."
+        "hint": "General metadata, such as title, artist, charter, background, etc.",
+        "subfields": [
+            {
+                "name": "Background",
+                "hint": "Background, coloring, fallback background, and any element overrides"
+            }
+        ]
     },
     {
         "name": "Easy",

@@ -173,10 +173,28 @@ function mergeChartJson(newJson) {
 
             //snapshot enabled diffs, load new trackData, reload old enabled diffs
             let diffs = oldInfo.difficulties;
+            let art = oldInfo.albumArtReference;
             oldInfo = JSON.parse(JSON.stringify(newInfo));
             oldInfo.difficulties = diffs;
+            oldInfo.albumArtReference = art;
 
             loadChartData(replaceTrackInfo("", oldInfo));
+        }
+        else {
+            elem = document.getElementById("merge-0-0");
+            if(elem && elem.checked) {
+                numActions++;
+                let oldInfo = fetchTrackInfo();
+                let newInfo = fetchTrackInfo(newJson);
+
+                oldInfo.backgroundId = newInfo.backgroundId;
+                oldInfo.backgroundColoring = newInfo.backgroundColoring;
+                oldInfo.fallbackBackgroundId = newInfo.fallbackBackgroundId;
+                oldInfo.fallbackColoringBackgroundId = newInfo.fallbackColoringBackgroundId;
+                oldInfo.objectReplacements = newInfo.objectReplacements;
+                
+                loadChartData(replaceTrackInfo("", oldInfo));
+            }
         }
 
         //for each diff
