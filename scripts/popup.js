@@ -261,11 +261,11 @@ async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
         iElem.parentElement.querySelector("input").classList.remove("merge-faded");
 
         if(diff || diff == 0) {
-            if(!diffExistsByDiff(newJson, diff)) { //diff doesn't exist
+            if(!getDiffExistsByDiff(newJson, diff)) { //diff doesn't exist
                 uncheckAll(iElem);
                 iElem.parentElement.classList.add("merge-disabled");
             }
-            else if(!isDiffActiveByDiff(newJson, diff)) { //diff is disabled
+            else if(!getDiffActiveByDiff(newJson, diff)) { //diff is disabled
                 iElem.parentElement.classList.add("merge-faded");
                 iElem.parentElement.querySelector("input").classList.add("merge-faded");
             }

@@ -7,6 +7,8 @@ function fetchLyricsFromJson(json) {
     }
 }
 
+//old, error-prone functions
+
 function fetchTrackDataByDifficulty(json, diff) {
     let vals = json.largeStringValuesContainer.values;
     for(let i = 0; i < vals.length; i++) {
@@ -31,36 +33,44 @@ function replaceTrackDataByDifficulty(newTrackData, diff) {
     }
 }
 
-function replaceTrackInfo(json, replace) {
-    if(!json) json = chartJSON;
-    for(let i in json.largeStringValuesContainer.values)
-        if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo") {
-            json.largeStringValuesContainer.values[i].val = replace;
-            return json
-        }
-}
+//start of new, robust functions
 
-function fetchTrackInfo(json) {
+// TRACK INFO
+function getTrackInfo(json) {
     if(!json) json = chartJSON;
-    let ind = fetchTrackInfoIndex(json, "SO_TrackInfo_TrackInfo");
+    let ind = getTrackInfoIndex(json, "SO_TrackInfo_TrackInfo");
+    if(ind < 0) return;
     return json.largeStringValuesContainer.values[ind].val;
 }
 
-function fetchTrackInfoIndex(json) {
+function getTrackInfoIndex(json) {
     if(!json) json = chartJSON;
     for(let i in json.largeStringValuesContainer.values)
         if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo")
             return i;
+    return -1;
 
 }
 
-function fetchLargeStringByKey(json, key) {
+function setTrackInfo(json, replace) {
     if(!json) json = chartJSON;
-    let ind = fetchLargeStringIndexByKey(json, key);
+    for(let i in json.largeStringValuesContainer.values)
+        if(json.largeStringValuesContainer.values[i].key == "SO_TrackInfo_TrackInfo") {
+            json.largeStringValuesContainer.values[i].val = replace;
+            return json;
+        }
+    console.warn("attempted to set TrackInfo that doesn't exist");
+}
+
+// ANY KEY
+function getLargeStringByKey(json, key) {
+    if(!json) json = chartJSON;
+    let ind = getLargeStringIndexByKey(json, key);
+    if(ind < 0) return;
     return json.largeStringValuesContainer.values[ind].val;
 }
 
-function fetchLargeStringIndexByKey(json, key) {
+function getLargeStringIndexByKey(json, key) {
     if(!json) json = chartJSON;
     for(let i in json.largeStringValuesContainer.values) {
         if(json.largeStringValuesContainer.values[i].key == key)
@@ -69,18 +79,20 @@ function fetchLargeStringIndexByKey(json, key) {
     return -1;
 }
 
-function replaceLargeStringByKey(replace, key, json) {
+function setLargeStringByKey(replace, key, json) {
     if(!json) json = chartJSON;
     for(let i in json.largeStringValuesContainer.values) {
         if(json.largeStringValuesContainer.values[i].key == key) {
             json.largeStringValuesContainer.values[i].val = replace;
             loadChartData(chartJSON);
-            return true;
+            return json;
         }
     }
+    console.warn("attempted to set a LargeString that doesn't exist");
 }
 
-function fetchTrackDataIndexByDiff(json, diffType) {
+// TRACK DATA
+function getTrackDataIndexByDiff(json, diffType) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values;
     for(let i in values) {
@@ -92,14 +104,14 @@ function fetchTrackDataIndexByDiff(json, diffType) {
     return -1;
 }
 
-function fetchTrackDataByDiff(json, diffType) {
+function getTrackDataByDiff(json, diffType) {
     if(!json) json = chartJSON;
-    let ind = fetchTrackDataIndexByDiff(json, diffType);
-    if(ind < 0) return ind;
+    let ind = getTrackDataIndexByDiff(json, diffType);
+    if(ind < 0) return;
     return json.largeStringValuesContainer.values[ind].val;
 }
 
-function replaceTrackDataByDiff(replace, diffType, json) {
+function setTrackDataByDiff(replace, diffType, json) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values
     for(let i in values) {
@@ -109,6 +121,7 @@ function replaceTrackDataByDiff(replace, diffType, json) {
             return json;
         }
     }
+    console.warn("attempted to set a TrackData that doesn't exist");
 }
 
 function generateTrackData(json, diffType) {
@@ -166,7 +179,7 @@ function generateTrackData(json, diffType) {
     //search for a TrackData_ind in the difficulties
     //if not found, make one
     found = false;
-    let trackInfo = fetchTrackInfoIndex(json);
+    let trackInfo = getTrackInfoIndex(json);
     trackInfo = json.largeStringValuesContainer.values[trackInfo].val;
     for(let i in trackInfo.difficulties) {
         if(trackInfo.difficulties[i].assetName == newKey) {
@@ -182,7 +195,7 @@ function generateTrackData(json, diffType) {
     return json;
 }
 
-function diffExistsByDiff(json, diffType) {
+function getDiffExistsByDiff(json, diffType) {
     if(!json) json = chartJSON;
     let values = json.largeStringValuesContainer.values
     for(let i in values) {
@@ -194,29 +207,28 @@ function diffExistsByDiff(json, diffType) {
     return false;
 }
 
-function isDiffActiveByKey(json, key) {
+function getDiffActiveByKey(json, key) {
     if(!json) json = chartJSON;
     let newKey = key.substring("SO_TrackData_".length);
-    let diffs = fetchTrackInfo(json).difficulties;
+    let diffs = getTrackInfo(json).difficulties;
     for(let i in diffs) {
         if(diffs[i].assetName == newKey)
             return diffs[i]._active;
     }
-    console.warn("key not found");
 }
 
-function isDiffActiveByDiff(json, diffType) {
+function getDiffActiveByDiff(json, diffType) {
     if(!json) json = chartJSON;
-    let ind = fetchTrackDataIndexByDiff(json, diffType);
+    let ind = getTrackDataIndexByDiff(json, diffType);
     if(ind < 0) return false;
     let key = json.largeStringValuesContainer.values[ind].key;
-    return isDiffActiveByKey(json, key);
+    return getDiffActiveByKey(json, key);
 }
 
 function setDiffActiveByKey(json, key, active) {
     if(!json) json = chartJSON;
     key = key.substring("SO_TrackData_".length);
-    let diffs = json.largeStringValuesContainer.values[fetchTrackInfoIndex(json)].val.difficulties;
+    let diffs = json.largeStringValuesContainer.values[getTrackInfoIndex(json)].val.difficulties;
     for(let i in diffs) {
         if(diffs[i].assetName == key) {
             //if active isn't given, toggle
@@ -224,8 +236,36 @@ function setDiffActiveByKey(json, key, active) {
                 diffs[i]._active = !diffs[i]._active;
             else
                 diffs[i]._active = active;
+            return json;
         }
     }
-    return json;
+    console.warn("attempted to enable a difficulty that doesn't exist");
+}
 
+// MODDED DATA
+const diffNames = ["EASY", "NORMAL", "HARD", "EXPERT", "XD", "REMIXD"];
+function getChroma(diff) {
+    let key = "SpeenChroma_ChromaTriggers";
+    if(diff || diff == 0) key += `_${diffNames[diff]}`;
+    return getLargeStringByKey(key);
+}
+
+function setChroma(replace, diff, json) {
+    if(!json) json = chartJSON;
+    let key = "SpeenChroma_ChromaTriggers";
+    if(diff || diff == 0) key += `_${diffNames[diff]}`;
+    return setLargeStringByKey(replace, key, json);
+}
+
+function getDTS(diff) {
+    let key = "SpeedHelperSpeedHelper_SpeedTriggers";
+    if(diff || diff == 0) key += `_${diffNames[diff]}`;
+    return getLargeStringByKey(key);
+}
+
+function setDTS(replace, diff, json) {
+    if(!json) json = chartJSON;
+    let key = "SpeedHelperSpeedHelper_SpeedTriggers";
+    if(diff || diff == 0) key += `_${diffNames[diff]}`;
+    return setLargeStringByKey(replace, key, json);
 }

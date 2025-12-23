@@ -156,7 +156,7 @@ function mergeChart(newFile) {
 }
 
 function mergeChartJson(newJson) {
-    let newTrackData = fetchTrackInfo(newJson);
+    let newTrackData = getTrackInfo(newJson);
     popupMergeChart(newTrackData.title, newTrackData.subtitle, newJson).then((ret) => {
         if(ret != 1) return;
         let elem;
@@ -168,8 +168,11 @@ function mergeChartJson(newJson) {
         if(elem && elem.checked) {
             numActions++;
 
-            let oldInfo = fetchTrackInfo();
-            let newInfo = fetchTrackInfo(newJson);
+            let oldInfo = getTrackInfo();
+            let newInfo = getTrackInfo(newJson);
+
+            if(!oldInfo || !newInfo)
+                console.warn("failed to find TrackInfo");
 
             //snapshot diffs and art references, load new trackData, reload snapshots
             let diffs = oldInfo.difficulties;
@@ -178,15 +181,15 @@ function mergeChartJson(newJson) {
             oldInfo.difficulties = diffs;
             oldInfo.albumArtReference = art;
 
-            loadChartData(replaceTrackInfo("", oldInfo));
+            loadChartData(setTrackInfo("", oldInfo));
         }
         else {
             //backgrounds
             elem = document.getElementById("merge-0-0");
             if(elem && elem.checked) {
                 numActions++;
-                let oldInfo = fetchTrackInfo();
-                let newInfo = fetchTrackInfo(newJson);
+                let oldInfo = getTrackInfo();
+                let newInfo = getTrackInfo(newJson);
 
                 oldInfo.backgroundId = newInfo.backgroundId;
                 oldInfo.backgroundColoring = newInfo.backgroundColoring;
@@ -194,7 +197,7 @@ function mergeChartJson(newJson) {
                 oldInfo.fallbackColoringBackgroundId = newInfo.fallbackColoringBackgroundId;
                 oldInfo.objectReplacements = newInfo.objectReplacements;
                 
-                loadChartData(replaceTrackInfo("", oldInfo));
+                loadChartData(setTrackInfo("", oldInfo));
             }
         }
 
@@ -202,18 +205,18 @@ function mergeChartJson(newJson) {
         for(let i = 1; i < 7; i++) {
             elem = document.getElementById(`merge-${i}`);
             if(elem) {
-                let oldDiff = fetchTrackDataByDiff("", i-1);
-                let newDiff = fetchTrackDataByDiff(newJson, i-1);
+                let oldDiff = getTrackDataByDiff("", i-1);
+                let newDiff = getTrackDataByDiff(newJson, i-1);
 
                 //if new chart doesn't have this diff, skip it
-                if(newDiff == -1) continue;
+                if(!newDiff) continue;
 
                 if(elem.checked) {
                     numActions++;
                     //if old chart doesn't have this diff, create it
-                    if(oldDiff == -1) {
+                    if(!oldDiff) {
                         loadChartData(generateTrackData("", i-1));
-                        oldDiff = fetchTrackDataByDiff("", i-1);
+                        oldDiff = getTrackDataByDiff("", i-1);
                         console.warn("generating a diff first!");
                     }
 
@@ -222,11 +225,11 @@ function mergeChartJson(newJson) {
                     rep = true;
 
                     //enable/disable according to the imported diff
-                    let oldInd = fetchTrackDataIndexByDiff("", i-1);
-                    let newInd = fetchTrackDataIndexByDiff(newJson, i-1);
+                    let oldInd = getTrackDataIndexByDiff("", i-1);
+                    let newInd = getTrackDataIndexByDiff(newJson, i-1);
                     let oldKey = chartJSON.largeStringValuesContainer.values[oldInd].key;
                     let newKey = newJson.largeStringValuesContainer.values[newInd].key;
-                    let active = isDiffActiveByKey(newJson, newKey);
+                    let active = getDiffActiveByKey(newJson, newKey);
 
                     loadChartData(setDiffActiveByKey("", oldKey, active));
                 }
@@ -236,9 +239,9 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         numActions++;
                         //if old chart doesn't have this diff, create it
-                        if(oldDiff == -1) {
+                        if(!oldDiff) {
                             loadChartData(generateTrackData("", i-1));
-                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            oldDiff = getTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
                         //clip data
@@ -251,9 +254,9 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         numActions++;
                         //if old chart doesn't have this diff, create it
-                        if(oldDiff == -1) {
+                        if(!oldDiff) {
                             loadChartData(generateTrackData("", i-1));
-                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            oldDiff = getTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
                         //notes
@@ -267,9 +270,9 @@ function mergeChartJson(newJson) {
                     if(elem && elem.checked) {
                         numActions++;
                         //if old chart doesn't have this diff, create it
-                        if(oldDiff == -1) {
+                        if(!oldDiff) {
                             loadChartData(generateTrackData("", i-1));
-                            oldDiff = fetchTrackDataByDiff("", i-1);
+                            oldDiff = getTrackDataByDiff("", i-1);
                             console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
                         }
                         //track turns
@@ -279,7 +282,7 @@ function mergeChartJson(newJson) {
                     }
                 }
                 if(rep) {
-                    loadChartData(replaceTrackDataByDiff(oldDiff, i-1));
+                    loadChartData(setTrackDataByDiff(oldDiff, i-1));
                     rep = false;
                 }
             }
@@ -289,8 +292,11 @@ function mergeChartJson(newJson) {
         elem = document.getElementById("merge-7");
         if(elem) {
 
-            let oldClip = fetchLargeStringByKey("", "SO_ClipInfo_ClipInfo_0");
-            let newClip = fetchLargeStringByKey(newJson, "SO_ClipInfo_ClipInfo_0");
+            let oldClip = getLargeStringByKey("", "SO_ClipInfo_ClipInfo_0");
+            let newClip = getLargeStringByKey(newJson, "SO_ClipInfo_ClipInfo_0");
+
+            if(!oldClip || !newClip)
+                console.warn("failed to find ClipInfo");
 
             if(elem.checked) {
                 numActions++;
@@ -324,7 +330,7 @@ function mergeChartJson(newJson) {
                 }
             }
             if(rep) {
-                replaceLargeStringByKey(oldClip, "SO_ClipInfo_ClipInfo_0");
+                setLargeStringByKey(oldClip, "SO_ClipInfo_ClipInfo_0");
                 rep = false;
             }
         }
