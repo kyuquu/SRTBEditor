@@ -9,19 +9,6 @@ let diffTypeNames = [
     "RemiXD"
 ];
 
-function getClipInfo(index) {
-    let vals = chartJSON["largeStringValuesContainer"]["values"];
-    let count = index;
-    for (v in vals) {
-        if(v.key.contains("SO_ClipInfo")) {
-            if(count == 0)
-                return v.val;
-            else
-                count--;
-        }
-    }
-}
-
 function convertToBinaryNotes(notes) {
     let ret = [];
     for(let i = 0; i < notes.length; i++) {
@@ -45,27 +32,30 @@ function renderBasicDiagnostics() {
 
     let enableMigrateButton = false;
 
+    let trackInfo = getTrackInfo();
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
-            if(!trackData[i] || !trackData[i].difficultyType)
-                continue;
+            let key = trackInfo.difficulties[i].assetName;
+            let trackData = getTrackDataByKey("", key);
+            if(!trackData || !trackData.difficultyType) continue;
+
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
             mainContainer.setAttribute("id", `dv-diff${i}`)
 
-            let diffType = trackData[i].difficultyType;
+            let diffType = trackData.difficultyType;
 
             let title = mainContainer.appendChild(document.createElement("div"));
             title.textContent = diffTypeNames[diffType];
             title.setAttribute("class", "dv-box-title");
 
-            let encoding = trackData[i].noteSerializationFormat;
+            let encoding = trackData.noteSerializationFormat;
             let notes;
             let warning;
             switch(encoding) {
                 case 0: //floating-point encoding
                     enableMigrateButton = true;
-                    notes = trackData[i].notes;
+                    notes = trackData.notes;
                     notes = convertToBinaryNotes(notes);
                     
                     warning = mainContainer.appendChild(document.createElement("div"));
@@ -74,7 +64,7 @@ function renderBasicDiagnostics() {
 
                     break;
                 case 2: //binary encoding w/ integer tick values
-                    notes = trackData[i].binaryNotes;
+                    notes = trackData.binaryNotes;
 
                     break;
                 default: //unknown or compressed (unused)

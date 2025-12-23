@@ -103,10 +103,27 @@ function getTrackDataIndexByDiff(json, diffType) {
     }
     return -1;
 }
+function getTrackDataIndexByKey(json, key) {
+    if(!json) json = chartJSON;
+    let values = json.largeStringValuesContainer.values;
+    for(let i in values) {
+        if(values[i].key == ("SO_TrackData_" + key)) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 function getTrackDataByDiff(json, diffType) {
     if(!json) json = chartJSON;
     let ind = getTrackDataIndexByDiff(json, diffType);
+    if(ind < 0) return;
+    return json.largeStringValuesContainer.values[ind].val;
+}
+
+function getTrackDataByKey(json, key) {
+    if(!json) json = chartJSON;
+    let ind = getTrackDataIndexByKey(json, key);
     if(ind < 0) return;
     return json.largeStringValuesContainer.values[ind].val;
 }
@@ -240,6 +257,22 @@ function setDiffActiveByKey(json, key, active) {
         }
     }
     console.warn("attempted to enable a difficulty that doesn't exist");
+}
+
+// CLIP INFO
+function getClipInfo(json, index) {
+    if(!index) index = 0;
+    if(!json) json = chartJSON;
+    let key = `SO_ClipInfo_ClipInfo_${index}`;
+    return getLargeStringByKey(json, key);
+}
+
+function setClipInfo(replace, index, json) {
+    if(!index) index = 0;
+    if(!json) json = chartJSON;
+    let key = `SO_ClipInfo_ClipInfo_${index}`;
+    return setLargeStringByKey(replace, key, json);
+
 }
 
 // MODDED DATA
