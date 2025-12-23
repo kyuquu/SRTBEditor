@@ -171,7 +171,7 @@ function mergeChartJson(newJson) {
             let oldInfo = fetchTrackInfo();
             let newInfo = fetchTrackInfo(newJson);
 
-            //snapshot enabled diffs, load new trackData, reload old enabled diffs
+            //snapshot diffs and art references, load new trackData, reload snapshots
             let diffs = oldInfo.difficulties;
             let art = oldInfo.albumArtReference;
             oldInfo = JSON.parse(JSON.stringify(newInfo));
@@ -181,6 +181,7 @@ function mergeChartJson(newJson) {
             loadChartData(replaceTrackInfo("", oldInfo));
         }
         else {
+            //backgrounds
             elem = document.getElementById("merge-0-0");
             if(elem && elem.checked) {
                 numActions++;

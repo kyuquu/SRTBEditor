@@ -9,6 +9,7 @@ let rememberedActions = {};
  * @returns {promise<int>}
  */
 async function popupButtons(title, content, options, allowRemember) {
+    resolvePopup(-3);
     //there's no shot this is the 'correct' way to do this.
     let bgElem = document.getElementById("popup-background")
     bgElem.classList.add("active");
@@ -86,6 +87,7 @@ async function popupButtons(title, content, options, allowRemember) {
  * @returns {promise<string>}
  */
 async function popupInput(title, content, placeholder) {
+    resolvePopup(-3);
     document.getElementById("popup-container").classList.remove("inactive");
     document.getElementById("popup-merge-container").classList.add("inactive");
     //there's no shot this is the 'correct' way to do this.
@@ -238,6 +240,7 @@ function initializeMergeCheckboxes() {
 }
 
 async function popupMergeChart(chartTitle, chartSubtitle, newJson) {
+    resolvePopup(-3);
     document.getElementById("popup-merge-container").classList.remove("inactive");
     document.getElementById("popup-container").classList.add("inactive");
 
