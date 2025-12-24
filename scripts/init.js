@@ -143,6 +143,8 @@ async function init() {
     window.addEventListener("drop", (e) => { //process drag&drop behavior
         if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
             e.preventDefault();
+            if(!loadingScreen.classList.contains("active")
+                && !document.getElementById("popup-background").classList.contains("active"))
             processFileDrop(e);
         }
     });
@@ -150,9 +152,18 @@ async function init() {
         const fileItems = [...e.dataTransfer.items].filter(
             (item) => item.kind === "file",
         );
-        if (fileItems.length > 0) {
+        
+        if(!loadingScreen.classList.contains("active")
+            && !document.getElementById("popup-background").classList.contains("active")) {
+            if (fileItems.length > 0) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "copy";
+            }
+        }
+        else {
             e.preventDefault();
-            e.dataTransfer.dropEffect = "copy";
+            e.dataTransfer.dropEffect = "none";
+
         }
     });
 

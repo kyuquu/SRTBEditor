@@ -339,7 +339,7 @@ async function popupConfirmModernizeFormat() {
 
     let options = ["Confirm", "Cancel"];
     return popupButtons("Modernize Note Format",
-        "The modern note format is more accurate and less prone to float error. However, this change will wipe leaderboards. Continue?",
+        "The modern note format is more accurate and less likely to break in the future. However, this change will wipe leaderboards. Continue?",
         options, true).then((result) => {
             if(result != 0) return false;
             
