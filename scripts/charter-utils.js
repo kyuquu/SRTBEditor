@@ -316,6 +316,14 @@ function mergeChartJson(newJson) {
             if(elem.checked) {
                 numActions++;
                 //the entire clip info
+                if(oldClip.clipAssetReference.assetName != newClip.clipAssetReference.assetName) {
+                    //todo: process merge zip audio if it exists
+                    if(document.getElementById("bv-audio-clips").value)
+                        createToast("Clip Info Merge",
+                            "The audio asset reference changed in the merge. Double check your audio before uploading",
+                            "warning", 10000);
+                }
+
                 oldClip = newClip;
                 rep = true;
             }
