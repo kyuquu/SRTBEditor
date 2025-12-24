@@ -115,6 +115,7 @@ function convertToSRTB(json) {
 
 
 function validateJSON(json) {
+    if(!json) return -1;
     try {
         let obj = JSON.parse(json);
         if (obj && typeof obj === "object") {

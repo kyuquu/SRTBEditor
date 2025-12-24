@@ -1,6 +1,6 @@
 let diffTypeNames = [
-    "",
-    "",
+    "unknown diff",
+    "unknown diff",
     "Easy",
     "Normal",
     "Hard",
@@ -37,13 +37,14 @@ function renderBasicDiagnostics() {
         if(trackInfo.difficulties[i]._active == true) {
             let key = trackInfo.difficulties[i].assetName;
             let trackData = getTrackDataByKey("", key);
-            if(!trackData || !trackData.difficultyType) continue;
+            if(!trackData || !trackData.difficultyType && trackData.difficultyType != 0) continue;
 
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
             mainContainer.setAttribute("id", `dv-diff${i}`)
 
             let diffType = trackData.difficultyType;
+            if (diffType > 7) diffType = 0;
 
             let title = mainContainer.appendChild(document.createElement("div"));
             title.textContent = diffTypeNames[diffType];
@@ -71,7 +72,6 @@ function renderBasicDiagnostics() {
                     warning = mainContainer.appendChild(document.createElement("div"));
                     warning.textContent = "Unknown note encoding; skipping diagnostics!";
                     warning.setAttribute("class", "dv-warning");
-                    return;
             }
 
             calculateBalance(notes, mainContainer);
@@ -88,12 +88,6 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("onclick", `mirrorTwistyTrack(${i})`);
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
-
-            // let importDiffButton = mainContainer.appendChild(document.createElement("button"));
-            // importDiffButton.setAttribute("class", "button");
-            // importDiffButton.setAttribute("onclick", `handleImportDiffButtonPressed(${diffType - 2})`);
-            // importDiffButton.setAttribute("title", `Replace this difficulty with the same one from another chart.`);
-            // importDiffButton.textContent = "Replace with import";
 
             diagnosticsRoot.appendChild(mainContainer);
         }

@@ -50,6 +50,7 @@ function saveEditorChanges() {
 
     JSONEditorSave.classList.add("disabled");
     JSONEditorDiscard.classList.add("disabled");
+    return true;
 }
 
 function discardEditorChanges() {
@@ -62,6 +63,7 @@ function discardEditorChanges() {
 }
 
 function updateEditorButtons(JSONIfValid) {
+    if(JSONIfValid == -1) return false;
     if (JSONIfValid !== false) {
         JSONEditorSave.classList.remove("disabled");
 
