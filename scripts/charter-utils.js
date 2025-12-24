@@ -191,6 +191,7 @@ function mergeChartJson(newJson) {
                 let oldInfo = getTrackInfo();
                 let newInfo = getTrackInfo(newJson);
 
+                //todo: check for old background formats too
                 oldInfo.backgroundId = newInfo.backgroundId;
                 oldInfo.backgroundColoring = newInfo.backgroundColoring;
                 oldInfo.fallbackBackgroundId = newInfo.fallbackBackgroundId;
@@ -227,11 +228,16 @@ function mergeChartJson(newJson) {
                     //enable/disable according to the imported diff
                     let oldInd = getTrackDataIndexByDiff("", i-1);
                     let newInd = getTrackDataIndexByDiff(newJson, i-1);
-                    let oldKey = chartJSON.largeStringValuesContainer.values[oldInd].key;
-                    let newKey = newJson.largeStringValuesContainer.values[newInd].key;
-                    let active = getDiffActiveByKey(newJson, newKey);
+                    if(oldInd == -1 || newInd == -1) {
+                        console.warn("failed to find diff entry in TrackInfo");
+                    }
+                    else {
+                        let oldKey = chartJSON.largeStringValuesContainer.values[oldInd].key;
+                        let newKey = newJson.largeStringValuesContainer.values[newInd].key;
+                        let active = getDiffActiveByKey(newJson, newKey);
 
-                    loadChartData(setDiffActiveByKey("", oldKey, active));
+                        loadChartData(setDiffActiveByKey("", oldKey, active));
+                    }
                 }
                 else {
 
@@ -268,17 +274,26 @@ function mergeChartJson(newJson) {
                     }
                     elem = document.getElementById(`merge-${i}-2`);
                     if(elem && elem.checked) {
-                        numActions++;
-                        //if old chart doesn't have this diff, create it
-                        if(!oldDiff) {
-                            loadChartData(generateTrackData("", i-1));
-                            oldDiff = getTrackDataByDiff("", i-1);
-                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        //extra check: skip twisty track if it doesn't exist in new chart
+                        if(newDiff.references && newDiff.splinePath) {
+                            numActions++;
+                            //if old chart doesn't have this diff, create it
+                            if(!oldDiff) {
+                                loadChartData(generateTrackData("", i-1));
+                                oldDiff = getTrackDataByDiff("", i-1);
+                                console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                            }
+                            //track turns
+                            if(!oldDiff.references) oldDiff.references = {};
+                            oldDiff.splinePath = newDiff.splinePath;
+                            oldDiff.splinePathData = newDiff.splinePathData;
+                            oldDiff.references.RefIds = newDiff.references.RefIds;
+                            console.log(newDiff.references.RefIds);
+                            rep = true;
                         }
-                        //track turns
-                        oldDiff.splinePathData = newDiff.splinePathData;
-                        oldDiff.references.refIds = newDiff.references.refIds;
-                        rep = true;
+                        else {
+                            console.warn("skipped track turn import: track turn fields don't exist");
+                        }
                     }
                 }
                 if(rep) {

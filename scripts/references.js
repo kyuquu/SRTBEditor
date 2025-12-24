@@ -55,7 +55,7 @@ function getReferences(json) {
         // }
 
         else {
-            console.warn("Unrecognized key: " + key);
+            // console.warn("Unrecognized key: " + key);
         }
     }
     

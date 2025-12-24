@@ -59,7 +59,7 @@ function renderBasicDiagnostics() {
                     notes = convertToBinaryNotes(notes);
                     
                     warning = mainContainer.appendChild(document.createElement("div"));
-                    warning.textContent = "Old note formatting; score values may be inaccurate!";
+                    warning.textContent = "Old note format; score values are approximate!";
                     warning.setAttribute("class", "dv-warning");
 
                     break;

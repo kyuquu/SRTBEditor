@@ -7,8 +7,11 @@ function createToast (title, text, type, timeout, action) {
     toast.classList.add("toast");
     toast.classList.add(type);
     toast.setAttribute("id", `toast-${id}`);
-    //todo: implement action handling with listener events
-    toast.setAttribute("onclick", `removeToast(${id})`);
+    toast.addEventListener("click", () => {
+        removeToast(id);
+        if(action)
+            action();
+    });
 
     let toastTitle = document.createElement("div");
     toastTitle.textContent = title;
@@ -38,4 +41,8 @@ function fadeToast(id) {
 function removeToast(id) {
     let elem = document.getElementById(`toast-${id}`);
     if(elem) elem.remove();
+}
+
+function toastRoll() {
+    createToast("!roll", `${Math.floor(Math.random() * 100 + 1)}`, "info", "10000", () => {toastRoll();toastRoll()});
 }

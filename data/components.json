@@ -58,7 +58,7 @@
         },
         "roll": {
             "text": "!roll",
-            "function": "popupRoll()"
+            "function": "toastRoll()"
         }
     },
     "text-inputs": {

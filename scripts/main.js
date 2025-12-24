@@ -7,6 +7,8 @@ let isDevModeEnabled = true;
 let activeTab = 0;
 let activeDifficulty = 2;
 
+//todo: lots of refactoring to be done here to use the new backend
+
 function switchToTab(index) {
     if (activeTab !== index) {
         
