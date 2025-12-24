@@ -37,3 +37,15 @@ button {
 input[type="file"] {
     display: none;
 }
+
+.hint {
+    vertical-align: -10%;
+    font-size: 0.75em;
+    margin-left: 0.25rem;
+    --webkit-mask-image: url(../assets/icons/hint.svg);
+    mask-image: url(../assets/icons/hint.svg);
+    --webkit-mask-size: 1em;
+    mask-size: 1em;
+    mask-repeat: no-repeat;
+    background: currentColor;
+}

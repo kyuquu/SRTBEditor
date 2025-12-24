@@ -22,7 +22,7 @@ function stackNearbyNotesAllDiffs() {
         }
     }
     if(numChanges) {
-        createToast("Stack", `Moved ${numChanges} note${numChanges>1?"s":""} across ${numDiffs} difficult${numDiffs>1?"ies":"y"}`, "info", 5000);
+        createToast("Stack", `Moved ${numChanges} note${numChanges>1?"s":""} across ${numDiffs} difficult${numDiffs>1?"ies":"y"}`, "success", 5000);
     }
     else {
         createToast("Stack", "Didn't find any notes to stack", "info", 5000);
@@ -119,32 +119,247 @@ function replaceChartDifficulty(newJson, args) {
     }
     let newTrackData = fetchTrackDataByDifficulty(newJson, diff);
     replaceTrackDataByDifficulty(newTrackData, diff);
+    console.warn("using old method, pls fix");
 }
 
 function changeNoteEncodings(format) {
-    let cont = confirm("This action is destructive to leaderboards. Continue?");
-    if(!cont) return;
-    let diffs = getReferences(chartJSON)[1];
-    for(let i = 0; i < diffs.length; i++) {
-        if(format != 2) {
-            console.warn("Only changing to format 2 is supported at this time");
-        }
-        if(format == 2) {
-            for(let j = 0; j < diffs[i].notes.length; j++) {
-                let note = diffs[i].notes[j];
-                diffs[i].binaryNotes.push({
-                    "tk": Math.round(note.time * 100000),
-                    "tp": note.type,
-                    "c": note.colorIndex,
-                    "p": note.column,
-                    "s": note.m_size
-                });
+    popupConfirmModernizeFormat().then((result) => {
+        if(!result) return;
+        let diffs = getReferences(chartJSON)[1];
+        for(let i = 0; i < diffs.length; i++) {
+            if(format != 2) {
+                console.warn("Only changing to format 2 is supported at this time");
             }
-            diffs[i].noteSerializationFormat = format;
-            diffs[i].notes = [];
+            if(format == 2) {
+                for(let j = 0; j < diffs[i].notes.length; j++) {
+                    let note = diffs[i].notes[j];
+                    diffs[i].binaryNotes.push({
+                        "tk": Math.round(note.time * 100000),
+                        "tp": note.type,
+                        "c": note.colorIndex,
+                        "p": note.column,
+                        "s": note.m_size
+                    });
+                }
+                diffs[i].noteSerializationFormat = format;
+                diffs[i].notes = [];
+            }
         }
-    }
-    updateChartData();
-    discardEditorChanges();
-    createToast("Format", "Note format successfully changed.", "success", 5000);
+        updateChartData();
+        discardEditorChanges();
+        createToast("Format", "Note format successfully changed.", "success", 5000);
+    });
+}
+
+function mergeChart(newFile) {
+    passJsonToCallback(newFile, mergeChartJson);
+}
+
+function mergeChartJson(newJson) {
+    let newTrackData = getTrackInfo(newJson);
+    popupMergeChart(newTrackData.title, newTrackData.subtitle, newJson).then((ret) => {
+        if(ret != 1) return;
+        let elem;
+        let rep = false;
+        let numActions = 0;
+
+        //primary metadata
+        elem = document.getElementById("merge-0");
+        if(elem && elem.checked) {
+            numActions++;
+
+            let oldInfo = getTrackInfo();
+            let newInfo = getTrackInfo(newJson);
+
+            if(!oldInfo || !newInfo)
+                console.warn("failed to find TrackInfo");
+
+            //snapshot diffs and art references, load new trackData, reload snapshots
+            let diffs = oldInfo.difficulties;
+            let art = oldInfo.albumArtReference;
+            oldInfo = JSON.parse(JSON.stringify(newInfo));
+            oldInfo.difficulties = diffs;
+            oldInfo.albumArtReference = art;
+
+            loadChartData(setTrackInfo("", oldInfo));
+        }
+        else {
+            //backgrounds
+            elem = document.getElementById("merge-0-0");
+            if(elem && elem.checked) {
+                numActions++;
+                let oldInfo = getTrackInfo();
+                let newInfo = getTrackInfo(newJson);
+
+                //todo: check for old background formats too
+                oldInfo.backgroundId = newInfo.backgroundId;
+                oldInfo.backgroundColoring = newInfo.backgroundColoring;
+                oldInfo.fallbackBackgroundId = newInfo.fallbackBackgroundId;
+                oldInfo.fallbackColoringBackgroundId = newInfo.fallbackColoringBackgroundId;
+                oldInfo.objectReplacements = newInfo.objectReplacements;
+                
+                loadChartData(setTrackInfo("", oldInfo));
+            }
+        }
+
+        //for each diff
+        for(let i = 1; i < 7; i++) {
+            elem = document.getElementById(`merge-${i}`);
+            if(elem) {
+                let oldDiff = getTrackDataByDiff("", i-1);
+                let newDiff = getTrackDataByDiff(newJson, i-1);
+
+                //if new chart doesn't have this diff, skip it
+                if(!newDiff) continue;
+
+                if(elem.checked) {
+                    numActions++;
+                    //if old chart doesn't have this diff, create it
+                    if(!oldDiff) {
+                        loadChartData(generateTrackData("", i-1));
+                        oldDiff = getTrackDataByDiff("", i-1);
+                        console.warn("generating a diff first!");
+                    }
+
+                    //the entire diff
+                    oldDiff = newDiff;
+                    rep = true;
+
+                    //enable/disable according to the imported diff
+                    let oldInd = getTrackDataIndexByDiff("", i-1);
+                    let newInd = getTrackDataIndexByDiff(newJson, i-1);
+                    if(oldInd == -1 || newInd == -1) {
+                        console.warn("failed to find diff entry in TrackInfo");
+                    }
+                    else {
+                        let oldKey = chartJSON.largeStringValuesContainer.values[oldInd].key;
+                        let newKey = newJson.largeStringValuesContainer.values[newInd].key;
+                        let active = getDiffActiveByKey(newJson, newKey);
+
+                        loadChartData(setDiffActiveByKey("", oldKey, active));
+                    }
+                }
+                else {
+
+                    elem = document.getElementById(`merge-${i}-0`);
+                    if(elem && elem.checked) {
+                        numActions++;
+                        //if old chart doesn't have this diff, create it
+                        if(!oldDiff) {
+                            loadChartData(generateTrackData("", i-1));
+                            oldDiff = getTrackDataByDiff("", i-1);
+                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        }
+                        //clip data
+                        oldDiff.clipInfoAssetReferences = newDiff.clipInfoAssetReferences;
+                        oldDiff.clipData = newDiff.clipData;
+                        rep = true;
+                    }
+
+                    elem = document.getElementById(`merge-${i}-1`);
+                    if(elem && elem.checked) {
+                        numActions++;
+                        //if old chart doesn't have this diff, create it
+                        if(!oldDiff) {
+                            loadChartData(generateTrackData("", i-1));
+                            oldDiff = getTrackDataByDiff("", i-1);
+                            console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                        }
+                        //notes
+                        oldDiff.noteSerializationFormat = newDiff.noteSerializationFormat;
+                        oldDiff.notes = newDiff.notes;
+                        oldDiff.notesCompressed = newDiff.notesCompressed;
+                        oldDiff.binaryNotes = newDiff.binaryNotes;
+                        rep = true;
+                    }
+                    elem = document.getElementById(`merge-${i}-2`);
+                    if(elem && elem.checked) {
+                        //extra check: skip twisty track if it doesn't exist in new chart
+                        if(newDiff.references && newDiff.splinePath) {
+                            numActions++;
+                            //if old chart doesn't have this diff, create it
+                            if(!oldDiff) {
+                                loadChartData(generateTrackData("", i-1));
+                                oldDiff = getTrackDataByDiff("", i-1);
+                                console.warn("generating a diff first! (why are you partially merging into a diff that didn't exist?)");
+                            }
+                            //track turns
+                            if(!oldDiff.references) oldDiff.references = {};
+                            oldDiff.splinePath = newDiff.splinePath;
+                            oldDiff.splinePathData = newDiff.splinePathData;
+                            oldDiff.references.RefIds = newDiff.references.RefIds;
+                            console.log(newDiff.references.RefIds);
+                            rep = true;
+                        }
+                        else {
+                            console.warn("skipped track turn import: track turn fields don't exist");
+                        }
+                    }
+                }
+                if(rep) {
+                    loadChartData(setTrackDataByDiff(oldDiff, i-1));
+                    rep = false;
+                }
+            }
+        }
+        
+        //clip info
+        elem = document.getElementById("merge-7");
+        if(elem) {
+
+            let oldClip = getLargeStringByKey("", "SO_ClipInfo_ClipInfo_0");
+            let newClip = getLargeStringByKey(newJson, "SO_ClipInfo_ClipInfo_0");
+
+            if(!oldClip || !newClip)
+                console.warn("failed to find ClipInfo");
+
+            if(elem.checked) {
+                numActions++;
+                //the entire clip info
+                if(oldClip.clipAssetReference.assetName != newClip.clipAssetReference.assetName) {
+                    //todo: process merge zip audio if it exists
+                    if(document.getElementById("bv-audio-clips").value)
+                        createToast("Clip Info Merge",
+                            "The audio asset reference changed in the merge. Double check your audio before uploading",
+                            "warning", 10000);
+                }
+
+                oldClip = newClip;
+                rep = true;
+            }
+            else {
+                elem = document.getElementById("merge-7-0");
+                if(elem && elem.checked) {
+                    numActions++;
+                    //tempomap
+                    oldClip.timeSignatureMarkers = newClip.timeSignatureMarkers;
+                    oldClip.bpmMarkers = newClip.bpmMarkers;
+                    rep = true;
+                }
+
+                elem = document.getElementById("merge-7-1");
+                if(elem && elem.checked) {
+                    numActions++;
+                    //cuepoints
+                    oldClip.cuePoints = newClip.cuePoints;
+                    rep = true;
+                }
+                elem = document.getElementById("merge-7-2");
+                if(elem && elem.checked) {
+                    numActions++;
+                    //lyrics
+                    oldClip.lyrics = newClip.lyrics;
+                    rep = true;
+                }
+            }
+            if(rep) {
+                setLargeStringByKey(oldClip, "SO_ClipInfo_ClipInfo_0");
+                rep = false;
+            }
+        }
+        if(numActions)
+            createToast("Import successful", `Completed ${numActions} operation${numActions!=1?"s":""}`, "success", 5000);
+        else
+            createToast("Import skipped", "Found nothing to import", "info", 5000);
+    });
 }

@@ -57,7 +57,7 @@
                         <script defer type="text/javascript" src="components/checkbox/checkbox.js"></script>
     <!-- file input --> <link rel="stylesheet" type="text/css" href="components/file-input/file-input.css">
                         <script defer type="text/javascript" src="components/file-input/file-input.js"></script>
-    <!-- file input --> <link rel="stylesheet" type="text/css" href="components/select-input/select-input.css">
+    <!-- selection -->  <link rel="stylesheet" type="text/css" href="components/select-input/select-input.css">
                         <script defer type="text/javascript" src="components/select-input/select-input.js"></script>
 
     <script defer type="text/javascript" src="scripts/init.js"></script>
@@ -187,13 +187,16 @@
                     <div class="dv dv-utils">
                         <button class="button" id="dv-stack"
                                 title="Find any notes that are within 0.5ms and stack them."></button>
-                        <button class="button" id="dv-import-lyrics"
-                                title="Replace the lyrics in the loaded chart with lyrics from a new one."></button>
                         <button class="button" id="dv-set-serialization"
                                 title="Migrate all note data to the newest serialization format."></button>
+                        <button class="button" id="dv-import"
+                                title="Merge data from another chart into this one."></button>
+                        <button class="button" id="roll"
+                                title="!roll"></button>
                     </div>
                     <input type="file" accept=".srtb, .json, .zip" id="dv-lyric-input">
                     <input type="file" accept=".srtb, .json, .zip" id="dv-difficulty-input">
+                    <input type="file" accept=".srtb, .json, .zip" id="dv-merge-input">
                     <div id="dv-root" class="dv-root"></div>
                 </div>
             </div>
@@ -209,7 +212,7 @@
         </span>
 
         <span class="bb bb1">
-            <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v1.0.9</a>
+            <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v1.0.10</a>
             <span>&#8226;</span>
             <span>Up to date with SRXD v1.7.0</span>
         </span>
@@ -219,19 +222,24 @@
         <span class="loading-icon"></span>
         <span id="loading-message"></span>
     </div>
-    <div id="toast-container">
-    </div>
+    <div id="toast-container"></div>
     <div id="popup-background">
-        <span class="popup-container">
-            <span id="popup-title"></span>
-            <span id="popup-content"></span>
-            <span id="popup-options"></span>
-            <input id="popup-result"></input>
-            <span id="popup-remember">
-                <label>Remember this decision</label>
-                <input type="checkbox" id="popup-checkbox"></input>
+        <div id="popup-container"></div>
+        <div id="popup-merge-container">
+            <span id="merge-instruction"></span>
+            <span>
+                <span id="merge-title"></span>
+                <span id="merge-subtitle"></span>
             </span>
-        </span>
+            <div id="merge-checkbox-container">
+                <!-- checkboxes generated programmatically -->
+            </div>
+            <span>
+                <button id="merge-confirm" class="popup-button">Confirm</button>
+                <button id="merge-cancel" class="popup-button">Cancel</button>
+            </span>
+        </div>
+        <span id="popup-result"></span>
     </div>
 </body>
 </html>

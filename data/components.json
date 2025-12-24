@@ -48,13 +48,17 @@
             "text": "Stack nearby notes",
             "function": "stackNearbyNotesAllDiffs()"
         },
-        "dv-import-lyrics": {
-            "text": "Import lyrics",
-            "function": "lyricInput.click()"
-        },
         "dv-set-serialization": {
             "text": "Modernize note format",
             "function": "changeNoteEncodings(2)"
+        },
+        "dv-import": {
+            "text": "Import…",
+            "function": "mergeInput.click()"
+        },
+        "roll": {
+            "text": "!roll",
+            "function": "toastRoll()"
         }
     },
     "text-inputs": {

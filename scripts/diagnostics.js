@@ -1,6 +1,6 @@
 let diffTypeNames = [
-    "",
-    "",
+    "unknown diff",
+    "unknown diff",
     "Easy",
     "Normal",
     "Hard",
@@ -8,19 +8,6 @@ let diffTypeNames = [
     "XD",
     "RemiXD"
 ];
-
-function getClipInfo(index) {
-    let vals = chartJSON["largeStringValuesContainer"]["values"];
-    let count = index;
-    for (v in vals) {
-        if(v.key.contains("SO_ClipInfo")) {
-            if(count == 0)
-                return v.val;
-            else
-                count--;
-        }
-    }
-}
 
 function convertToBinaryNotes(notes) {
     let ret = [];
@@ -45,43 +32,46 @@ function renderBasicDiagnostics() {
 
     let enableMigrateButton = false;
 
+    let trackInfo = getTrackInfo();
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
-            if(!trackData[i].difficultyType)
-                continue;
+            let key = trackInfo.difficulties[i].assetName;
+            let trackData = getTrackDataByKey("", key);
+            if(!trackData || !trackData.difficultyType && trackData.difficultyType != 0) continue;
+
             let mainContainer = document.createElement("div");
             mainContainer.setAttribute("class", "dv-box");
             mainContainer.setAttribute("id", `dv-diff${i}`)
 
-            let diffType = trackData[i].difficultyType;
+            let diffType = trackData.difficultyType;
+            if (diffType > 7) diffType = 0;
 
             let title = mainContainer.appendChild(document.createElement("div"));
             title.textContent = diffTypeNames[diffType];
             title.setAttribute("class", "dv-box-title");
 
-            let encoding = trackData[i].noteSerializationFormat;
+            let encoding = trackData.noteSerializationFormat;
             let notes;
             let warning;
             switch(encoding) {
                 case 0: //floating-point encoding
                     enableMigrateButton = true;
-                    notes = trackData[i].notes;
+                    notes = trackData.notes;
                     notes = convertToBinaryNotes(notes);
                     
                     warning = mainContainer.appendChild(document.createElement("div"));
-                    warning.textContent = "Old note formatting; score values may be inaccurate!";
+                    warning.textContent = "Old note format; score values are approximate!";
                     warning.setAttribute("class", "dv-warning");
 
                     break;
                 case 2: //binary encoding w/ integer tick values
-                    notes = trackData[i].binaryNotes;
+                    notes = trackData.binaryNotes;
 
                     break;
                 default: //unknown or compressed (unused)
                     warning = mainContainer.appendChild(document.createElement("div"));
                     warning.textContent = "Unknown note encoding; skipping diagnostics!";
                     warning.setAttribute("class", "dv-warning");
-                    return;
             }
 
             calculateBalance(notes, mainContainer);
@@ -98,12 +88,6 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("onclick", `mirrorTwistyTrack(${i})`);
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
-
-            let importDiffButton = mainContainer.appendChild(document.createElement("button"));
-            importDiffButton.setAttribute("class", "button");
-            importDiffButton.setAttribute("onclick", `handleImportDiffButtonPressed(${diffType - 2})`);
-            importDiffButton.setAttribute("title", `Replace this difficulty with the same one from another chart.`);
-            importDiffButton.textContent = "Replace with import";
 
             diagnosticsRoot.appendChild(mainContainer);
         }
@@ -345,7 +329,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
                 }
                 
                 if(!over || skip) {
-                    console.log("erronous beathold end at " + notesIn[i].tk / 100000);
+                    // console.log("erronous beathold end at " + notesIn[i].tk / 100000);
                     break;
                 }
 

@@ -25,7 +25,19 @@ function updateJSONEditor(json) {
 }
 
 function saveEditorChanges() {
-    chartJSON = JSON.parse(JSONEditor.getValue());
+    if(!validateJSON(JSONEditor.getValue())) {
+        createToast("Save failed", "Invalid JSON format", "alert", 5000);
+        return false;
+    }
+
+    let newJson = JSON.parse(JSONEditor.getValue());
+    try {
+        loadChartData(newJson);
+    }
+    catch {
+        createToast("Save failed", "Failed to parse JSON as chart", "alert", 5000);
+        return false;
+    }
 
     if (trackInfo["albumArtReference"]["assetName"] !== document.getElementById("bv-album-art-filename").textContent.split(".").slice(0, -1).join(".") && document.getElementById("bv-album-art-filename").textContent !== "No file selected") {
         createToast("Warning", "Changing the album art reference may prevent the chart from having a cover. Double-check before uploading as a ZIP.", "warning", 10000);
@@ -34,12 +46,11 @@ function saveEditorChanges() {
         createToast("Warning", "Changing the audio asset reference may prevent the chart from having audio. Double-check before uploading as a ZIP.", "warning", 10000);
     }
 
-    loadChartData(chartJSON);
-
     JSONEditor.focus();
 
     JSONEditorSave.classList.add("disabled");
     JSONEditorDiscard.classList.add("disabled");
+    return true;
 }
 
 function discardEditorChanges() {
@@ -52,6 +63,7 @@ function discardEditorChanges() {
 }
 
 function updateEditorButtons(JSONIfValid) {
+    if(JSONIfValid == -1) return false;
     if (JSONIfValid !== false) {
         JSONEditorSave.classList.remove("disabled");
 

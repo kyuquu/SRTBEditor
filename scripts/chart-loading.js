@@ -46,7 +46,7 @@ async function passJsonToCallback(file, callback, args) {
                                 createToast("Load failed", ".zip file contains invalid .srtb", "alert", 5000);
                             }
                         });
-                        break;
+                        return;
                     }
                 }
                 createToast("Load failed", "Could not locate .srtb in .zip file", "alert", 5000);
@@ -305,6 +305,11 @@ fileInput.onchange = () => {
 const lyricInput = document.getElementById("dv-lyric-input");
 lyricInput.onchange = () => {
     passJsonToCallback(lyricInput.files[0], replaceChartLyrics);
+}
+
+const mergeInput = document.getElementById("dv-merge-input");
+mergeInput.onchange = () => {
+    passJsonToCallback(mergeInput.files[0], mergeChartJson);
 }
 
 const diffInput = document.getElementById("dv-difficulty-input");
