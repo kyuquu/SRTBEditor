@@ -11,8 +11,15 @@
     user-select: none;
 }
 
+@media screen and (max-width: 820px) {
+    #toast-container {
+        left: 10vw;
+        width: 80vw;
+    }
+}
+
 .toast {
-    position:relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     border: 2px solid var(--color-main);

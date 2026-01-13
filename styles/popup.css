@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: column;
     max-width: 50rem;
-    padding:2rem;
+    padding: 2rem;
     align-items: center;
     background-color: var(--color-bg);
     border: 2px solid var(--color-main);
@@ -75,13 +75,38 @@
 }
 
 #merge-checkbox-container {
-    max-height: min(32rem, 80vh);
+    height: 28rem;
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-content: center;
     column-gap: 4rem;
-    row-gap: 2rem;
+}
+
+@media screen and (min-width: 820px) {
+    #popup-merge-container {
+        width: 32rem;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    #merge-checkbox-container {
+        column-gap: 1rem;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #merge-checkbox-container {
+        align-content: start;
+        align-self: start;
+    }
+}
+
+@media screen and (max-height: 700px) {
+    #popup-container, #popup-merge-container {
+        position: absolute;
+        top: 0px;
+    }
 }
 
 #merge-title {
@@ -108,11 +133,16 @@ input.merge-faded, .merge-faded input  {
     opacity: 50%;
 }
 
+.merge-buttons {
+    display: block;
+}
+
 .merge-1 {
+    min-width: 12rem;
     font-size: 1.25rem;
     margin-top: 1rem;
     margin-left: 1rem;
-    height: 4rem;
+    height: 5.5rem;
 }
 
 .merge-2 {
