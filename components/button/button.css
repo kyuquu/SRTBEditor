@@ -12,6 +12,7 @@
     background: var(--color-bg);
     cursor: pointer;
     transition: opacity 100ms ease-in-out, color 100ms ease-in-out, background 100ms ease-in-out;
+    overflow: hidden;
 }
 
 .button:hover {
