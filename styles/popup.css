@@ -85,7 +85,7 @@
 
 @media screen and (min-width: 820px) {
     #popup-merge-container {
-        width: 32rem;
+        min-width: 32rem;
     }
 }
 
