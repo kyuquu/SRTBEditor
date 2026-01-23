@@ -79,6 +79,7 @@ function loadTemplate(filename) {
         }
         catch (e) {
             createToast("Load failed", "Template failed to load", "alert", 5000);
+            console.error(e);
         }
     }
     else {
@@ -170,6 +171,7 @@ function loadChartFile(file) {
             }
             catch (e) {
                 createToast("Load failed", `Invalid .${fileExtension}\n\n${e}`, "alert", 5000);
+                console.error(e);
             }
         };
         reader.readAsText(file);

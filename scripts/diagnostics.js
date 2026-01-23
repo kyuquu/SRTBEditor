@@ -1,3 +1,5 @@
+let reports = [null, null, null, null, null, null];
+
 let diffTypeNames = [
     "unknown diff",
     "unknown diff",
@@ -15,7 +17,7 @@ function convertToBinaryNotes(notes) {
         ret.push({
             tk: Math.floor(notes[i].time * 100000),
             tp: notes[i].type,
-            c: notes[i].color,
+            c: notes[i].colorIndex,
             p: notes[i].column,
             s: notes[i].m_size
         });
@@ -88,6 +90,10 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("onclick", `mirrorTwistyTrack(${i})`);
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
+
+            reports[i] = checkUnmissableNotes(notes);
+            let errorElem = createErrorReportElement(reports[i]);
+            mainContainer.append(errorElem);
 
             diagnosticsRoot.appendChild(mainContainer);
         }
@@ -360,4 +366,34 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     let comboElement = htmlParent.appendChild(document.createElement("div"));
     comboElement.textContent = `Max combo: ${maxCombo}`;
     comboElement.setAttribute("class", "dv-max-combo");
+}
+
+function createErrorReportElement (report) {
+    let topSeverity = 0;
+    for(let i in report) {
+        if(report[i].severity > topSeverity)
+            topSeverity = report[i].severity;
+    }
+
+    let cont = document.createElement("div");
+    let label = document.createElement("label");
+    let button = document.createElement("button");
+    button.classList.add("button");
+    button.innerText = "View";
+    button.addEventListener("click", (e) => {
+        console.log(report);
+    });
+
+    if(report.length == 0) {
+        label.innerText = `Found 0 issues`;
+        button.setAttribute("disabled", true);
+        button.classList.add("disabled");
+    }
+    else {
+        label.innerText = `Found ${report.length} issues of up to ${topSeverity} severity.`;
+    }
+
+    cont.appendChild(label);
+    cont.appendChild(button);
+    return cont;
 }

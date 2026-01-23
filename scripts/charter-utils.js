@@ -363,3 +363,232 @@ function mergeChartJson(newJson) {
             createToast("Import skipped", "Found nothing to import", "info", 5000);
     });
 }
+
+function checkUnmissableNotes (notes) {
+    let report = [];
+    //if wrong encoding, change encoding
+
+    //for each match
+    //  if it's stacked with a slider end (and it's part of a slider, not a release), it's unmissable
+    //  if it's stacked with other matches, appraise for missability
+    //  if it's almost stacked with either of the above, appraise
+
+    //check for matches that are *almost* stacked (within 1ms)
+    //check for invisible matches that are alone
+    //check for invisible matches that are stacked at misalignment points
+    //(further check if the player could feasibly be at the alignment point)
+    for(let i = 0; i < notes.length;) {
+        let j = i + 1;
+        let stack = [notes[i]];
+        while(j < notes.length) {
+            if(notes[j].tk - notes[i].tk < 100) {
+                stack.push(notes[j]);
+                j++;
+            }
+            else break;
+        }
+
+        // skip if no stack or invis
+        if(stack.length < 2 && stack[0].c < 2) {
+            i++;
+            continue;
+        }
+
+        // remove all irrevelant note types (spins, scratches, beats, beatholds)
+        for(let k = 0; k < stack.length; k++) {
+            switch(stack[k].tp) {
+                case 5: // slider endpoint
+                    // TODO: check for actual slider
+                    // TODO: check that it's not a slider release
+                case 0: // match
+                //case 4: // slider (not fully safe)
+                //case 8: // tap (not fully safe)
+                    break;
+                default:
+                    stack.splice(k, 1);
+                    k--;
+            }
+        }
+
+        // skip if no stack or invis (again)
+        if(stack.length == 0 || stack.length < 2 && stack[0].c < 2) {
+            i++;
+            continue;
+        }
+
+        // skip if not at least 1 match and 1 match/tap/slider endpoint
+        let hasMatch = false, hasOther = false;
+        for(let k in stack) {
+            if(stack[k].tp == 0) {
+                if(hasMatch) hasOther = true;
+                else hasMatch = true;
+            }
+            else if(stack[k].tp == 4
+                    || stack[k].tp == 5
+                    || stack[k].tp == 8) {
+                hasOther = true;
+            }
+        }
+        if(!(hasOther && hasMatch)) {
+            i = j;
+            continue;
+        }
+
+        // skip if all matches are visible and on-track
+        let visible = true;
+        for(let k in stack) {
+            if(stack[k].tp == 0 && stack[k].c > 1
+                    || stack[k].p > 4 || stack[k].p < -4 ) {
+                visible = false;
+                break;
+            }
+        }
+        if(visible) {
+            i = j;
+            continue;
+        }
+
+        // check for time mismatch
+        for(let k = 1; k < stack.length; k++) {
+            if(stack[0].tk - stack[k].tk != 0) {
+                // console.error(`t0 ${stack[0].tk}, t${k} ${stack[k].tk}`);
+                //TODO: change severity depending on context and amount of offset
+                report.push({
+                    type: "offset-time",
+                    severity: 1,
+                    note: stack[0]
+                });
+                break;
+            }
+        }
+
+        //check for missable via perfect misalignment
+        let lanes = [0, 0, 0, 0, 0, 0, 0, 0]
+        for(let k = 0; k < stack.length; k++) {
+            let color = stack[k].c % 2;
+            let lane = modulo(stack[k].p + color * 4, 8);
+            lanes[lane]++;
+        }
+        let cur = 0, longest = 0;
+        for(k in lanes) {
+            if(lanes[k] == 0) cur++;
+            else {
+                if(cur > longest)
+                    longest = cur;
+                cur = 0;
+            }
+        }
+        for(k in lanes) {
+            if(lanes[k] == 0) cur++;
+            else {
+                if(cur > longest) longest = cur;
+                break;
+            }
+        }   
+        if(longest > 3) { // missable by misalignment
+            // check if any of the notes in the stack telegraph
+            // check if any external notes telegraph
+            // prolly log with severity 0 no matter what though
+        }
+        else if(longest == 3) { // possibly missable by perfect misalignment
+            let aPoint = fetchAlignmentPoint(notes, i);
+            let zeroLane = getAdjustedLane(stack[0]);
+            if(modulo(aPoint - zeroLane, 8) == 2
+                    || modulo(aPoint - zeroLane, 8) == 6)
+                // this 4-lane stack is vulnerable to perfect misalignment
+                // TODO: further processing to see how severe this is
+                    // if there's a visible telegraph, it's fine
+                    // if the player is supposed to be elsewhere, low priority report
+                    // if the player might be here, high priority report
+                report.push ({
+                    type: "perfect-misalignment",
+                    severity: 2,
+                    note: stack[0]
+                });
+        }
+        else { // unmissable
+        }
+
+        i = j;
+        //check for proximity to spins
+    }
+
+    console.log(report);
+    return report;
+}
+
+function modulo (input, divisor) {
+    return ((input % divisor) + divisor) % divisor;
+}
+
+function getAdjustedLane (note) {
+    //convert note if necessary
+    return modulo(note.p + 4 * (note.c % 2), 8);
+}
+
+function fetchAlignmentPoint (notes, startIndex) {
+    //convert notes if necessary
+    //this method assumes notes are in order
+
+    //backtrack for a spin, then grab the first positional note after it
+    for(let i = startIndex; i >= 0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+                // found a spin
+                for(let j = i + 1; j < notes.length; j++) {
+                    switch(notes[j].tp) {
+                        case 0:
+                        case 4:
+                        case 8:
+                            //found a positional note
+                            //check for a stack
+                            let lanes = [notes[j]];
+                            let hasMatch = false;
+                            for(let k = j + 1; k < notes.length; k++) {
+                                if((notes[k].tk - notes[j].tk) < 1000) {
+                                    switch(notes[k].tp) {
+                                        case 0:
+                                            hasMatch = true;
+                                        case 4:
+                                        case 8:
+                                            lanes.push(notes[k]);
+                                    }
+                                }
+                                else break;
+                            }
+                            
+                            //if stack, average the position of all notes in the stack
+                            if(lanes.length > 1) {
+                                if(hasMatch)
+                                    for(let k in lanes)
+                                        if(lanes[k].tp != 0)
+                                            lanes.splice(k, 1);
+                                let sum = 0;
+                                for(let k in lanes) {
+                                    sum += getAdjustedLane(lanes[k]);
+                                }
+                                // in 4-lane stacks, this might return 4 lanes off
+                                // in non-trivial stacks, who knows if i did this right?
+                                return sum / lanes.length;
+                            }
+
+                            //if no stack, position based on this note
+                            return getAdjustedLane(notes[j]);
+                    }
+                }
+        }
+    }
+    //if no spin found before the note, take the first positional note's lane instead
+    for (let i = 0; i < notes.length; i++) {
+        switch(notes[i].tp) {
+            case 0:
+            case 4:
+            case 8:
+                return getAdjustedLane(notes[i]);
+        }
+
+    }
+    //if no positional note is found, return 0
+    return 0;
+}
