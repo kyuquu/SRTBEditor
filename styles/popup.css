@@ -29,6 +29,7 @@
     display: flex;
     flex-direction: column;
     max-width: 50rem;
+    max-height: 80vh;
     padding: 2rem;
     align-items: center;
     background-color: var(--color-bg);
@@ -47,6 +48,7 @@
     margin-top: 0.5rem;
     font-size: 1rem;
     text-align: center;
+    overflow-x: hidden;
 }
 
 #popup-answer {
@@ -58,7 +60,7 @@
 .popup-button{
     margin-left: 1rem;
     margin-right: 1rem;
-    font-size:1.25rem;
+    font-size: 1.25rem;
 }
 
 .small {
@@ -158,4 +160,44 @@ input.merge-faded, .merge-faded input  {
 .merge-disabled {
     pointer-events: none;
     opacity: 0%;
+}
+
+.diag-entry {
+    min-width: 32rem;
+    margin-bottom: 0.5rem;
+}
+
+.diag-severity {
+    display: inline-block;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+    width: 1.25em;
+    border: 2px solid currentColor;
+    border-radius: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.s0 {
+    color: #BBB
+}
+
+.s1 {
+    color: #DB0;
+}
+
+.s2 {
+    color: #B00;
+}
+
+.diag-type {
+    display: inline-block;
+    width: 10rem;
+    vertical-align: middle;
+}
+
+.diag-time {
+    display: inline-block;
+    width: 10rem;
+    vertical-align: middle;
 }

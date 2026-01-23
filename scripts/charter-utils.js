@@ -448,73 +448,144 @@ function checkUnmissableNotes (notes) {
             continue;
         }
 
-        // check for time mismatch
-        for(let k = 1; k < stack.length; k++) {
-            if(stack[0].tk - stack[k].tk != 0) {
-                // console.error(`t0 ${stack[0].tk}, t${k} ${stack[k].tk}`);
-                //TODO: change severity depending on context and amount of offset
-                report.push({
-                    type: "offset-time",
-                    severity: 1,
-                    note: stack[0]
-                });
-                break;
-            }
-        }
+        let aPoint = fetchAlignmentPoint(notes, i);
+        let reportedMisalign = false;
 
         //check for missable via perfect misalignment
-        let lanes = [0, 0, 0, 0, 0, 0, 0, 0]
-        for(let k = 0; k < stack.length; k++) {
-            let color = stack[k].c % 2;
-            let lane = modulo(stack[k].p + color * 4, 8);
-            lanes[lane]++;
-        }
-        let cur = 0, longest = 0;
-        for(k in lanes) {
-            if(lanes[k] == 0) cur++;
-            else {
-                if(cur > longest)
-                    longest = cur;
-                cur = 0;
-            }
-        }
-        for(k in lanes) {
-            if(lanes[k] == 0) cur++;
-            else {
-                if(cur > longest) longest = cur;
-                break;
-            }
-        }   
+        let longest = getLargestGapInStack(stack);
         if(longest > 3) { // missable by misalignment
             // check if any of the notes in the stack telegraph
             // check if any external notes telegraph
             // prolly log with severity 0 no matter what though
         }
         else if(longest == 3) { // possibly missable by perfect misalignment
-            let aPoint = fetchAlignmentPoint(notes, i);
             let zeroLane = getAdjustedLane(stack[0]);
             if(modulo(aPoint - zeroLane, 8) == 2
-                    || modulo(aPoint - zeroLane, 8) == 6)
+                    || modulo(aPoint - zeroLane, 8) == 6) {
                 // this 4-lane stack is vulnerable to perfect misalignment
                 // TODO: further processing to see how severe this is
                     // if there's a visible telegraph, it's fine
                     // if the player is supposed to be elsewhere, low priority report
                     // if the player might be here, high priority report
-                report.push ({
-                    type: "perfect-misalignment",
+                if(getStackHasInvis(stack))
+                    report.push ({
+                        type: "perfect-misalignment",
+                        desc: "stacked matches can be missed by misaligning perfectly",
+                        severity: 2,
+                        note: stack[0]
+                    });
+                else 
+                    report.push ({
+                        type: "perfect-misalignment",
+                        desc: "stacked matches can be missed by misaligning perfectly, but at least one note in the stack is visible.",
+                        severity: 1,
+                        note: stack[0]
+                    });
+                reportedMisalign = true;
+            }
+        }
+
+        // check for time mismatch
+        let substacks = [[stack[0]]];
+        for(let k = 1; k < stack.length; k++) {
+            let placed = false;
+            for(let s in substacks) {
+                if(substacks[s][0].tk == stack[k].tk) {
+                    substacks[s].push(stack[k]);
+                    placed = true;
+                    break;
+                }
+            }
+            if(!placed) substacks.push([stack[k]]);
+        }
+        if(substacks.length > 1) {
+            // if any of the substacks contain unprotected off-track or invis matches
+            let peakSeverity = 0;
+            for(let k in substacks) {
+                let longest = getLargestGapInStack(substacks[k]);
+                if(getStackHasInvis(substacks[k])) {
+                    if(longest > 3) {
+                        if(peakSeverity < 2) peakSeverity = 2;
+                    }
+                    else if(longest == 3) {
+                        let zeroLane = getAdjustedLane(substacks[k][0]);
+                        if(modulo(aPoint - zeroLane, 8) == 2
+                                || modulo(aPoint - zeroLane, 8) == 6)
+                            if(peakSeverity < 1) peakSeverity = 1;
+                    }
+                }
+            }
+
+            // console.error(`t0 ${stack[0].tk}, t${k} ${stack[k].tk}`);
+            //TODO: change severity depending on context and amount of offset
+            //TODO: treat each individual timing of this offset stack as its own stack, and see if it's still an issue
+            if(peakSeverity == 2) {
+                report.push({
+                    type: "offset-time",
+                    desc: "stack has timing discrepancies that make parts of it missable",
                     severity: 2,
                     note: stack[0]
                 });
+            }
+            else if (peakSeverity == 1 && !reportedMisalign) {
+                report.push({
+                    type: "offset-time-perfect-misalignment-risk",
+                    desc: "stack has timing discrepancies that create a vulnerability to perfect misalignment",
+                    severity: 1,
+                    note: stack[0]
+                });
+            }
         }
-        else { // unmissable
-        }
+        
+        //check for invisible notes near spins
+
 
         i = j;
-        //check for proximity to spins
     }
 
-    console.log(report);
     return report;
+}
+
+function getLargestGapInStack (stack) {
+    let lanes = [0, 0, 0, 0, 0, 0, 0, 0]
+    for(let k = 0; k < stack.length; k++) {
+        if(stack[k].tp == 5) return 0; // stack auto-hits with slider endpoint
+        else {
+            let color = stack[k].c % 2;
+            let lane = modulo(stack[k].p + color * 4, 8);
+            lanes[lane]++;
+        }
+    }
+    let cur = 0, longest = 0;
+    for(k in lanes) {
+        if(lanes[k] == 0) cur++;
+        else {
+            if(cur > longest)
+                longest = cur;
+            cur = 0;
+        }
+    }
+    for(k in lanes) {
+        if(lanes[k] == 0) cur++;
+        else {
+            if(cur > longest) longest = cur;
+            break;
+        }
+    }
+    return longest;
+}
+
+function getStackHasInvis (stack) {
+    for(let i in stack) {
+        if(stack[i].tp == 0 && stack[i].c > 1 ||
+                stack[i].p > 4 || stack[i].p < -4)
+            return true;
+    }
+    return false;
+}
+
+function getStackSafety (stack) {
+
 }
 
 function modulo (input, divisor) {

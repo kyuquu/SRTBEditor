@@ -1,4 +1,11 @@
-let reports = [null, null, null, null, null, null];
+const severityDescriptions = [
+    "0 - not an issue",
+    "1 - might rarely cause issues",
+    "2 - likely to cause issues, grounds for rejection from SSSO",
+    "3 - very likely to cause issues, grounds for rejection from SSSO"
+];
+
+let report = [null, null, null, null, null, null];
 
 let diffTypeNames = [
     "unknown diff",
@@ -91,8 +98,8 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
 
-            reports[i] = checkUnmissableNotes(notes);
-            let errorElem = createErrorReportElement(reports[i]);
+            report[i] = checkUnmissableNotes(notes);
+            let errorElem = createErrorReportElement(report[i], diffTypeNames[i+2]);
             mainContainer.append(errorElem);
 
             diagnosticsRoot.appendChild(mainContainer);
@@ -368,7 +375,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     comboElement.setAttribute("class", "dv-max-combo");
 }
 
-function createErrorReportElement (report) {
+function createErrorReportElement (report, diffName) {
     let topSeverity = 0;
     for(let i in report) {
         if(report[i].severity > topSeverity)
@@ -376,14 +383,17 @@ function createErrorReportElement (report) {
     }
 
     let cont = document.createElement("div");
+    cont.classList.add("dv-report");
     let label = document.createElement("label");
     let button = document.createElement("button");
     button.classList.add("button");
     button.innerText = "View";
     button.addEventListener("click", (e) => {
-        console.log(report);
+        popupDiagnosticReport(report, diffName);
+        // for(let i in report) {
+        //     console.log(`[${report[i].severity}] ${report[i].type}: ${report[i].note.tk / 100000}`);
+        // }
     });
-
     if(report.length == 0) {
         label.innerText = `Found 0 issues`;
         button.setAttribute("disabled", true);

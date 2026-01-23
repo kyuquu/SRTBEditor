@@ -59,7 +59,22 @@
     --size: 0.625;
 }
 
-.dv-box > button {
+.dv-box > button{
+    margin-top: 0.5rem;
+    --size: 0.375;
+}
+
+.dv-report {
+    margin-top: 1rem;
+}
+
+.dv-report > label {
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 3.1rem);
+}
+.dv-report > button {
+    vertical-align: middle;
     margin-top: 0.5rem;
     --size: 0.375;
 }
