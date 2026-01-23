@@ -25,7 +25,7 @@
     flex: 0 1 12%;
     min-width: 10rem;
     padding: 1rem;
-    border: 0.25rem solid #FFFFFF;
+    border: 0.25rem solid currentColor;
     border-radius: 0.25rem;
 }
 
@@ -39,12 +39,17 @@
     text-align: center;
     font-weight: normal;
     font-size: 1rem;
-    color: #CC0000;
+    color: #C00;
 }
 
 .dv-box-subtitle {
     font-weight: bold;
     padding-top: 1rem;
+}
+
+.dv-box-content {
+    display: inline-block;
+    margin-left: 0.5rem;
 }
 
 .dv-utils {
@@ -69,12 +74,16 @@
 }
 
 .dv-report > label {
+    margin-top: 0;
+    font-size: 0.875rem;
+    height: 1.5rem;
     display: inline-block;
     vertical-align: middle;
-    width: calc(100% - 3.1rem);
+    margin-left: 0.5rem;
 }
+
 .dv-report > button {
+    float: right;
     vertical-align: middle;
-    margin-top: 0.5rem;
     --size: 0.375;
 }

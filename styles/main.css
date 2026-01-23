@@ -38,14 +38,38 @@ input[type="file"] {
     display: none;
 }
 
-.hint {
+
+.icon-hint {
     vertical-align: -10%;
     font-size: 0.75em;
     margin-left: 0.25rem;
-    --webkit-mask-image: url(../assets/icons/hint.svg);
-    mask-image: url(../assets/icons/hint.svg);
     --webkit-mask-size: 1em;
     mask-size: 1em;
     mask-repeat: no-repeat;
     background: currentColor;
+    --webkit-mask-image: url(../assets/icons/hint.svg);
+    mask-image: url(../assets/icons/hint.svg);
+}
+
+.icon-check, .icon-comment, .icon-warn, .icon-alert {
+    display: inline-block;
+    width: 1.25em;
+    border-radius: 1rem;
+    text-align: center;
+}
+
+.icon-check {
+    background: #061;
+}
+
+.icon-comment {
+    background: #444;
+}
+
+.icon-warn {
+    background: #860;
+}
+
+.icon-alert {
+    background: #600;
 }

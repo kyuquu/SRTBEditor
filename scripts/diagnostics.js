@@ -211,26 +211,33 @@ function calculateBalance(notesIn, htmlParent) {
     subtitle.setAttribute("class", "dv-box-subtitle");
 
     let matchElement = htmlParent.appendChild(document.createElement("div"));
+    matchElement.classList.add("dv-box-content");
     matchElement.textContent = `Matches: ${nMatch}`;
-    matchElement.setAttribute("class", "dv-match-count");
+    matchElement.classList.add("dv-match-count");
     let tapElement = htmlParent.appendChild(document.createElement("div"));
+    tapElement.classList.add("dv-box-content");
     tapElement.textContent = `Taps: ${nTap}`;
-    tapElement.setAttribute("class", "dv-tap-count");
+    tapElement.classList.add("dv-tap-count");
     let beatElement = htmlParent.appendChild(document.createElement("div"));
+    beatElement.classList.add("dv-box-content");
     beatElement.textContent = `Beats: ${nBeat}`;
-    beatElement.setAttribute("class", "dv-beat-count");
+    beatElement.classList.add("dv-beat-count");
     let holdElement = htmlParent.appendChild(document.createElement("div"));
+    holdElement.classList.add("dv-box-content");
     holdElement.textContent = `Holds: ${nSlider + nBeathold}`;
-    holdElement.setAttribute("class", "dv-hold-count");
+    holdElement.classList.add("dv-hold-count");
     let releaseElement = htmlParent.appendChild(document.createElement("div"));
+    releaseElement.classList.add("dv-box-content");
     releaseElement.textContent = `Releases: ${nBeatRelease + nSliderRelease}`;
-    releaseElement.setAttribute("class", "dv-release-count");
+    releaseElement.classList.add("dv-release-count");
     let spinElement = htmlParent.appendChild(document.createElement("div"));
+    spinElement.classList.add("dv-box-content");
     spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
-    spinElement.setAttribute("class", "dv-spin-count");
+    spinElement.classList.add("dv-spin-count");
     let scratchElement = htmlParent.appendChild(document.createElement("div"));
+    scratchElement.classList.add("dv-box-content");
     scratchElement.textContent = `Scratches: ${nScratch}`;
-    scratchElement.setAttribute("class", "dv-scratch-count");
+    scratchElement.classList.add("dv-scratch-count");
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
@@ -368,41 +375,56 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     subtitle.setAttribute("class", "dv-box-subtitle");
 
     let scoreElement = htmlParent.appendChild(document.createElement("div"));
+    scoreElement.classList.add("dv-box-content");
     scoreElement.textContent = `Max score: ${maxScore}`;
-    scoreElement.setAttribute("class", "dv-max-score");
+    scoreElement.classList.add("dv-max-score");
     let comboElement = htmlParent.appendChild(document.createElement("div"));
+    comboElement.classList.add("dv-box-content");
     comboElement.textContent = `Max combo: ${maxCombo}`;
-    comboElement.setAttribute("class", "dv-max-combo");
+    comboElement.classList.add("dv-max-combo");
 }
 
 function createErrorReportElement (report, diffName) {
     let topSeverity = 0;
+    let nIssue = 0;
     for(let i in report) {
         if(report[i].severity > topSeverity)
             topSeverity = report[i].severity;
+        if(report[i].severity > 0)
+            nIssue++;
     }
 
     let cont = document.createElement("div");
     cont.classList.add("dv-report");
     let label = document.createElement("label");
+
+    let icon = document.createElement("span");
+    if(report.length == 0) {
+        icon.classList.add("icon-check");
+        icon.innerText = '✓';
+    }
+    else {
+        if(topSeverity == 0) icon.classList.add("icon-comment");
+        if(topSeverity == 1) icon.classList.add("icon-warn");
+        if(topSeverity >= 2) icon.classList.add("icon-alert");
+        icon.innerText = '!';
+    }
+
     let button = document.createElement("button");
     button.classList.add("button");
     button.innerText = "View";
     button.addEventListener("click", (e) => {
         popupDiagnosticReport(report, diffName);
-        // for(let i in report) {
-        //     console.log(`[${report[i].severity}] ${report[i].type}: ${report[i].note.tk / 100000}`);
-        // }
     });
-    if(report.length == 0) {
-        label.innerText = `Found 0 issues`;
+    if(nIssue == 0) {
+        label.innerText = `0 issues`;
         button.setAttribute("disabled", true);
         button.classList.add("disabled");
     }
     else {
-        label.innerText = `Found ${report.length} issues of up to ${topSeverity} severity.`;
+        label.innerText = `${report.length} issue${report.length != 1?'s':''}`;
     }
-
+    cont.appendChild(icon);
     cont.appendChild(label);
     cont.appendChild(button);
     return cont;

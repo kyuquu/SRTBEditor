@@ -191,12 +191,14 @@ input.merge-faded, .merge-faded input  {
 }
 
 .diag-type {
+    text-align: left;
     display: inline-block;
     width: 10rem;
     vertical-align: middle;
 }
 
 .diag-time {
+    text-align: left;
     display: inline-block;
     width: 10rem;
     vertical-align: middle;

@@ -247,7 +247,7 @@ function createCheckboxSpan (obj, i, j) {
     checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
     
     let hintElem = document.createElement("svg");
-    hintElem.classList.add("hint");
+    hintElem.classList.add("icon-hint");
     hintElem.title = obj.hint;
     hintElem.innerText = "---";
 
