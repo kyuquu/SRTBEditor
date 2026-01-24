@@ -1,8 +1,8 @@
 const severityDescriptions = [
     "0 - not an issue",
     "1 - might rarely cause issues",
-    "2 - likely to cause issues, grounds for rejection from SSSO",
-    "3 - very likely to cause issues, grounds for rejection from SSSO"
+    "2 - likely to cause issues; possibly grounds for rejection from SSSO",
+    "3 - very likely to cause issues; grounds for rejection from SSSO"
 ];
 
 let report = [null, null, null, null, null, null];
@@ -99,8 +99,8 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
 
             report[i] = checkUnmissableNotes(notes);
-            let errorElem = createErrorReportElement(report[i], diffTypeNames[i+2]);
-            mainContainer.append(errorElem);
+            let reportElem = createReportElement(report[i], diffTypeNames[i+2]);
+            mainContainer.append(reportElem);
 
             diagnosticsRoot.appendChild(mainContainer);
         }
@@ -384,7 +384,7 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     comboElement.classList.add("dv-max-combo");
 }
 
-function createErrorReportElement (report, diffName) {
+function createReportElement (report, diffName) {
     let topSeverity = 0;
     let nIssue = 0;
     for(let i in report) {
@@ -416,14 +416,16 @@ function createErrorReportElement (report, diffName) {
     button.addEventListener("click", (e) => {
         popupDiagnosticReport(report, diffName);
     });
-    if(nIssue == 0) {
-        label.innerText = `0 issues`;
+    if(report.length == 0) {
+        label.innerText = `no issues`;
         button.setAttribute("disabled", true);
         button.classList.add("disabled");
     }
-    else {
-        label.innerText = `${report.length} issue${report.length != 1?'s':''}`;
-    }
+    else if(nIssue == 0)
+        label.innerText = `${report.length} comment${report.length != 1?'s':''}`;
+    else
+        label.innerText = `${nIssue} issue${nIssue != 1?'s':''}`;
+
     cont.appendChild(icon);
     cont.appendChild(label);
     cont.appendChild(button);

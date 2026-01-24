@@ -10,6 +10,7 @@
 
 .dv-root {
     width: 100%;
+    user-select: text;
     display: flex;
     flex-direction: row;
     gap: 2rem;

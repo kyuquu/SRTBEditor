@@ -364,6 +364,198 @@ function mergeChartJson(newJson) {
     });
 }
 
+function getPotentialPlayerPosition (notes, checkIndex) {
+    let prevNote, nextNote;
+    for(let i = checkIndex - 1; i >= 0; i--) {
+        // abort if previous defining note was a spin or scratch
+        if([2, 3, 12].includes(notes[i].tp))
+            return undefined;
+
+        // return immediately if there's a tap in this stack
+        if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk > -1000)
+            return {
+                lane: getAdjustedLane(notes[i]),
+                spread: 1
+            };
+        
+
+        if(notes[i].tp == 5 && isEndpointSlider(notes, i) || //prev was a slider endpoint
+                [4, 8].includes(notes[i].tp) || //prev was a tap/slider
+                (notes[i].tp == 0 && notes[i].c < 2)) { //prev was a visible match
+            prevNote = notes[i];
+            break;
+        }
+    }
+
+    for(let i = checkIndex + 1; i < notes.length; i++) {
+        // accept spins and scratches automatically
+        if([2, 3, 12].includes(notes[i].tp)) {
+            nextNote = notes[i];
+            break;
+        }
+
+        // return immediately if there's a stacked tap
+        if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk < 1000)
+            return {
+                lane: getAdjustedLane(notes[i]),
+                spread: 1
+            };
+
+        // accept other note types
+        if([4, 8].includes(notes[i].tp)
+                || (notes[i].tp == 0 && notes[i].c < 2)
+                || (notes[i].tp == 5 && isEndpointSlider(notes, i))) {
+            nextNote = notes[i];
+            break;
+        }
+    }
+
+    //if no previous note, we're at the chart start alignment point
+    if(!prevNote) {
+        return {
+            lane: fetchAlignmentPoint(notes, checkIndex),
+            spread: 0
+        };
+    }
+
+    //we had a previous position and we're holding still
+    else if(!nextNote || [2, 3, 12].includes(nextNote.tp)) {
+        //if prev position came after a spin, we're still there
+        //TODO: check for this
+        //else, we could be 1 lane off in either direction
+        return {
+            lane: getAdjustedLane(prevNote),
+            spread: 1
+        };
+    }
+
+    //we're in a slider, our position is explicit
+    else if([4, 5].includes(prevNote.tp) && nextNote.tp == 5) {
+        //oh god mathing out slider shapes
+        //if prev and next are close, we can be anywhere between them
+        //in fact, i should probably branch out at least 300ms
+        if(nextNote.tk - prevNote.tk < 300) {
+            return {
+                lane: (getAdjustedLane(nextNote) + getAdjustedLane(prevNote)) / 2,
+                spread: Math.abs(nextNote.p - prevNote.p)
+            };
+        }
+        //if prev and next aren't close, math out the slider shape :]
+        let timeDiff = nextNote.tk - prevNote.tk;
+        let progress = (notes[checkIndex].tk - prevNote.tk) / timeDiff;
+        let gap = nextNote.p - prevNote.p;
+        let pos, spread = timeDiff > 20000 ? 1 : 2;
+        // console.warn(gap);
+        // console.warn(progress);
+        // console.warn(notes[checkIndex].tk / 100000);
+        switch(prevNote.s) {
+            case 0:
+            case 1:
+            default: //cosine
+                pos = -1 * (Math.cos(progress * Math.PI / 2) - 1) * gap;
+                break;
+            case 2: //curve-late
+                pos = Math.pow(progress, 2) * gap;
+                break;
+            case 3: //curve-early
+                pos = Math.pow(progress, 1/2) * gap;
+                break;
+            case 4: //linear
+                pos = progress * gap;
+                break;
+            case 5: //90
+                if(nextNote.tk - notes[checkIndex].tk > 1200) {
+                    pos = 0;
+                    spread = 1
+                }
+                else {
+                    pos = gap / 2;
+                    spread = gap / 2 + 1
+                }
+        }
+        let cmod = (sliderColor(notes, checkIndex) % 2) * 4;
+        return {
+            lane: modulo(getAdjustedLane(prevNote) + cmod + pos, 8),
+            spread: spread
+        }
+
+
+    }
+
+    //no other conditions met, we just gotta math it out
+    else {
+        if(prevNote.c % 2 != nextNote.c % 2) {
+            return {
+                lane: 0,
+                spread: 4
+            }
+        }
+        return {
+            lane: (getAdjustedLane(prevNote) + getAdjustedLane(nextNote)) / 2,
+            spread: (nextNote.p - prevNote.p) / 2 + 1
+        }
+    }
+
+    //if all fails, just give up and say we could be anywhere
+    return {
+        lane: 0,
+        spread: 4
+    };
+
+}
+
+function checkMisalignmentChance (notes, checkIndex, aPoint) {
+
+}
+
+function isEndpointSlider (notes, startIndex) {
+    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
+    for(let i = startIndex - 1; i >=0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+            case 12:
+                return false;
+            case 4:
+                return true;
+        }
+    }
+    return false;
+}
+
+function sliderColor (notes, startIndex) {
+    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
+    for(let i = startIndex - 1; i >=0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+            case 12:
+                return -1;
+            case 4:
+                return notes[i].c;
+        }
+    }
+    return -1;
+}
+
+function isEndpointRelease (notes, startIndex) {
+    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
+    if(notes[startIndex].s != 1) return false;
+    for(let i = startIndex + 1; i < notes.length; i++) {
+        switch(notes[i].tp) {
+            case 5:
+                return false;
+            case 2:
+            case 3:
+            case 4:
+            case 12:
+                return true;
+        }
+    }
+    return true;
+
+}
+
 function checkUnmissableNotes (notes) {
     let report = [];
     //if wrong encoding, change encoding
@@ -398,9 +590,14 @@ function checkUnmissableNotes (notes) {
         for(let k = 0; k < stack.length; k++) {
             switch(stack[k].tp) {
                 case 5: // slider endpoint
-                    // TODO: check for actual slider
-                    // TODO: check that it's not a slider release
+                    // reject endpoint if it's a release or not part of a slider
+                    if(!isEndpointSlider(notes, i) || isEndpointRelease(notes, i)) {
+                        stack.splice(k, 1);
+                        k--;
+                        break;
+                    }
                 case 0: // match
+                //TODO: instead of rejecting taps, keep them and mark the stack as unsafe if applicable
                 //case 4: // slider (not fully safe)
                 //case 8: // tap (not fully safe)
                     break;
@@ -467,20 +664,51 @@ function checkUnmissableNotes (notes) {
                     // if there's a visible telegraph, it's fine
                     // if the player is supposed to be elsewhere, low priority report
                     // if the player might be here, high priority report
-                if(getStackHasInvis(stack))
+                let pos = getPotentialPlayerPosition(notes, i);
+                if(pos.lane != pos.lane) {
+                    console.log(pos);
+                    console.log(notes[i]);
+                }
+
+
+                
+                if(pos.lane == aPoint && pos.spread == 0) {
                     report.push ({
                         type: "perfect-misalignment",
-                        desc: "stacked matches can be missed by misaligning perfectly",
-                        severity: 2,
+                        desc: "stacked matches can be missed by misaligning perfectly, "
+                            + "and the player is very likely to be in such a position",
+                        severity: 3,
                         note: stack[0]
                     });
-                else 
-                    report.push ({
-                        type: "perfect-misalignment",
-                        desc: "stacked matches can be missed by misaligning perfectly, but at least one note in the stack is visible.",
-                        severity: 1,
-                        note: stack[0]
-                    });
+                }
+                else {
+                    let min = modulo(pos.lane - pos.spread, 8),
+                        max = modulo(pos.lane + pos.spread, 8);
+
+                    let hit = false;
+                    if(min < max && aPoint >= min && aPoint <= max)
+                        hit = true;
+                    else if(min > max && (aPoint <= max || aPoint >= min))
+                        hit = true;
+
+                    if(hit && !getStackHasVis(stack)) {
+                        report.push ({
+                            type: "perfect-misalignment",
+                            desc: "stacked matches can be missed by misaligning perfectly, "
+                                + "and the player could potentially be in such a position",
+                            severity: 2,
+                            note: stack[0]
+                        });
+                    }
+                    else if(!getStackHasVis(stack))
+                        report.push ({
+                            type: "perfect-misalignment",
+                            desc: "stacked matches can be missed by misaligning perfectly, "
+                                + "but the player shouldn't be in such a position",
+                            severity: 0,
+                            note: stack[0]
+                        });
+                }
                 reportedMisalign = true;
             }
         }
@@ -538,7 +766,31 @@ function checkUnmissableNotes (notes) {
         }
         
         //check for invisible notes near spins
-
+        let allInvisMatches = true;
+        for(let k in stack) {
+            if(stack[k].c < 2 && [0, 4, 8].includes(stack[k].tp)) {
+                allInvisMatches = false;
+                break;
+            }
+        }
+        if(allInvisMatches) {
+            for(let k = i + 1; k < notes.length; k++) {
+                if(notes[k].tk - notes[i].tk > 10000) break; // break after 100ms
+                if(notes[k].tp == 2 || notes[k].tp == 3) {
+                    let sev = 0;
+                    if(notes[k].tk - notes[i].tk < 500) sev = 3
+                    else if(notes[k].tk - notes[i].tk < 2000) sev = 2;
+                    else if(notes[k].tk - notes[i].tk < 6000) sev = 1;
+                    else sev = 0
+                    report.push({
+                        type: "invis-matches-near-spin",
+                        desc: "invisible matches can be missed when spinning early",
+                        severity: sev,
+                        note: stack[0]
+                    });
+                }
+            }
+        }
 
         i = j;
     }
@@ -584,8 +836,13 @@ function getStackHasInvis (stack) {
     return false;
 }
 
-function getStackSafety (stack) {
-
+function getStackHasVis (stack) {
+    for(let i in stack) {
+        if(stack[i].tp == 0 && stack[i].c < 2 &&
+                stack[i].p > 4 && stack[i].p > -4)
+            return true;
+    }
+    return false;
 }
 
 function modulo (input, divisor) {

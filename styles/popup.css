@@ -37,6 +37,7 @@
     border-radius: 0.5rem;
     overflow-y: auto;
     overflow-x: auto;
+    user-select: text;
 }
 
 #popup-title {
@@ -164,7 +165,7 @@ input.merge-faded, .merge-faded input  {
 
 .diag-entry {
     min-width: 32rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .diag-severity {
@@ -193,7 +194,7 @@ input.merge-faded, .merge-faded input  {
 .diag-type {
     text-align: left;
     display: inline-block;
-    width: 10rem;
+    width: 20rem;
     vertical-align: middle;
 }
 

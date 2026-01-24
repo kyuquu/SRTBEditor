@@ -1,4 +1,5 @@
 .bottom-bar {
+    user-select: text;
     display: flex;
     justify-content: space-between;
     flex-direction: row;
