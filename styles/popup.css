@@ -184,11 +184,15 @@ input.merge-faded, .merge-faded input  {
 }
 
 .s1 {
-    color: #DB0;
+    color: #DB5;
 }
 
 .s2 {
-    color: #B00;
+    color: #F72;
+}
+
+.s3 {
+    color: #F22;
 }
 
 .diag-type {

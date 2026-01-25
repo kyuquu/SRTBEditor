@@ -246,6 +246,7 @@ async function loadZipSRTB(srtb) {
     }
     catch (e) {
         createToast("Load failed", `.zip file contains invalid .srtb\n\n${e}`, "alert", 5000);
+        throw e;
     }
 }
 

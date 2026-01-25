@@ -192,6 +192,9 @@ async function popupList(title, list) {
                 case 2:
                     severityElem.classList.add("s2");
                     break;
+                case 3:
+                    severityElem.classList.add("s3");
+                    break;
             }
 
             let descElem = document.createElement("span");
