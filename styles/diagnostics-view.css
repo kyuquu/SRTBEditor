@@ -23,7 +23,7 @@
 .dv-box {
     display: flex;
     flex-direction: column;
-    flex: 0 1 12%;
+    flex: 0 1 12rem;
     min-width: 10rem;
     padding: 1rem;
     border: 0.25rem solid currentColor;
@@ -75,12 +75,16 @@
 }
 
 .dv-report > label {
+    width: calc(100% - 3.2rem - 1.25rem - 1rem);
     margin-top: 0;
     font-size: 0.875rem;
     height: 1.5rem;
     display: inline-block;
     vertical-align: middle;
     margin-left: 0.5rem;
+    /* text-overflow: ellipsis; */
+    text-wrap: nowrap;
+    overflow-x: hidden;
 }
 
 .dv-report > button {

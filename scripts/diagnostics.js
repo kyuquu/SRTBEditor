@@ -406,7 +406,8 @@ function createReportElement (report, diffName) {
     else {
         if(topSeverity == 0) icon.classList.add("icon-comment");
         if(topSeverity == 1) icon.classList.add("icon-warn");
-        if(topSeverity >= 2) icon.classList.add("icon-alert");
+        if(topSeverity == 2) icon.classList.add("icon-warn2");
+        if(topSeverity == 3) icon.classList.add("icon-alert");
         icon.innerText = '!';
     }
 
