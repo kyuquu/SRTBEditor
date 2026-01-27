@@ -545,19 +545,16 @@ function getPotentialPlayerPosition (notes, checkIndex) {
             }
 
             // movement and no color swap
-            console.log((getAdjustedLane(notes, prevIndex) + getAdjustedLane(notes, nextIndex)) / 2);
             let movement = notes[nextIndex].p - notes[prevIndex].p;
-            console.log(movement);
             return {
                 lane: modulo(getAdjustedLane(notes, prevIndex) + movement / 2, 8),
-                spread: Math.abs(notes[nextIndex].p - notes[prevIndex].p) / 2 + 0.5
+                spread: Math.abs(movement) / 2 + 0.5
             }
         }
     }
 }
 
 function isEndpointSlider (notes, startIndex) {
-    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
     for(let i = startIndex - 1; i >=0; i--) {
         switch(notes[i].tp) {
             case 2:
@@ -572,7 +569,6 @@ function isEndpointSlider (notes, startIndex) {
 }
 
 function isEndpointRelease (notes, startIndex) {
-    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
     if(notes[startIndex].s != 1) return false;
     for(let i = startIndex + 1; i < notes.length; i++) {
         switch(notes[i].tp) {
@@ -598,7 +594,6 @@ function indsToNotes (notes, indices) {
 }
 
 function getSliderColor (notes, startIndex) {
-    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
     for(let i = startIndex - 1; i >=0; i--) {
         switch(notes[i].tp) {
             case 2:

@@ -125,8 +125,8 @@ function checkUnmissableNotes (notes) {
                 if(offsetSeverity < 0) offsetSeverity = 0;
                 report.push({
                     type: "offset-time",
-                    desc: "notes in stack have slightly different timings that make it more "
-                        + "missable than it would otherwise be",
+                    desc: "notes in stack occur at slightly different timings from each other, "
+                        + "which gives them a notable chance of being missed",
                     severity: offsetSeverity,
                     note: stack[0]
                 });
@@ -136,8 +136,10 @@ function checkUnmissableNotes (notes) {
         
         
         //check for invisible notes near spins
-        let allInvisMatches = true;
+        let allInvisMatches = false;
         for(let k in stack) {
+            if(stack[k].c > 1 && stack[k].tp == 0)
+                allInvisMatches = true;
             if(stack[k].c < 2 && [0, 4, 8].includes(stack[k].tp)) {
                 allInvisMatches = false;
                 break;
@@ -172,9 +174,7 @@ function checkForMisalign (notes, indices) {
     let aPoint = fetchAlignmentPoint(notes, indices[0]);
     let pos = getPotentialPlayerPosition(notes, indices[0]);
     if(!pos || pos.lane != pos.lane) {
-        console.error("failed to calculate position");
-        console.log(pos);
-        console.log(notes[i]);
+        throw error(`failed to calculate player position at t=${notes[i].tk/100000}`);
     }
     if(pos.lane == "aPoint") {
         pos.lane = aPoint;
@@ -192,21 +192,18 @@ function checkForMisalign (notes, indices) {
             pass = false;
             for(let k in indices) {
                 if(notes[indices[k]].tp == 0) {
-                    if(modulo(Math.abs(getAdjustedLane(notes, indices[k]) + testSpread - pos.lane), 8) < 2) {
+                    let distance = Math.abs(getAdjustedLane(notes, indices[k]) + testSpread - pos.lane);
+                    if(distance > 4) distance = 8 - distance;
+                    if(distance < 2) {
                         pass = true;
                         break;
                     }
-                    console.warn(testSpread);
-                    console.log(modulo(Math.abs(getAdjustedLane(notes, indices[k]) + testSpread - pos.lane), 8));
-                    // let wawa = getAdjustedLane(notes, indices[k]) + testSpread - pos.lane;
-                    // console.log(wawa);
-                    // console.log(modulo(wawa, 8));
                 }
             }
             if(pass) nGood++;
             else {
                 nBad++;
-                console.log(`missed. t=${stack[0].tk/100000}, pos=${pos.lane}, spread=${pos.spread}`);
+                // console.log(`missed. t=${stack[0].tk/100000}, pos=${pos.lane}, spread=${pos.spread}`);
             }
             if(testSpread > 0) testSpread *= -1;
             else testSpread = testSpread * -1 + 0.5;
@@ -249,16 +246,25 @@ function checkForMisalign (notes, indices) {
 function checkForPerfectMisalign (notes, indices) {
     let aPoint = fetchAlignmentPoint(notes, indices[0]);
     let stack = indsToNotes(notes, indices);
-    // TODO: this function is naive about which stack notes are in the misalign points
+
+    // zeroLane is one of the misalign points
     let zeroLane = getAdjustedLane(notes, indices[0]);
+    for(let i in indices)
+        if(getAdjustedLane(notes, indices[i]) != zeroLane
+                && getAdjustedLane(notes, indices[i]) != (zeroLane + 4) % 8)
+            zeroLane = getAdjustedLane(notes, indices[i])
+    
     // if this stack hits the misalign points and doesn't have any visible notes
     if((modulo(aPoint - zeroLane, 8) == 2
             || modulo(aPoint - zeroLane, 8) == 6)
             && !getStackHasVis(stack)) {
         // skip if a note aligns with aPoint
-        for(let i in stack)
-            if(Math.abs(getAdjustedLane(notes, indices[i]) - aPoint) < 2)
+        for(let i in indices) {
+            let distance = Math.abs(getAdjustedLane(notes, indices[i]) - aPoint);
+            if(distance > 4) distance = 8 - distance;
+            if(distance < 2)
                 return;
+        }
 
         let pos = getPotentialPlayerPosition(notes, indices[0]);
 
