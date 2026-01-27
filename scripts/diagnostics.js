@@ -42,6 +42,7 @@ function renderBasicDiagnostics() {
     let enableMigrateButton = false;
 
     let trackInfo = getTrackInfo();
+    let failed = false
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
             let key = trackInfo.difficulties[i].assetName;
@@ -98,13 +99,21 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
 
-            report[i] = checkUnmissableNotes(notes);
-            let reportElem = createReportElement(report[i], diffTypeNames[i+2]);
-            mainContainer.append(reportElem);
+            try {
+                report[i] = checkUnmissableNotes(notes);
+                let reportElem = createReportElement(report[i], diffTypeNames[i+2]);
+                mainContainer.append(reportElem);
+            }
+            catch (e) {
+                failed = true;
+                console.error(e);
+            }
 
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
+    if(failed)
+        createToast("Diagnostics failed", "Check the console for details", "warning", 10000);
     let migrateButton = document.getElementById(`dv-set-serialization`);
     if(enableMigrateButton) migrateButton.classList.remove("disabled");
     else migrateButton.classList.add("disabled");

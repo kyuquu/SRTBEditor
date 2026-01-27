@@ -293,8 +293,6 @@ function loadChartData(data) {
 
     updateChartData();
 
-    renderBasicDiagnostics();
-
     updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }
 

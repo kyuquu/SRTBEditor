@@ -368,13 +368,13 @@ function getPotentialPlayerPosition (notes, checkIndex) {
 
     // check if a slider occurs here (sliders always take priority)
     let prevSlider, nextSlider;
-    let prevNote, nextNote;
+    let prevIndex, nextIndex;
     for(let i = checkIndex - 1; i >= 0; i--) {
         if([2, 3, 12].includes(notes[i].tp))
             break;
 
-        if([4, 5].includes(notes[i].tp) && !prevNote)
-            prevNote = notes[i];
+        if([4, 5].includes(notes[i].tp) && !prevIndex)
+            prevIndex = i;
 
         if(notes[i].tp == 4) {
             prevSlider = true;
@@ -388,32 +388,27 @@ function getPotentialPlayerPosition (notes, checkIndex) {
             }
             if(notes[i].tp == 5) {
                 nextSlider = true;
-                nextNote = notes[i];
+                nextIndex = i;
                 break;
             }
         }
     }
     if(nextSlider) {
-
-        //oh god mathing out slider shapes
         //if prev and next are close, we can be anywhere between them
-        //in fact, i should probably branch out at least 300ms
-        let cmod = (sliderColor(notes, checkIndex) % 2) * 4;
-        if(prevNote.tp == 4) cmod = 0;
-        if(nextNote.tk - prevNote.tk < 300) {
+        if(nextIndex.tk - notes[prevIndex].tk < 10000) {
             return {
-                lane: modulo((getAdjustedLane(nextNote) + getAdjustedLane(prevNote)) / 2 + cmod, 8),
-                spread: Math.abs(nextNote.p - prevNote.p)
+                lane: modulo((getAdjustedLane(notes, nextIndex) + getAdjustedLane(notes, prevIndex)), 8) / 2,
+                spread: Math.abs(nextIndex.p - notes[prevIndex].p)
             };
         }
-        //if prev and next aren't close, math out the slider shape :]
-        let timeDiff = nextNote.tk - prevNote.tk;
-        let progress = (notes[checkIndex].tk - prevNote.tk) / timeDiff;
-        let gap = nextNote.p - prevNote.p;
+        //if prev and next aren't close, math out the slider shape
+        let timeDiff = notes[nextIndex].tk - notes[prevIndex].tk;
+        let progress = (notes[checkIndex].tk - notes[prevIndex].tk) / timeDiff;
+        let gap = notes[nextIndex].p - notes[prevIndex].p;
         let pos, spread = timeDiff > 20000 ? 1 : 2;
 
         // featuring disgusting approximations of slider shapes!
-        switch(prevNote.s) {
+        switch(notes[prevIndex].s) {
             case 0:
             case 1:
             default: //cosine
@@ -429,7 +424,7 @@ function getPotentialPlayerPosition (notes, checkIndex) {
                 pos = progress * gap;
                 break;
             case 5: //90
-                if(nextNote.tk - notes[checkIndex].tk > 1200) {
+                if(notes[nextIndex].tk - notes[checkIndex].tk > 1200) {
                     pos = 0;
                     spread = 1
                 }
@@ -439,18 +434,17 @@ function getPotentialPlayerPosition (notes, checkIndex) {
                 }
         }
         return {
-            lane: modulo(getAdjustedLane(prevNote) + cmod + pos, 8),
+            lane: modulo(getAdjustedLane(notes, prevIndex) + pos, 8),
             spread: spread
         }
     }
 
     // not a slider, we'll use the prev and next notes instead
     else {
-        prevNote = undefined;
-        let prevCMod = 0;
+        prevIndex = undefined;
         // find the prev note
         for(let i = checkIndex - 1; i >= 0; i--) {
-            // abort if previous defining note was a spin or scratch
+            // return if previous defining note was a spin or scratch
             if([2, 3, 12].includes(notes[i].tp))
                 return {
                     lane: "aPoint"
@@ -459,7 +453,7 @@ function getPotentialPlayerPosition (notes, checkIndex) {
             // return immediately if there's a tap in this stack
             if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk > -1000)
                 return {
-                    lane: getAdjustedLane(notes[i]),
+                    lane: getAdjustedLane(notes, i),
                     spread: 1
                 };
             
@@ -469,8 +463,7 @@ function getPotentialPlayerPosition (notes, checkIndex) {
                     || [4, 8].includes(notes[i].tp) //prev was a tap/slider
                     || (notes[i].tp == 0 && notes[i].c < 2 && notes[i].p < 5 && notes[i].p > -5)) //prev was a visible match
                     && notes[i].tk - notes[checkIndex].tk < -1000) { //not in this stack
-                prevNote = notes[i];
-                if(prevNote.tp == 5) prevCMod = modulo(sliderColor(notes, checkIndex), 2) * 4;
+                prevIndex = i;
                 break;
             }
         }
@@ -479,14 +472,14 @@ function getPotentialPlayerPosition (notes, checkIndex) {
         for(let i = checkIndex + 1; i < notes.length; i++) {
             // accept spins and scratches
             if([2, 3, 12].includes(notes[i].tp)) {
-                nextNote = notes[i];
+                nextIndex = i;
                 break;
             }
 
             // return immediately if there's a stacked tap
             if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk < 1000)
                 return {
-                    lane: getAdjustedLane(notes[i]),
+                    lane: getAdjustedLane(notes, i),
                     spread: 1
                 };
 
@@ -494,7 +487,7 @@ function getPotentialPlayerPosition (notes, checkIndex) {
             if(([4, 8].includes(notes[i].tp)
                     || (notes[i].tp == 0 && notes[i].c < 2 && notes[i].p < 5 && notes[i].p > -5))
                     && notes[i].tk - notes[checkIndex].tk > 1000) { //not in this stack
-                nextNote = notes[i];
+                nextIndex = i;
                 break;
             }
         }
@@ -502,35 +495,35 @@ function getPotentialPlayerPosition (notes, checkIndex) {
 
 
         //if no previous note, we're at the chart start alignment point
-        if(!prevNote) {
+        if(!prevIndex) {
             return {
                 lane: fetchAlignmentPoint(notes, checkIndex),
                 spread: 0
             };
         }
 
-        //we had a previous position and we're holding still
-        else if(!nextNote || [2, 3, 12].includes(nextNote.tp)) {
+        //if next note is a spin/scratch or there is no next note, we're holding still
+        else if(!nextIndex || [2, 3, 12].includes(notes[nextIndex].tp)) {
             //if prev position came after a spin, we're still there
             //TODO: check for this
             //else, we could be 1 lane off in either direction
             return {
-                lane: modulo(getAdjustedLane(prevNote) + prevCMod * 4, 8),
+                lane: modulo(getAdjustedLane(notes, prevIndex), 8),
                 spread: 1
             };
         }
 
         //no other conditions met, we just gotta math it out
         else {
-            // no expected movement (color swap or not)
-            if(modulo(getAdjustedLane(prevNote) + prevCMod, 8) == getAdjustedLane(nextNote)) {
+            // no movement (color swap or not)
+            if(modulo(getAdjustedLane(notes, prevIndex), 8) == getAdjustedLane(notes, nextIndex)) {
                 //if we haven't moved since the aPoint, spread 0: otherwise, spread 1
                 let moved = false;
                 let aPoint = fetchAlignmentPoint(notes, checkIndex);
                 for(let k = checkIndex; k >= 0; k--) {
                     if(([4, 8].includes(notes[k].tp)
                             || (notes[k].tp == 0 && notes[k].c < 2))
-                            && Math.abs(getAdjustedLane(notes[k].tp) - aPoint) >= 2) {
+                            && Math.abs(getAdjustedLane(notes, k) - aPoint) >= 2) {
                         moved = true;
                         break;
                     }
@@ -538,30 +531,29 @@ function getPotentialPlayerPosition (notes, checkIndex) {
                         break;
                 }
                 return {
-                    lane: modulo(getAdjustedLane(prevNote) + prevCMod, 8),
+                    lane: modulo(getAdjustedLane(notes, prevIndex), 8),
                     spread: moved ? 1 : 0
                 }
             }
 
-            // color swap
-            if(prevNote.c % 2 != nextNote.c % 2) {
+            // movement and color swap
+            if(notes[prevIndex].c % 2 != notes[nextIndex].c % 2) {
                 return {
                     lane: 0,
                     spread: 4
                 }
             }
 
-            // no color swap
+            // movement and no color swap
+            console.log((getAdjustedLane(notes, prevIndex) + getAdjustedLane(notes, nextIndex)) / 2);
+            let movement = notes[nextIndex].p - notes[prevIndex].p;
+            console.log(movement);
             return {
-                lane: (modulo(getAdjustedLane(prevNote) + prevCMod, 8) + getAdjustedLane(nextNote)) / 2,
-                spread: (nextNote.p - prevNote.p) / 2 + 1
+                lane: modulo(getAdjustedLane(notes, prevIndex) + movement / 2, 8),
+                spread: Math.abs(notes[nextIndex].p - notes[prevIndex].p) / 2 + 0.5
             }
         }
     }
-}
-
-function checkMisalignmentChance (notes, checkIndex, aPoint) {
-
 }
 
 function isEndpointSlider (notes, startIndex) {
@@ -577,21 +569,6 @@ function isEndpointSlider (notes, startIndex) {
         }
     }
     return false;
-}
-
-function sliderColor (notes, startIndex) {
-    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
-    for(let i = startIndex - 1; i >=0; i--) {
-        switch(notes[i].tp) {
-            case 2:
-            case 3:
-            case 12:
-                return -1;
-            case 4:
-                return notes[i].c;
-        }
-    }
-    return -1;
 }
 
 function isEndpointRelease (notes, startIndex) {
@@ -612,297 +589,36 @@ function isEndpointRelease (notes, startIndex) {
 
 }
 
-function checkUnmissableNotes (notes) {
-    let report = [];
-    //if wrong encoding, change encoding
-
-    //for each match
-    //  if it's stacked with a slider end (and it's part of a slider, not a release), it's unmissable
-    //  if it's stacked with other matches, appraise for missability
-    //  if it's almost stacked with either of the above, appraise
-
-    //check for matches that are *almost* stacked (within 1ms)
-    //check for invisible matches that are alone
-    //check for invisible matches that are stacked at misalignment points
-    //(further check if the player could feasibly be at the alignment point)
-    for(let i = 0; i < notes.length;) {
-        let j = i + 1;
-        let stack = [notes[i]];
-        while(j < notes.length) {
-            if(notes[j].tk - notes[i].tk < 100) {
-                stack.push(notes[j]);
-                j++;
-            }
-            else break;
-        }
-
-        // skip if no stack or invis
-        if(stack.length < 2 && stack[0].c < 2) {
-            i++;
-            continue;
-        }
-
-        // remove all irrevelant note types (spins, scratches, beats, beatholds)
-        for(let k = 0; k < stack.length; k++) {
-            switch(stack[k].tp) {
-                case 5: // slider endpoint
-                    // reject endpoint if it's a release or not part of a slider
-                    if(!isEndpointSlider(notes, i) || isEndpointRelease(notes, i)) {
-                        stack.splice(k, 1);
-                        k--;
-                        break;
-                    }
-                case 0: // match
-                //TODO: instead of rejecting taps, keep them and mark the stack as unsafe if applicable
-                //case 4: // slider (not fully safe)
-                //case 8: // tap (not fully safe)
-                    break;
-                default:
-                    stack.splice(k, 1);
-                    k--;
-            }
-        }
-
-        // skip if no stack or invis (again)
-        if(stack.length == 0 || stack.length < 2 && stack[0].c < 2) {
-            i++;
-            continue;
-        }
-
-        // skip if all matches are visible and on-track
-        let visible = true;
-        for(let k in stack) {
-            if(stack[k].tp == 0 && stack[k].c > 1
-                    || stack[k].p > 4 || stack[k].p < -4 ) {
-                visible = false;
-                break;
-            }
-        }
-        if(visible) {
-            i = j;
-            continue;
-        }
-
-        //check for missable via misalignment
-        let aPoint = fetchAlignmentPoint(notes, i);
-        let pos = getPotentialPlayerPosition(notes, i);
-        if(!pos || pos.lane != pos.lane) {
-            console.error("failed to calculate position");
-            console.log(pos);
-            console.log(notes[i]);
-        }
-        if(pos.lane == "aPoint") {
-            pos.lane = aPoint;
-            pos.spread = 0;
-        }
-        let reportedMisalign = false;
-        let longest = getLargestGapInStack(stack);
-        if(longest > 3) { // missable by misalignment
-            // only check for misalignment if all notes are invisible/offtrack
-            if(!getStackHasVis(stack)) {
-                let severity, desc;
-                let testSpread = 0;
-                let pass = false;
-                let nGood = 0, nBad = 0;
-                //test all positions within the spread
-                while (testSpread <= pos.spread) {
-                    pass = false;
-                    for(let k in stack) {
-                        if(stack[k].tp == 0) {
-                            if(Math.abs(getAdjustedLane(stack[k]) + testSpread - pos.lane) < 2) {
-                                pass = true;
-                                break;
-                            }
-                        }
-                    }
-                    if(pass) nGood++;
-                    else {
-                        nBad++;
-                        // console.log(`missed. t=${stack[0].tk/100000}, pos=${pos.lane}`);
-                    }
-                    if(testSpread > 0) testSpread *= -1;
-                    else testSpread = testSpread * -1 + 0.5;
-                }
-
-                let descriptor;
-                if(getStackHasInvis(stack)) descriptor = "invisible";
-                else descriptor = "offtrack";
-
-                
-                let rate = nGood / (nGood + nBad);
-                if(rate < 0.1) {
-                    // console.log(`${stack[0].tk/100000}: ${nGood}::${nBad}, p=${pos.lane}, ${pos.spread}`);
-                    severity = 3;
-                    desc = descriptor + " stack is missable, and the player "
-                        + "is very likely to be in a position to miss it";
-                }
-                else if(rate < 0.5) {
-                    severity = 2;
-                    desc = descriptor + " stack is missable, and the player "
-                        + "is likely in a position to miss it";
-                }
-                else if(rate < 1) {
-                    severity = 1;
-                    desc = descriptor + " stack is missable, and the player "
-                        + "could potentially to be in a position to miss it";
-                }
-                else {
-                    severity = 0;
-                    desc = descriptor + " stack is missable, but the player "
-                        + "shouldn't be in a position to miss it";
-                }
-                report.push({
-                    type: descriptor + "-missable",
-                    desc: desc,
-                    severity: severity,
-                    note: stack[0]
-                });
-                reportedMisalign = true;
-            }
-        }
-        else if(longest == 3) { // possibly missable by perfect misalignment
-            let zeroLane = getAdjustedLane(stack[0]);
-            // TODO: this function is naive about which stack notes are in the misalign points
-            // if this stack hits the misalign points and doesn't have any visible notes
-            if((modulo(aPoint - zeroLane, 8) == 2
-                    || modulo(aPoint - zeroLane, 8) == 6)
-                    && !getStackHasVis(stack)) {
-                // this 4-lane stack is vulnerable to perfect misalignment
-                // TODO: further processing to see how severe this is
-                    // if there's a visible telegraph, it's fine
-                    // if the player is supposed to be elsewhere, low priority report
-                    // if the player might be here, high priority report
-
-                if(pos.lane == aPoint && pos.spread == 0) {
-                    report.push ({
-                        type: "perfect-misalignment",
-                        desc: "stacked matches can be missed by misaligning perfectly, "
-                            + "and the player is almost certain to be in such a position",
-                        severity: 3,
-                        note: stack[0]
-                    });
-                }
-                else {
-                    let min = modulo(pos.lane - pos.spread, 8),
-                        max = modulo(pos.lane + pos.spread, 8);
-
-                    let hit = false;
-                    if(min < max && aPoint >= min && aPoint <= max)
-                        hit = true;
-                    else if(min > max && (aPoint <= max || aPoint >= min))
-                        hit = true;
-
-                    if(hit && !getStackHasVis(stack)) {
-                        report.push ({
-                            type: "perfect-misalignment",
-                            desc: "stacked matches can be missed by misaligning perfectly, "
-                                + "and the player could potentially be in such a position",
-                            severity: 2,
-                            note: stack[0]
-                        });
-                    }
-                    //TODO: Severity 1 is reserved for aligned but denied by drift
-                    else if(!getStackHasVis(stack))
-                        report.push ({
-                            type: "perfect-misalignment",
-                            desc: "stacked matches can be missed by misaligning perfectly, "
-                                + "but the player shouldn't be in such a position",
-                            severity: 0,
-                            note: stack[0]
-                        });
-                }
-                reportedMisalign = true;
-            }
-        }
-
-        // check for time mismatch
-        let substacks = [[stack[0]]];
-        for(let k = 1; k < stack.length; k++) {
-            let placed = false;
-            for(let s in substacks) {
-                if(substacks[s][0].tk == stack[k].tk) {
-                    substacks[s].push(stack[k]);
-                    placed = true;
-                    break;
-                }
-            }
-            if(!placed) substacks.push([stack[k]]);
-        }
-        if(substacks.length > 1) {
-            // if any of the substacks contain unprotected off-track or invis matches
-            let peakSeverity = 0;
-            for(let k in substacks) {
-                let longest = getLargestGapInStack(substacks[k]);
-                if(getStackHasInvisOrOfftrack(substacks[k])) {
-                    if(longest > 3) {
-                        //check for player position, see if it overlaps with the longest gap
-                        //if it does, peakSeverity 2
-                        //if not, severity 0
-                        if(peakSeverity < 2) peakSeverity = 2;
-                    }
-                    else if(longest == 3) {
-                        let zeroLane = getAdjustedLane(substacks[k][0]);
-                        if(modulo(aPoint - zeroLane, 8) == 2
-                                || modulo(aPoint - zeroLane, 8) == 6)
-                            if(peakSeverity < 1) peakSeverity = 1;
-                    }
-                }
-            }
-
-            // console.error(`t0 ${stack[0].tk}, t${k} ${stack[k].tk}`);
-            //TODO: change severity depending on context and amount of offset
-            //TODO: treat each individual timing of this offset stack as its own stack, and see if it's still an issue
-            if(peakSeverity == 2) {
-                report.push({
-                    type: "offset-time",
-                    desc: "stack has timing discrepancies that make parts of it missable",
-                    severity: 2,
-                    note: stack[0]
-                });
-            }
-            else if (peakSeverity == 1 && !reportedMisalign) {
-                report.push({
-                    type: "offset-time-perfect-misalignment-risk",
-                    desc: "stack has timing discrepancies that create a vulnerability to perfect misalignment",
-                    severity: 1,
-                    note: stack[0]
-                });
-            }
-        }
-        
-        //check for invisible notes near spins
-        // TODO: check all notes prior to spin, if there's a visible before spin, dismiss
-        let allInvisMatches = true;
-        for(let k in stack) {
-            if(stack[k].c < 2 && [0, 4, 8].includes(stack[k].tp)) {
-                allInvisMatches = false;
-                break;
-            }
-        }
-        if(allInvisMatches) {
-            for(let k = i + 1; k < notes.length; k++) {
-                if(notes[k].tk - notes[i].tk > 10000) break; // break after 100ms
-                if([0, 4, 8].includes(notes[k].tp) && notes[k].c < 2) break; // break if a visible note precedes spin
-                if(notes[k].tp == 2 || notes[k].tp == 3) {
-                    let sev = 0;
-                    if(notes[k].tk - notes[i].tk < 1000) sev = 3 //10ms
-                    else if(notes[k].tk - notes[i].tk < 2000) sev = 2; //20ms
-                    else if(notes[k].tk - notes[i].tk < 3500) sev = 1; //35ms
-                    else continue;
-                    report.push({
-                        type: "invis-matches-near-spin",
-                        desc: "invisible matches can be missed when spinning early",
-                        severity: sev,
-                        note: stack[0]
-                    });
-                }
-            }
-        }
-
-        i = j;
+function indsToNotes (notes, indices) {
+    let ret = [];
+    for(let i in indices) {
+        ret.push(notes[indices[i]]);
     }
+    return ret;
+}
 
-    return report;
+function getSliderColor (notes, startIndex) {
+    // if(notes[startIndex].tp != 5) throw error("attempted to parse a non-endpoint as an endpoint");
+    for(let i = startIndex - 1; i >=0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+            case 12:
+                return -1;
+            case 4:
+                return notes[i].c;
+        }
+    }
+    return -1;
+}
+
+function getNumMatchesInStack(stack) {
+    let num = 0;
+    for(let i in stack) {
+        if(stack[i].tp == 0)
+            num++;
+    }
+    return num;
 }
 
 function getLargestGapInStack (stack) {
@@ -934,19 +650,25 @@ function getLargestGapInStack (stack) {
     return longest;
 }
 
-function getStackHasInvisOrOfftrack (stack) {
+function getStackHasInvis (stack) {
     for(let i in stack) {
-        if((stack[i].tp == 0 && stack[i].c > 1 )
-                || stack[i].p > 5 || stack[i].p < -5)
+        if(!isVisible(stack[i]))
             return true;
     }
     return false;
 }
 
-function getStackHasInvis (stack) {
+function getStackHasOfftrack (stack) {
     for(let i in stack) {
-        if([0, 4, 8].includes(stack[i].tp)
-                && stack[i].c > 1)
+        if(!isOntrack(stack[i]))
+            return true;
+    }
+    return false;
+}
+
+function getStackHasInvisOrOfftrack (stack) {
+    for(let i in stack) {
+        if(!isVisibleAndOntrack(stack[i]))
             return true;
     }
     return false;
@@ -961,13 +683,44 @@ function getStackHasVis (stack) {
     return false;
 }
 
+function getStackHasTap (stack) {
+    for(let i in stack) {
+        if([4, 8].includes(stack[i].tp))
+            return true;
+    }
+    return false;
+}
+
+function isVisibleAndOntrack (note) {
+    return note.p > -5 && note.p < 5 && note.c < 2;
+}
+
+function isOntrack (note) {
+    return note.p < 5 && note.p > -5;
+}
+
+function isVisible (note) {
+    return note.c < 2;
+}
+
 function modulo (input, divisor) {
     return ((input % divisor) + divisor) % divisor;
 }
 
-function getAdjustedLane (note) {
+function getAdjustedLane (notes, index) {
     //convert note if necessary
-    return modulo(note.p + 4 * (note.c % 2), 8);
+    let color = notes[index].c % 2;
+
+    //if this is an endpoint, backtrack to get slider color
+    if(notes[index].tp == 5) {
+        for(let i = index; i >= 0; i--) {
+            if(notes[i].tp == 4) {
+                color = notes[i].c % 2;
+                break;
+            }
+        }
+    }
+    return modulo(notes[index].p + 4 * color, 8);
 }
 
 function fetchAlignmentPoint (notes, startIndex) {
@@ -987,7 +740,7 @@ function fetchAlignmentPoint (notes, startIndex) {
                         case 8:
                             //found a positional note
                             //check for a stack
-                            let lanes = [notes[j]];
+                            let laneIndices = [j];
                             let hasMatch = false;
                             for(let k = j + 1; k < notes.length; k++) {
                                 if((notes[k].tk - notes[j].tk) < 1000) {
@@ -996,43 +749,44 @@ function fetchAlignmentPoint (notes, startIndex) {
                                             hasMatch = true;
                                         case 4:
                                         case 8:
-                                            lanes.push(notes[k]);
+                                            laneIndices.push(k);
                                     }
                                 }
                                 else break;
                             }
                             
                             //if stack, average the position of all notes in the stack
-                            if(lanes.length > 1) {
+                            if(laneIndices.length > 1) {
                                 if(hasMatch)
-                                    for(let k in lanes)
-                                        if(lanes[k].tp != 0)
-                                            lanes.splice(k, 1);
+                                    for(let k in laneIndices)
+                                        if(notes[laneIndices[k]].tp != 0)
+                                            laneIndices.splice(k, 1);
                                 let sum = 0;
-                                for(let k in lanes) {
-                                    sum += getAdjustedLane(lanes[k]);
+                                for(let k in laneIndices) {
+                                    sum += getAdjustedLane(notes, laneIndices[k]);
                                 }
                                 // in 4-lane stacks, this might return 4 lanes off
                                 // in non-trivial stacks, who knows if i did this right?
-                                return sum / lanes.length;
+                                return sum / laneIndices.length;
                             }
 
                             //if no stack, position based on this note
-                            return getAdjustedLane(notes[j]);
+                            return getAdjustedLane(notes, j);
                     }
                 }
         }
     }
     //if no spin found before the note, take the first positional note's lane instead
     for (let i = 0; i < notes.length; i++) {
-        switch(notes[i].tp) {
-            case 0:
-            case 4:
-            case 8:
-                return getAdjustedLane(notes[i]);
-        }
+        //if positional note found first, return its lane
+        if([0, 4, 8].includes(notes[i].tp))
+            return getAdjustedLane(notes, i);
 
+        //if spin found first, return 0
+        if([2, 3].includes(notes[i].tp))
+            return 0;
     }
-    //if no positional note is found, return 0
+
+    //if no positional note or spin in the entire chart, return 0
     return 0;
 }
