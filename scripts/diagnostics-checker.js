@@ -281,6 +281,9 @@ function checkForPerfectMisalign (notes, indices) {
         else {
             let min = modulo(pos.lane - pos.spread, 8),
                 max = modulo(pos.lane + pos.spread, 8);
+            let drift = getPotentialPlayerDrift(notes, indices[0]);
+            console.warn(notes[indices[0]].tk/100000);
+            console.log(drift);
 
             let hit = false;
             if(min < max && aPoint >= min && aPoint <= max)
@@ -289,23 +292,46 @@ function checkForPerfectMisalign (notes, indices) {
                 hit = true;
 
             if(hit && !getStackHasVis(stack)) {
-                 return {
-                    type: "perfect-misalignment",
-                    desc: "stacked matches can be missed by misaligning perfectly, "
-                        + "and the player could potentially be in such a position",
-                    severity: 2,
-                    note: stack[0]
-                };
+                if(Math.abs(drift.drift) < 4) {
+                    return {
+                        type: "perfect-misalignment",
+                        desc: "stacked matches can be missed by misaligning perfectly, "
+                            + "and the player could potentially be in such a position",
+                        severity: 2,
+                        note: stack[0]
+                    };
+                }
+                if(Math.abs(drift.drift) < 8 && (drift.drift + drift.leftAmbiguity >= -4
+                        || drift.drift - drift.rightAmbiguity <= 4)) {
+                    return {
+                        type: "perfect-misalignment",
+                        desc: "stacked matches can be missed by misaligning perfectly, "
+                            + "and the player could potentially be in such a position "
+                            + "depending on how they handle color-swaps",
+                        severity: 2,
+                        note: stack[0]
+                    };
+                }
+                if(drift.drift + drift.leftAmbiguity >= -4
+                        || drift.drift - drift.rightAmbiguity <= 4) {
+                    return {
+                        type: "perfect-misalignment",
+                        desc: "stacked matches can be missed by misaligning perfectly, "
+                            + "and the player could potentially be in such a position "
+                            + "if they handle drift in an unusual way",
+                        severity: 1,
+                        note: stack[0]
+                    };
+                }
             }
-            //TODO: Severity 1 if aligned, but saved by drift
             else if(!getStackHasVis(stack))
-                report.push ({
+                return {
                     type: "perfect-misalignment",
                     desc: "stacked matches can be missed by misaligning perfectly, "
                         + "but the player shouldn't be in such a position",
                     severity: 0,
                     note: stack[0]
-                });
+                };
         }
     }
 }

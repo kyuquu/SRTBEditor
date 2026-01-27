@@ -554,6 +554,112 @@ function getPotentialPlayerPosition (notes, checkIndex) {
     }
 }
 
+function getPotentialPlayerDrift (notes, checkIndex) {
+    let alignIndex = -1;
+    // find the alignmentPoint's note index
+    for(let i = checkIndex - 1; i >= 0; i--) {
+        if([0, 4, 8].includes(notes[i].tp)) alignIndex = i;
+        if([2, 3].includes(notes[i].tp)) break;
+    }
+
+    // if no positional notes, no drift
+    if(alignIndex == -1) return {
+        drift: 0,
+        leftAmbiguity: 0,
+        rightAmbiguity: 0
+    };
+
+    let curNote = notes[alignIndex];
+    let drift = 0, leftA = 0, rightA = 0;
+    for(let i = alignIndex + 1; i < checkIndex; i++) {
+        //skip irrelevant notes
+        if([0, 11].includes(notes[i])) continue;
+        if(notes[i].tp == 0 && !isVisibleAndOntrack(notes[i], 7)) continue;
+
+        //this note should be aligned to
+        if([0, 4, 8].includes(notes[i].tp)) {
+
+            // no color swap
+            let curColor = curNote.c % 2;
+            if(curNote.tp == 5) curColor = getSliderColor(curNote);
+            if(notes[i].c % 2 == curColor) {
+                drift += notes[i].p - curNote.p;
+            }
+
+            // color swap
+            else {
+                let distance = (notes[i].p - curNote.p) % 8;
+                // if opposite lane swap, no drift
+                if(Math.abs(distance) == 4);
+
+                // if uneven swap, move the shorter way
+                else if(curNote.p != notes[i].p) {
+
+                    //sanity check: if distance is in (0, 4), we move right (negative drift)
+                    // if distance is in (4, 8), we move left (positive)
+                    if(distance > 4) distance = 4 - distance;
+                    if(distance < -4) distance = -4 - distance;
+                    drift -= distance;
+
+                    // if this isn't an opposite-lane swap, add to ambiguity
+                    if(Math.abs(distance) > 1) {
+                        if(distance < 0) rightA += 8 - Math.abs(distance);
+                        else leftA += 8 - Math.abs(distance);
+                    }
+                }
+                // else, swap outward
+                else {
+                    //if on the right, swap rightward
+                    if(curNote.p > 0) {
+                        drift -= 4;
+                        leftA += 8;
+                    }
+                    //else, swap leftward
+                    else {
+                        drift += 4;
+                        rightA += 8;
+
+                    }
+                }
+            }
+            curNote = notes[i];
+        }
+
+        // this is a slider, and it should be followed until it ends or we meet the checkIndex
+        let errorSlider = false;
+        if(notes[i].tp == 4) {
+            //jump to the end of this slider, compare startPos (absolute) to endPos (absolute)
+            let endIndex;
+            for(let j = i + 1; j < notes.length; j++) {
+                if(j >= checkIndex) {
+                    console.log("broke mid-slider");
+                    break;
+                }
+                if(notes[j].tp == 5) endIndex = j;
+                if([2, 3, 4, 12].includes(notes[j].tp)) break;
+            }
+            if(!endIndex) errorSlider = true;
+            else {
+                drift += notes[endIndex].p - curNote.p;
+                curNote = notes[endIndex];
+                i = endIndex;
+            }
+        }
+    }
+    // 1. backtrack to the last alignment point
+    // 2. for each note:
+        // reject invisible and *very* offtrack matches (further than lane 7ish)
+        // if a slider, jump to the ending of it
+        // if an opposite lane color swap, add drift accordingly
+        // if a same-lane swap, add to left and right drift ambiguity
+        // if a 7 lane 'flick', add nothing to drift and 2 to drift ambiguity in that specific direction
+    return {
+        drift: drift,
+        leftAmbiguity: leftA,
+        rightAmbiguity: rightA
+    };
+}
+
 function isEndpointSlider (notes, startIndex) {
     for(let i = startIndex - 1; i >=0; i--) {
         switch(notes[i].tp) {
@@ -686,8 +792,9 @@ function getStackHasTap (stack) {
     return false;
 }
 
-function isVisibleAndOntrack (note) {
-    return note.p > -5 && note.p < 5 && note.c < 2;
+function isVisibleAndOntrack (note, laneLimit) {
+    if(!laneLimit) laneLimit = 5;
+    return note.p > -laneLimit && note.p < laneLimit && note.c < 2;
 }
 
 function isOntrack (note) {
