@@ -363,3 +363,531 @@ function mergeChartJson(newJson) {
             createToast("Import skipped", "Found nothing to import", "info", 5000);
     });
 }
+
+function getPotentialPlayerPosition (notes, checkIndex) {
+
+    // check if a slider occurs here (sliders always take priority)
+    let prevSlider, nextSlider;
+    let prevIndex, nextIndex;
+    for(let i = checkIndex - 1; i >= 0; i--) {
+        if([2, 3, 12].includes(notes[i].tp))
+            break;
+
+        if([4, 5].includes(notes[i].tp) && !prevIndex)
+            prevIndex = i;
+
+        if(notes[i].tp == 4) {
+            prevSlider = true;
+            break;
+        }
+    }
+    if(prevSlider) {
+        for(let i = checkIndex + 1; i < notes.length; i++) {
+            if([2, 3, 4, 12].includes(notes[i].tp)) {
+                break;
+            }
+            if(notes[i].tp == 5) {
+                nextSlider = true;
+                nextIndex = i;
+                break;
+            }
+        }
+    }
+    if(nextSlider) {
+        //if prev and next are close, we can be anywhere between them
+        if(nextIndex.tk - notes[prevIndex].tk < 10000) {
+            return {
+                lane: modulo((getAdjustedLane(notes, nextIndex) + getAdjustedLane(notes, prevIndex)), 8) / 2,
+                spread: Math.abs(nextIndex.p - notes[prevIndex].p)
+            };
+        }
+        //if prev and next aren't close, math out the slider shape
+        let timeDiff = notes[nextIndex].tk - notes[prevIndex].tk;
+        let progress = (notes[checkIndex].tk - notes[prevIndex].tk) / timeDiff;
+        let gap = notes[nextIndex].p - notes[prevIndex].p;
+        let pos, spread = timeDiff > 20000 ? 1 : 2;
+
+        // featuring disgusting approximations of slider shapes!
+        switch(notes[prevIndex].s) {
+            case 0:
+            case 1:
+            default: //cosine
+                pos = -1 * (Math.cos(progress * Math.PI / 2) - 1) * gap;
+                break;
+            case 2: //curve-late
+                pos = Math.pow(progress, 2.4) * gap;
+                break;
+            case 3: //curve-early
+                pos = Math.pow(progress, 1 / 2.4) * gap;
+                break;
+            case 4: //linear
+                pos = progress * gap;
+                break;
+            case 5: //90
+                if(notes[nextIndex].tk - notes[checkIndex].tk > 1200) {
+                    pos = 0;
+                    spread = 1
+                }
+                else {
+                    pos = gap / 2;
+                    spread = gap / 2 + 1
+                }
+        }
+        return {
+            lane: modulo(getAdjustedLane(notes, prevIndex) + pos, 8),
+            spread: spread
+        }
+    }
+
+    // not a slider, we'll use the prev and next notes instead
+    else {
+        prevIndex = undefined;
+        // find the prev note
+        for(let i = checkIndex - 1; i >= 0; i--) {
+            // return if previous defining note was a spin or scratch
+            if([2, 3, 12].includes(notes[i].tp))
+                return {
+                    lane: "aPoint"
+                }
+
+            // return immediately if there's a tap in this stack
+            if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk > -1000)
+                return {
+                    lane: getAdjustedLane(notes, i),
+                    spread: 1
+                };
+            
+            
+            // accept taps, slider midpoints, and visible matches (if they're not in this stack)
+            if((notes[i].tp == 5 && isEndpointSlider(notes, i) //prev was a slider endpoint
+                    || [4, 8].includes(notes[i].tp) //prev was a tap/slider
+                    || (notes[i].tp == 0 && notes[i].c < 2 && notes[i].p < 5 && notes[i].p > -5)) //prev was a visible match
+                    && notes[i].tk - notes[checkIndex].tk < -1000) { //not in this stack
+                prevIndex = i;
+                break;
+            }
+        }
+
+        // find the next note
+        for(let i = checkIndex + 1; i < notes.length; i++) {
+            // accept spins and scratches
+            if([2, 3, 12].includes(notes[i].tp)) {
+                nextIndex = i;
+                break;
+            }
+
+            // return immediately if there's a stacked tap
+            if([4, 8].includes(notes[i].tp) && notes[i].tk - notes[checkIndex].tk < 1000)
+                return {
+                    lane: getAdjustedLane(notes, i),
+                    spread: 1
+                };
+
+            // accept taps and visible matches (if they're not in this stack)
+            if(([4, 8].includes(notes[i].tp)
+                    || (notes[i].tp == 0 && notes[i].c < 2 && notes[i].p < 5 && notes[i].p > -5))
+                    && notes[i].tk - notes[checkIndex].tk > 1000) { //not in this stack
+                nextIndex = i;
+                break;
+            }
+        }
+
+
+
+        //if no previous note, we're at the chart start alignment point
+        if(!prevIndex) {
+            return {
+                lane: fetchAlignmentPoint(notes, checkIndex),
+                spread: 0
+            };
+        }
+
+        //if next note is a spin/scratch or there is no next note, we're holding still
+        else if(!nextIndex || [2, 3, 12].includes(notes[nextIndex].tp)) {
+            //if prev position came after a spin, we're still there
+            //TODO: check for this
+            //else, we could be 1 lane off in either direction
+            return {
+                lane: modulo(getAdjustedLane(notes, prevIndex), 8),
+                spread: 1
+            };
+        }
+
+        //no other conditions met, we just gotta math it out
+        else {
+            // no movement (color swap or not)
+            if(modulo(getAdjustedLane(notes, prevIndex), 8) == getAdjustedLane(notes, nextIndex)) {
+                //if we haven't moved since the aPoint, spread 0: otherwise, spread 1
+                let moved = false;
+                let aPoint = fetchAlignmentPoint(notes, checkIndex);
+                for(let k = checkIndex; k >= 0; k--) {
+                    if(([4, 8].includes(notes[k].tp)
+                            || (notes[k].tp == 0 && notes[k].c < 2))
+                            && Math.abs(getAdjustedLane(notes, k) - aPoint) >= 2) {
+                        moved = true;
+                        break;
+                    }
+                    if([2, 3].includes(notes[k].tp))
+                        break;
+                }
+                return {
+                    lane: modulo(getAdjustedLane(notes, prevIndex), 8),
+                    spread: moved ? 1 : 0
+                }
+            }
+
+            // movement and color swap
+            if(notes[prevIndex].c % 2 != notes[nextIndex].c % 2) {
+                return {
+                    lane: 0,
+                    spread: 4
+                }
+            }
+
+            // movement and no color swap
+            let movement = notes[nextIndex].p - notes[prevIndex].p;
+            return {
+                lane: modulo(getAdjustedLane(notes, prevIndex) + movement / 2, 8),
+                spread: Math.abs(movement) / 2 + 0.5
+            }
+        }
+    }
+}
+
+function getPotentialPlayerDrift (notes, checkIndex) {
+    let alignIndex = -1;
+    // find the alignmentPoint's note index
+    for(let i = checkIndex - 1; i >= 0; i--) {
+        if([0, 4, 8].includes(notes[i].tp)) alignIndex = i;
+        if([2, 3].includes(notes[i].tp)) break;
+    }
+
+    // if no positional notes, no drift
+    if(alignIndex == -1) return {
+        drift: 0,
+        leftAmbiguity: 0,
+        rightAmbiguity: 0
+    };
+
+    let curNote = notes[alignIndex];
+    let drift = 0, leftA = 0, rightA = 0;
+    for(let i = alignIndex + 1; i < checkIndex; i++) {
+        //skip irrelevant notes
+        if([0, 11].includes(notes[i])) continue;
+        if(notes[i].tp == 0 && !isVisibleAndOntrack(notes[i], 7)) continue;
+
+        //this note should be aligned to
+        if([0, 4, 8].includes(notes[i].tp)) {
+
+            // no color swap
+            let curColor = curNote.c % 2;
+            if(curNote.tp == 5) curColor = getSliderColor(curNote);
+            if(notes[i].c % 2 == curColor) {
+                drift += notes[i].p - curNote.p;
+            }
+
+            // color swap
+            else {
+                let distance = (notes[i].p - curNote.p) % 8;
+                // if opposite lane swap, no drift
+                if(Math.abs(distance) == 4);
+
+                // if uneven swap, move the shorter way
+                else if(curNote.p != notes[i].p) {
+
+                    //sanity check: if distance is in (0, 4), we move right (negative drift)
+                    // if distance is in (4, 8), we move left (positive)
+                    if(distance > 4) distance = 4 - distance;
+                    if(distance < -4) distance = -4 - distance;
+                    drift -= distance;
+
+                    // if this isn't an opposite-lane swap, add to ambiguity
+                    if(Math.abs(distance) > 1) {
+                        if(distance < 0) rightA += 8 - Math.abs(distance);
+                        else leftA += 8 - Math.abs(distance);
+                    }
+                }
+                // else, swap outward
+                else {
+                    //if on the right, swap rightward
+                    if(curNote.p > 0) {
+                        drift -= 4;
+                        leftA += 8;
+                    }
+                    //else, swap leftward
+                    else {
+                        drift += 4;
+                        rightA += 8;
+
+                    }
+                }
+            }
+            curNote = notes[i];
+        }
+
+        // this is a slider, and it should be followed until it ends or we meet the checkIndex
+        let errorSlider = false;
+        if(notes[i].tp == 4) {
+            //jump to the end of this slider, compare startPos (absolute) to endPos (absolute)
+            let endIndex;
+            for(let j = i + 1; j < notes.length; j++) {
+                if(j >= checkIndex) {
+                    break;
+                }
+                if(notes[j].tp == 5) endIndex = j;
+                if([2, 3, 4, 12].includes(notes[j].tp)) break;
+            }
+            if(!endIndex) errorSlider = true;
+            else {
+                drift += notes[endIndex].p - curNote.p;
+                curNote = notes[endIndex];
+                i = endIndex;
+            }
+        }
+    }
+    return {
+        drift: drift,
+        leftAmbiguity: leftA,
+        rightAmbiguity: rightA
+    };
+}
+
+function isEndpointSlider (notes, startIndex) {
+    for(let i = startIndex - 1; i >=0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+            case 12:
+                return false;
+            case 4:
+                return true;
+        }
+    }
+    return false;
+}
+
+function isEndpointRelease (notes, startIndex) {
+    if(notes[startIndex].s != 1) return false;
+    for(let i = startIndex + 1; i < notes.length; i++) {
+        switch(notes[i].tp) {
+            case 5:
+                return false;
+            case 2:
+            case 3:
+            case 4:
+            case 12:
+                return true;
+        }
+    }
+    return true;
+
+}
+
+function indsToNotes (notes, indices) {
+    let ret = [];
+    for(let i in indices) {
+        ret.push(notes[indices[i]]);
+    }
+    return ret;
+}
+
+function getSliderColor (notes, startIndex) {
+    for(let i = startIndex - 1; i >=0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+            case 12:
+                return -1;
+            case 4:
+                return notes[i].c;
+        }
+    }
+    return -1;
+}
+
+function getNumMatchesInStack(stack) {
+    let num = 0;
+    for(let i in stack) {
+        if(stack[i].tp == 0)
+            num++;
+    }
+    return num;
+}
+
+function getLargestGapInStack (stack) {
+    let lanes = [0, 0, 0, 0, 0, 0, 0, 0]
+    for(let k = 0; k < stack.length; k++) {
+        if(stack[k].tp == 5) return 0; // stack auto-hits with slider endpoint
+        else {
+            let color = stack[k].c % 2;
+            let lane = modulo(stack[k].p + color * 4, 8);
+            lanes[lane]++;
+        }
+    }
+    let cur = 0, longest = 0;
+    for(k in lanes) {
+        if(lanes[k] == 0) cur++;
+        else {
+            if(cur > longest)
+                longest = cur;
+            cur = 0;
+        }
+    }
+    for(k in lanes) {
+        if(lanes[k] == 0) cur++;
+        else {
+            if(cur > longest) longest = cur;
+            break;
+        }
+    }
+    return longest;
+}
+
+function getStackHasInvis (stack) {
+    for(let i in stack) {
+        if(!isVisible(stack[i]))
+            return true;
+    }
+    return false;
+}
+
+function getStackHasOfftrack (stack) {
+    for(let i in stack) {
+        if(!isOntrack(stack[i]))
+            return true;
+    }
+    return false;
+}
+
+function getStackHasInvisOrOfftrack (stack) {
+    for(let i in stack) {
+        if(!isVisibleAndOntrack(stack[i]))
+            return true;
+    }
+    return false;
+}
+
+function getStackHasVis (stack) {
+    for(let i in stack) {
+        if([0, 4, 8].includes(stack[i].tp) && stack[i].c < 2 &&
+                stack[i].p < 5 && stack[i].p > -5)
+            return true;
+    }
+    return false;
+}
+
+function getStackHasVisMatch (stack ) {
+    for(let i in stack)
+        if(stack[i].tp == 0 && isVisibleAndOntrack(stack[i]))
+            return true;
+    return false;
+}
+
+function getStackHasTap (stack) {
+    for(let i in stack) {
+        if([4, 8].includes(stack[i].tp))
+            return true;
+    }
+    return false;
+}
+
+function isVisibleAndOntrack (note, laneLimit) {
+    if(!laneLimit) laneLimit = 5;
+    return note.p > -laneLimit && note.p < laneLimit && note.c < 2;
+}
+
+function isOntrack (note) {
+    return note.p < 5 && note.p > -5;
+}
+
+function isVisible (note) {
+    return note.c < 2;
+}
+
+function modulo (input, divisor) {
+    return ((input % divisor) + divisor) % divisor;
+}
+
+function getAdjustedLane (notes, index) {
+    //convert note if necessary
+    let color = notes[index].c % 2;
+
+    //if this is an endpoint, backtrack to get slider color
+    if(notes[index].tp == 5) {
+        for(let i = index; i >= 0; i--) {
+            if(notes[i].tp == 4) {
+                color = notes[i].c % 2;
+                break;
+            }
+        }
+    }
+    return modulo(notes[index].p + 4 * color, 8);
+}
+
+function fetchAlignmentPoint (notes, startIndex) {
+    //convert notes if necessary
+    //this method assumes notes are in order
+
+    //backtrack for a spin, then grab the first positional note after it
+    for(let i = startIndex; i >= 0; i--) {
+        switch(notes[i].tp) {
+            case 2:
+            case 3:
+                // found a spin
+                for(let j = i + 1; j < notes.length; j++) {
+                    switch(notes[j].tp) {
+                        case 0:
+                        case 4:
+                        case 8:
+                            //found a positional note
+                            //check for a stack
+                            let laneIndices = [j];
+                            let hasMatch = false;
+                            for(let k = j + 1; k < notes.length; k++) {
+                                if((notes[k].tk - notes[j].tk) < 1000) {
+                                    switch(notes[k].tp) {
+                                        case 0:
+                                            hasMatch = true;
+                                        case 4:
+                                        case 8:
+                                            laneIndices.push(k);
+                                    }
+                                }
+                                else break;
+                            }
+                            
+                            //if stack, average the position of all notes in the stack
+                            if(laneIndices.length > 1) {
+                                if(hasMatch)
+                                    for(let k in laneIndices)
+                                        if(notes[laneIndices[k]].tp != 0)
+                                            laneIndices.splice(k, 1);
+                                let sum = 0;
+                                for(let k in laneIndices) {
+                                    sum += getAdjustedLane(notes, laneIndices[k]);
+                                }
+                                // in 4-lane stacks, this might return 4 lanes off
+                                // in non-trivial stacks, who knows if i did this right?
+                                return sum / laneIndices.length;
+                            }
+
+                            //if no stack, position based on this note
+                            return getAdjustedLane(notes, j);
+                    }
+                }
+        }
+    }
+    //if no spin found before the note, take the first positional note's lane instead
+    for (let i = 0; i < notes.length; i++) {
+        //if positional note found first, return its lane
+        if([0, 4, 8].includes(notes[i].tp))
+            return getAdjustedLane(notes, i);
+
+        //if spin found first, return 0
+        if([2, 3].includes(notes[i].tp))
+            return 0;
+    }
+
+    //if no positional note or spin in the entire chart, return 0
+    return 0;
+}

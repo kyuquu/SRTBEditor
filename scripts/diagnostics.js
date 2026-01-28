@@ -1,3 +1,12 @@
+const severityDescriptions = [
+    "0 - not an issue",
+    "1 - might rarely cause issues",
+    "2 - likely to cause issues; possibly grounds for rejection from SSSO",
+    "3 - very likely to cause issues; grounds for rejection from SSSO"
+];
+
+let report = [null, null, null, null, null, null];
+
 let diffTypeNames = [
     "unknown diff",
     "unknown diff",
@@ -15,7 +24,7 @@ function convertToBinaryNotes(notes) {
         ret.push({
             tk: Math.floor(notes[i].time * 100000),
             tp: notes[i].type,
-            c: notes[i].color,
+            c: notes[i].colorIndex,
             p: notes[i].column,
             s: notes[i].m_size
         });
@@ -33,6 +42,7 @@ function renderBasicDiagnostics() {
     let enableMigrateButton = false;
 
     let trackInfo = getTrackInfo();
+    let failed = false
     for(let i = 0; i < trackInfo.difficulties.length; i++) {
         if(trackInfo.difficulties[i]._active == true) {
             let key = trackInfo.difficulties[i].assetName;
@@ -89,9 +99,21 @@ function renderBasicDiagnostics() {
             mirrorTwistyButton.setAttribute("title", `Mirror all yaw and roll values in this difficulty.`);
             mirrorTwistyButton.textContent = "Mirror Twisty Track";
 
+            try {
+                report[i] = checkUnmissableNotes(notes);
+                let reportElem = createReportElement(report[i], diffTypeNames[i+2]);
+                mainContainer.append(reportElem);
+            }
+            catch (e) {
+                failed = true;
+                console.error(e);
+            }
+
             diagnosticsRoot.appendChild(mainContainer);
         }
     }
+    if(failed)
+        createToast("Diagnostics failed", "Check the console for details", "warning", 10000);
     let migrateButton = document.getElementById(`dv-set-serialization`);
     if(enableMigrateButton) migrateButton.classList.remove("disabled");
     else migrateButton.classList.add("disabled");
@@ -198,26 +220,33 @@ function calculateBalance(notesIn, htmlParent) {
     subtitle.setAttribute("class", "dv-box-subtitle");
 
     let matchElement = htmlParent.appendChild(document.createElement("div"));
+    matchElement.classList.add("dv-box-content");
     matchElement.textContent = `Matches: ${nMatch}`;
-    matchElement.setAttribute("class", "dv-match-count");
+    matchElement.classList.add("dv-match-count");
     let tapElement = htmlParent.appendChild(document.createElement("div"));
+    tapElement.classList.add("dv-box-content");
     tapElement.textContent = `Taps: ${nTap}`;
-    tapElement.setAttribute("class", "dv-tap-count");
+    tapElement.classList.add("dv-tap-count");
     let beatElement = htmlParent.appendChild(document.createElement("div"));
+    beatElement.classList.add("dv-box-content");
     beatElement.textContent = `Beats: ${nBeat}`;
-    beatElement.setAttribute("class", "dv-beat-count");
+    beatElement.classList.add("dv-beat-count");
     let holdElement = htmlParent.appendChild(document.createElement("div"));
+    holdElement.classList.add("dv-box-content");
     holdElement.textContent = `Holds: ${nSlider + nBeathold}`;
-    holdElement.setAttribute("class", "dv-hold-count");
+    holdElement.classList.add("dv-hold-count");
     let releaseElement = htmlParent.appendChild(document.createElement("div"));
+    releaseElement.classList.add("dv-box-content");
     releaseElement.textContent = `Releases: ${nBeatRelease + nSliderRelease}`;
-    releaseElement.setAttribute("class", "dv-release-count");
+    releaseElement.classList.add("dv-release-count");
     let spinElement = htmlParent.appendChild(document.createElement("div"));
+    spinElement.classList.add("dv-box-content");
     spinElement.textContent = `Spins: ${nLeftSpin + nRightSpin}`;
-    spinElement.setAttribute("class", "dv-spin-count");
+    spinElement.classList.add("dv-spin-count");
     let scratchElement = htmlParent.appendChild(document.createElement("div"));
+    scratchElement.classList.add("dv-box-content");
     scratchElement.textContent = `Scratches: ${nScratch}`;
-    scratchElement.setAttribute("class", "dv-scratch-count");
+    scratchElement.classList.add("dv-scratch-count");
 }
 
 function calculateMaxScoreAndCombo (notesIn, htmlParent) {
@@ -355,9 +384,60 @@ function calculateMaxScoreAndCombo (notesIn, htmlParent) {
     subtitle.setAttribute("class", "dv-box-subtitle");
 
     let scoreElement = htmlParent.appendChild(document.createElement("div"));
+    scoreElement.classList.add("dv-box-content");
     scoreElement.textContent = `Max score: ${maxScore}`;
-    scoreElement.setAttribute("class", "dv-max-score");
+    scoreElement.classList.add("dv-max-score");
     let comboElement = htmlParent.appendChild(document.createElement("div"));
+    comboElement.classList.add("dv-box-content");
     comboElement.textContent = `Max combo: ${maxCombo}`;
-    comboElement.setAttribute("class", "dv-max-combo");
+    comboElement.classList.add("dv-max-combo");
+}
+
+function createReportElement (report, diffName) {
+    let topSeverity = 0;
+    let nIssue = 0;
+    for(let i in report) {
+        if(report[i].severity > topSeverity)
+            topSeverity = report[i].severity;
+        if(report[i].severity > 0)
+            nIssue++;
+    }
+
+    let cont = document.createElement("div");
+    cont.classList.add("dv-report");
+    let label = document.createElement("label");
+
+    let icon = document.createElement("span");
+    if(report.length == 0) {
+        icon.classList.add("icon-check");
+        icon.innerText = '✓';
+    }
+    else {
+        if(topSeverity == 0) icon.classList.add("icon-comment");
+        if(topSeverity == 1) icon.classList.add("icon-warn");
+        if(topSeverity == 2) icon.classList.add("icon-warn2");
+        if(topSeverity == 3) icon.classList.add("icon-alert");
+        icon.innerText = '!';
+    }
+
+    let button = document.createElement("button");
+    button.classList.add("button");
+    button.innerText = "View";
+    button.addEventListener("click", (e) => {
+        popupDiagnosticReport(report, diffName);
+    });
+    if(report.length == 0) {
+        label.innerText = `no issues`;
+        button.setAttribute("disabled", true);
+        button.classList.add("disabled");
+    }
+    else if(nIssue == 0)
+        label.innerText = `${report.length} comment${report.length != 1?'s':''}`;
+    else
+        label.innerText = `${nIssue} issue${nIssue != 1?'s':''}`;
+
+    cont.appendChild(icon);
+    cont.appendChild(label);
+    cont.appendChild(button);
+    return cont;
 }

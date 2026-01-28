@@ -145,6 +145,100 @@ async function popupInput(title, content, placeholder) {
     return resultElem.value;
 }
 
+/**
+ * Generate a diagnostic popup list
+ * @param {string} title 
+ * @param {string} list 
+ * @returns {promise<string>}
+ */
+async function popupList(title, list) {
+    resolvePopup(-3);
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
+    //there's no shot this is the 'correct' way to do this.
+    let bgElem = document.getElementById("popup-background")
+    bgElem.classList.add("active");
+
+    let popupElem = document.getElementById("popup-container");
+
+    while(popupElem.hasChildNodes())
+        popupElem.removeChild(popupElem.firstChild);
+
+    if(title) {
+        let titleElem = document.createElement("span");
+        titleElem.id = "popup-title";
+        titleElem.textContent = title;
+        popupElem.appendChild(titleElem);
+    }
+
+    let descElem = document.createElement("span");
+    descElem.classList.add("diag-desc");
+    descElem.innerHTML = "Hover over an entry for a short explanation of it.<br>"
+            + "Numbers on the left are severity scores, ranging from 0 to 3.<br>"
+            + "<i>This tool isn't perfect! Be careful around aesthetic patterns.</i>";
+
+    popupElem.appendChild(descElem);
+
+    if(list) {
+        let contentElem = document.createElement("span");
+        contentElem.id = "popup-content";
+
+        for(let i in list) {
+            let entryElem = document.createElement("div");
+            entryElem.classList.add("diag-entry");
+
+            let severityElem = document.createElement("span");
+            severityElem.textContent = list[i].severity;
+            severityElem.title = severityDescriptions[list[i].severity];
+            severityElem.classList.add("diag-severity");
+            switch(list[i].severity) {
+                case 0:
+                    severityElem.classList.add("s0");
+                    break;
+                case 1:
+                    severityElem.classList.add("s1");
+                    break;
+                case 2:
+                    severityElem.classList.add("s2");
+                    break;
+                case 3:
+                    severityElem.classList.add("s3");
+                    break;
+            }
+
+            let descElem = document.createElement("span");
+            descElem.textContent = list[i].type;
+            descElem.title = list[i].desc;
+            descElem.classList.add("diag-type");
+
+            let timeElem = document.createElement("span");
+            timeElem.innerText = list[i].note.tk / 100000;
+            timeElem.classList.add("diag-time");
+
+            entryElem.appendChild(severityElem);
+            entryElem.appendChild(descElem);
+            entryElem.appendChild(timeElem);
+            contentElem.appendChild(entryElem);
+        }
+        popupElem.appendChild(contentElem);
+    }
+
+    let closeButton = document.createElement("button");
+    closeButton.addEventListener("click", (e) => {resolvePopup(0)});
+    closeButton.innerText = "Close";
+    popupElem.appendChild(closeButton);
+
+    let resultElem = document.getElementById("popup-result");
+    
+    await (async () => {
+        return new Promise((res) => {
+            resultElem.onclick= () => res(true);
+        });
+    })();
+    closePopup();
+    return resultElem.value;
+}
+
 function createCheckboxSpan (obj, i, j) {
     let depth = 1;
     if(j || j == 0) depth = 2;
@@ -165,7 +259,7 @@ function createCheckboxSpan (obj, i, j) {
     checkElem.id = `merge-${i}${depth==2?`-${j}`:""}`;
     
     let hintElem = document.createElement("svg");
-    hintElem.classList.add("hint");
+    hintElem.classList.add("icon-hint");
     hintElem.title = obj.hint;
     hintElem.innerText = "---";
 
@@ -360,6 +454,13 @@ async function popupLoadFromSpinshare() {
             if(result != 0) return;
             return document.getElementById("popup-input").value;
         });
+}
+
+async function popupDiagnosticReport(report, diffName) {
+    document.getElementById("popup-container").classList.remove("inactive");
+    document.getElementById("popup-merge-container").classList.add("inactive");
+    return popupList(`Diagnostic Report for ${diffName}`,
+        report).then();
 }
 
 async function popupRoll() {

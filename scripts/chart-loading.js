@@ -79,6 +79,7 @@ function loadTemplate(filename) {
         }
         catch (e) {
             createToast("Load failed", "Template failed to load", "alert", 5000);
+            console.error(e);
         }
     }
     else {
@@ -170,6 +171,7 @@ function loadChartFile(file) {
             }
             catch (e) {
                 createToast("Load failed", `Invalid .${fileExtension}\n\n${e}`, "alert", 5000);
+                console.error(e);
             }
         };
         reader.readAsText(file);
@@ -244,6 +246,7 @@ async function loadZipSRTB(srtb) {
     }
     catch (e) {
         createToast("Load failed", `.zip file contains invalid .srtb\n\n${e}`, "alert", 5000);
+        throw e;
     }
 }
 
@@ -289,8 +292,6 @@ function loadChartData(data) {
     chartReferences = [trackInfo, trackData[activeDifficulty], clipInfo[0]];
 
     updateChartData();
-
-    renderBasicDiagnostics();
 
     updateJSONEditor(JSON.stringify(chartJSON, null, 4));
 }
