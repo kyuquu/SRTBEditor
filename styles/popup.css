@@ -163,6 +163,13 @@ input.merge-faded, .merge-faded input  {
     opacity: 0%;
 }
 
+.diag-desc { 
+    display: inline-block;
+    padding-bottom: 1rem;
+    font-size: 0.875rem;
+    opacity: 75%;
+}
+
 .diag-entry {
     min-width: 32rem;
     margin-bottom: 1rem;

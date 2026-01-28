@@ -632,7 +632,6 @@ function getPotentialPlayerDrift (notes, checkIndex) {
             let endIndex;
             for(let j = i + 1; j < notes.length; j++) {
                 if(j >= checkIndex) {
-                    console.log("broke mid-slider");
                     break;
                 }
                 if(notes[j].tp == 5) endIndex = j;
@@ -646,13 +645,6 @@ function getPotentialPlayerDrift (notes, checkIndex) {
             }
         }
     }
-    // 1. backtrack to the last alignment point
-    // 2. for each note:
-        // reject invisible and *very* offtrack matches (further than lane 7ish)
-        // if a slider, jump to the ending of it
-        // if an opposite lane color swap, add drift accordingly
-        // if a same-lane swap, add to left and right drift ambiguity
-        // if a 7 lane 'flick', add nothing to drift and 2 to drift ambiguity in that specific direction
     return {
         drift: drift,
         leftAmbiguity: leftA,
@@ -781,6 +773,13 @@ function getStackHasVis (stack) {
                 stack[i].p < 5 && stack[i].p > -5)
             return true;
     }
+    return false;
+}
+
+function getStackHasVisMatch (stack ) {
+    for(let i in stack)
+        if(stack[i].tp == 0 && isVisibleAndOntrack(stack[i]))
+            return true;
     return false;
 }
 

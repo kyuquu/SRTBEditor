@@ -174,6 +174,15 @@ async function popupList(title, list) {
     if(list) {
         let contentElem = document.createElement("span");
         contentElem.id = "popup-content";
+
+        let descElem = document.createElement("span");
+        descElem.classList.add("diag-desc");
+        descElem.innerHTML = "Hover over an entry for a short explanation of it.<br>"
+                + "Numbers on the left are severity scores, ranging from 0 to 3.<br>"
+                + "<i>This tool isn't perfect! Be careful around aesthetic patterns.</i>";
+
+        contentElem.appendChild(descElem);
+
         for(let i in list) {
             let entryElem = document.createElement("div");
             entryElem.classList.add("diag-entry");

@@ -254,10 +254,10 @@ function checkForPerfectMisalign (notes, indices) {
                 && getAdjustedLane(notes, indices[i]) != (zeroLane + 4) % 8)
             zeroLane = getAdjustedLane(notes, indices[i])
     
-    // if this stack hits the misalign points and doesn't have any visible notes
+    // if this stack hits the misalign points and doesn't have any visible matches
     if((modulo(aPoint - zeroLane, 8) == 2
             || modulo(aPoint - zeroLane, 8) == 6)
-            && !getStackHasVis(stack)) {
+            && !getStackHasVisMatch(stack)) {
         // skip if a note aligns with aPoint
         for(let i in indices) {
             let distance = Math.abs(getAdjustedLane(notes, indices[i]) - aPoint);
@@ -282,8 +282,8 @@ function checkForPerfectMisalign (notes, indices) {
             let min = modulo(pos.lane - pos.spread, 8),
                 max = modulo(pos.lane + pos.spread, 8);
             let drift = getPotentialPlayerDrift(notes, indices[0]);
-            console.warn(notes[indices[0]].tk/100000);
-            console.log(drift);
+            // console.warn(notes[indices[0]].tk/100000);
+            // console.log(drift);
 
             let hit = false;
             if(min < max && aPoint >= min && aPoint <= max)
