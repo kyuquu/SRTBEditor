@@ -124,7 +124,7 @@ function checkUnmissableNotes (notes) {
                 if(maxOffset < 50) offsetSeverity -= 1;
                 if(offsetSeverity < 0) offsetSeverity = 0;
                 report.push({
-                    type: "offset-time",
+                    type: "Offset time",
                     desc: "notes in stack occur at slightly different timings from each other, "
                         + "which gives them a notable chance of being missed",
                     severity: offsetSeverity,
@@ -155,7 +155,7 @@ function checkUnmissableNotes (notes) {
                     else if(notes[k].tk - notes[i].tk < 2000) sev = 2; //20ms
                     else if(notes[k].tk - notes[i].tk < 3500) sev = 1; //35ms
                     report.push({
-                        type: "invis-matches-near-spin",
+                        type: "Invisible near spin",
                         desc: "invisible matches can be missed when spinning early",
                         severity: sev,
                         note: stack[0]
@@ -235,7 +235,7 @@ function checkForMisalign (notes, indices) {
                 + "shouldn't be in a position to miss it";
         }
         return{
-            type: descriptor + "-missable",
+            type: "Missable " + descriptor,
             desc: desc,
             severity: severity,
             note: stack[0]
@@ -271,7 +271,7 @@ function checkForPerfectMisalign (notes, indices) {
         // this 4-lane stack is vulnerable to perfect misalignment
         if(pos.lane == aPoint && pos.spread == 0) {
             return {
-                type: "perfect-misalignment",
+                type: "Perfect misalignment",
                 desc: "stacked matches can be missed by misaligning perfectly, "
                     + "and the player is almost certain to be in such a position",
                 severity: 3,
@@ -294,7 +294,7 @@ function checkForPerfectMisalign (notes, indices) {
             if(hit && !getStackHasVis(stack)) {
                 if(Math.abs(drift.drift) < 4) {
                     return {
-                        type: "perfect-misalignment",
+                        type: "Perfect misalignment",
                         desc: "stacked matches can be missed by misaligning perfectly, "
                             + "and the player could potentially be in such a position",
                         severity: 2,
@@ -304,7 +304,7 @@ function checkForPerfectMisalign (notes, indices) {
                 if(Math.abs(drift.drift) < 8 && (drift.drift + drift.leftAmbiguity >= -4
                         || drift.drift - drift.rightAmbiguity <= 4)) {
                     return {
-                        type: "perfect-misalignment",
+                        type: "Perfect misalignment",
                         desc: "stacked matches can be missed by misaligning perfectly, "
                             + "and the player could potentially be in such a position "
                             + "depending on how they handle color-swaps",
@@ -315,7 +315,7 @@ function checkForPerfectMisalign (notes, indices) {
                 if(drift.drift + drift.leftAmbiguity >= -4
                         || drift.drift - drift.rightAmbiguity <= 4) {
                     return {
-                        type: "perfect-misalignment",
+                        type: "Perfect misalignment",
                         desc: "stacked matches can be missed by misaligning perfectly, "
                             + "and the player could potentially be in such a position "
                             + "if they handle movement in an unusual way",
@@ -326,7 +326,7 @@ function checkForPerfectMisalign (notes, indices) {
             }
             else if(!getStackHasVis(stack))
                 return {
-                    type: "perfect-misalignment",
+                    type: "Perfect misalignment",
                     desc: "stacked matches can be missed by misaligning perfectly, "
                         + "but the player shouldn't be in such a position",
                     severity: 0,

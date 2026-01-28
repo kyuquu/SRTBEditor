@@ -184,7 +184,7 @@ input.merge-faded, .merge-faded input  {
 .diag-severity {
     display: inline-block;
     font-size: 0.75rem;
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
     width: 1.25em;
     border: 2px solid currentColor;
     border-radius: 10px;
@@ -195,7 +195,7 @@ input.merge-faded, .merge-faded input  {
 .diag-type {
     text-align: left;
     display: inline-block;
-    width: 20rem;
+    width: 13rem;
     vertical-align: middle;
 }
 
