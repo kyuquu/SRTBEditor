@@ -16,7 +16,9 @@ https://kyuquu.github.io/SRTBEditor/
 
 ### Chart utilities
 - View additional information about your chart, such as precise note counts, max score, and max combo
-- Access various utility functions (note stacking, flight path mirroring, lyric importing)
+- Get automated feedback for things like misplaced notes, mistimed stacks, and invisable notes
+- Access various utility functions (note stacking, flight path mirroring, chart merging)
+- !roll
 
 ## Feedback
 If you encounter any bugs or other issues, you can:

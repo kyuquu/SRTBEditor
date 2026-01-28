@@ -318,7 +318,7 @@ function checkForPerfectMisalign (notes, indices) {
                         type: "perfect-misalignment",
                         desc: "stacked matches can be missed by misaligning perfectly, "
                             + "and the player could potentially be in such a position "
-                            + "if they handle drift in an unusual way",
+                            + "if they handle movement in an unusual way",
                         severity: 1,
                         note: stack[0]
                     };
