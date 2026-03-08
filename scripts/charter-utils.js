@@ -32,7 +32,31 @@ function stackNearbyNotesAllDiffs() {
 }
 
 function stackNearbyNotes(noteData, encoding) {
+    let getCat = (val) => {
+        // Categories:
+        // 0: matches
+        // 1: taps, sliders
+        // 2: slider endpoints
+        // 3: spins, scratches
+        // 4: beats, beatholds
+        switch(val) {
+            case 0: return 0;
+            case 8:
+            case 4: return 1;
+            case 5: return 2;
+            case 2:
+            case 3:
+            case 12: return 3;
+            case 1:
+            case 11: return 4;
+            default:
+                console.warn("Unrecognized note type: " + val);
+                return -1;
+        }
+        
+    };
     let prevTime = -1;
+    let prevCat = -1;
     let numChanges = 0;
     for(let i = 0; i < noteData.length; i++) {
         if(encoding == 0) {
@@ -41,27 +65,41 @@ function stackNearbyNotes(noteData, encoding) {
                 createToast("Stack", "Aborting stack: notes are out of order. Please save in-game and try again.", "warning", 5000);
                 return;
             }
-            if(noteData[i].time - prevTime < 0.0005 && noteData[i].time !== prevTime) {
+
+            let curCat = getCat(noteData[i].type);
+
+            if(noteData[i].time - prevTime < 0.0005         // stack if notes are within 5ms, except:
+                    && noteData[i].time !== prevTime        // no if they're already stacked
+                    && !(curCat == 2)                       // no slider endpoints 
+                    && !(curCat == 3 && prevCat !== 4)      // no spins to non-beats
+                    && !(curCat !== 4 && prevCat == 3)      // no non-beats to spins
+                    && !(curCat == 4 && prevCat == 4)) {    // no beats to beats
                 noteData[i].time = prevTime;
                 numChanges++;
             }
-            else {
-                prevTime = noteData[i].time;
-            }
-        } else if (encoding == 2) {
+            else prevTime = noteData[i].time;
+            prevCat = curCat;
+        }
+        else if (encoding == 2) {
             if(noteData[i].tk < prevTime) {
                 console.warn("Notes are out of order, aborting stack operation");
                 createToast("Stack", "Aborting stack: notes are out of order. Please save in-game and try again.", "warning", 5000);
                 return;
             }
-            if(noteData[i].tk - prevTime < 50 && noteData[i].tk !== prevTime) {
+
+            let curCat = getCat(noteData[i].tp);
+            
+            if(noteData[i].tk - prevTime < 50               // stack if notes are within 50 ticks, except:
+                    && noteData[i].tk !== prevTime          // no if they're already stacked
+                    && !(curCat == 2)                       // no slider endpoints
+                    && !(curCat == 3 && prevCat !== 4)      // no spins to non-beats
+                    && !(curCat !== 4 && prevCat == 3)      // no non-beats to spins
+                    && !(curCat == 4 && prevCat == 4)) {    // no beats to beats
                 noteData[i].tk = prevTime;
                 numChanges++;
             }
-            else {
-                prevTime = noteData[i].tk;
-            }
-
+            else prevTime = noteData[i].tk;
+            prevCat = curCat;
         }
     }
     return numChanges;
