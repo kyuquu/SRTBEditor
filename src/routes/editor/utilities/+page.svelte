@@ -2,4 +2,4 @@
     
 </script>
 
-<div>diagnostics</div>
+<div>utilities</div>

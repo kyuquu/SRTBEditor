@@ -2,7 +2,8 @@ import JSZip from "jszip";
 
 import { chart } from "$lib/scripts/main.svelte.js";
 import { convertToJSON, getViewHeader } from "$lib/scripts/helper.svelte.js";
-import { createToast, deleteToast } from "../../routes/ToastContainer.svelte";
+import { createToast, deleteToast } from "$lib/components/ToastContainer.svelte";
+import { updateEditor } from "$lib/components/Editor.svelte";
 
 import { templates } from "$lib/templates";
 
@@ -25,6 +26,8 @@ export function loadChartFile(file) {
                 chart.filename = file.name;
                 chart.albumArt = undefined;
                 chart.audioClips = undefined;
+
+                updateEditor();
 
                 createToast("success", "Chart loaded successfully!", `${getViewHeader()}`);
             }
@@ -85,6 +88,8 @@ export function loadChartFile(file) {
                     }
                     
                     chart.filename = srtbFilename;
+
+                    updateEditor();
 
                     createToast("success", "Chart loaded successfully!", `${getViewHeader()}`);
                     if (numOfAudio > 1) {
@@ -147,7 +152,7 @@ async function loadZipAudio(audio, filename) {
 }
 
 export function loadTemplate(filename) {
-    const template = JSON.parse(JSON.stringify(templates[filename]));
+    const template = structuredClone(templates[filename]);
     const fileExtension = filename.split(".").pop().toLowerCase();
     if (["srtb", "json"].includes(fileExtension)) {
         try {
@@ -161,6 +166,8 @@ export function loadTemplate(filename) {
             chart.filename = filename;
             chart.albumArt = undefined;
             chart.audioClips = undefined;
+
+            updateEditor();
         }
         catch (e) {
             createToast("error", "Template failed to load.", "Check console for details.");

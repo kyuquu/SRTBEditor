@@ -1,11 +1,14 @@
 <script>
-    import Checkbox from "$lib/components/Checkbox.svelte";
-    import TextInput from "$lib/components/TextInput.svelte";
-    import FileUpload from "$lib/components/FileUpload.svelte";
-    import AudioPlayer from "$lib/components/AudioPlayer.svelte";
-
+    import { getStores } from "$app/stores";
     import { chart } from "$lib/scripts/main.svelte.js";
     import { getAlbumArt, getAudioClips } from "$lib/scripts/helper.svelte.js";
+
+    import BasicDifficulty from "./BasicDifficulty.svelte";
+    import Checkbox from "$lib/components/Checkbox.svelte";
+    import TextInput from "$lib/components/TextInput.svelte";
+    import NumberInput from "$lib/components/NumberInput.svelte"; 
+    import FileUpload from "$lib/components/FileUpload.svelte";
+    import AudioPlayer from "$lib/components/AudioPlayer.svelte";
 </script>
 
 <div class="main">
@@ -31,22 +34,32 @@
         <TextInput id="artistName" label="Artist" bind:value={chart.trackInfo.artistName} />
         <TextInput id="featArtists" label="Featured Artist" bind:value={chart.trackInfo.featArtists} />
         <TextInput id="charter" label="Charter" bind:value={chart.trackInfo.charter} />
+        <br>
         <Checkbox id="allowCustomLeaderboardCreation" label="Allow Leaderboard Creation" bind:checked={chart.trackInfo.allowCustomLeaderboardCreation} />
     </div>
     <div class="basic3">
-
+        <div>
+            <h1>Difficulty</h1>
+            <h1>Rating</h1>
+        </div>
+        <BasicDifficulty difficulty={"easy"} />
+        <BasicDifficulty difficulty={"normal"} />
+        <BasicDifficulty difficulty={"hard"} />
+        <BasicDifficulty difficulty={"expert"} />
+        <BasicDifficulty difficulty={"xd"} />
+        <BasicDifficulty difficulty={"remixd"} />
     </div>
 </div>
 
 <style>
     .main {
         display: flex;
-        gap: 1rem;
         padding: 2rem;
     }
 
     .basic1 {
-        max-width: 24rem;
+        flex: 0 0 24rem;
+        width: 24rem;
         padding-right: 2rem;
     }
 
@@ -74,5 +87,25 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        flex: 1 1 auto;
+        min-width: min-content;
+        padding: 0 2rem;
+    }
+
+    .basic3 {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-left: 2rem;
+    }
+
+    .basic3 > div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+        margin: 0;
     }
 </style>

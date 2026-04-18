@@ -26,7 +26,7 @@
 
 <div class="main">
     <button
-        aria-label={paused ? 'play' : 'pause'}
+        aria-label={paused ? 'Play' : 'Pause'}
 		onclick={() => paused = !paused}
     ></button>
     <div class="time">
@@ -119,12 +119,12 @@
         background: var(--color-bg);
     }
 
-    button[aria-label="pause"]::after {
+    button[aria-label="Pause"]::after {
 		-webkit-mask-image: url(/icons/pause.svg);
         mask-image: url(/icons/pause.svg);
 	}
 
-	button[aria-label="play"]::after {
+	button[aria-label="Play"]::after {
 		-webkit-mask-image: url(/icons/play.svg);
         mask-image: url(/icons/play.svg);
 	}

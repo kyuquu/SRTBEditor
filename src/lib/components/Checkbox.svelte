@@ -1,10 +1,10 @@
 <script>
-    let { id, label, size = 12, checked = $bindable() } = $props();
+    let { id, label, size = 12, fontSize = "1.25rem", checked = $bindable() } = $props();
 </script>
 
 <div class="main">
     <input {id} type="checkbox" bind:checked style:--size={size}>
-    <label for={id}>{label}</label>
+    <label for={id} style:--font-size={fontSize}>{label}</label>
 </div>
 
 <style>
@@ -12,12 +12,12 @@
         display: flex;
         align-items: center;
         gap: 1ch;
-        padding-top: 0.5rem;
     }
 
     .main > label {
-        font-size: 1.25rem;
+        font-size: var(--font-size);
         font-weight: bold;
+        text-wrap: nowrap;
     }
 
     .main > input {

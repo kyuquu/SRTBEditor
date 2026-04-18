@@ -121,6 +121,7 @@
         min-height: calc(var(--size) * 3.5rem);
         border: calc(var(--size) * 0.25rem) solid var(--color-main);
         border-radius: calc(var(--size) * 2rem);
+        box-shadow: 0 0 16px var(--color-bg);
         background: var(--color-bg);
         opacity: 0%;
         overflow: hidden;

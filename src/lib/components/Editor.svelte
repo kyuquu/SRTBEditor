@@ -1,6 +1,14 @@
 <script module>
     let editor;
 
+    export function updateEditor() {
+        if (editor) {
+            editor.session.setValue(JSON.stringify(chart.json, null, 4));
+            editor.session.setScrollTop(0);
+            editor.focus();
+        }
+    }
+
     export function saveChanges() {
         chart.json = JSON.parse(editor.session.getValue());
         editor.focus();

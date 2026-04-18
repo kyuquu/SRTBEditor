@@ -9,7 +9,7 @@
     <span>
         <a href="https://github.com/kyuquu/SRTBEditor/releases/" target="_blank">v2.0.0</a>
         <span>&#8226;</span>
-        <span>Up to date with SRXD v1.5.1</span>
+        <span>Up to date with SRXD v1.7.0</span>
     </span>
 </div>
 
