@@ -323,6 +323,7 @@ function toggleDifficultyActive(index) {
             newIndex = newIndex.replaceAll("$0", index);
             diffs[diffs.length] = JSON.parse(newIndex);
         }
+        createToast("Difficulty Generated", "Save in-game to finish setting it up.", "warning", 5000);
         loadChartData(fullJSON);
     }
     updateChartData();

@@ -209,6 +209,7 @@ function generateTrackData(json, diffType) {
         newIndex = newIndex.replaceAll("$0", ind);
         trackInfo.difficulties[trackInfo.difficulties.length] = JSON.parse(newIndex);
     }
+    createToast("Difficulty Generated", "Save in-game to finish setting it up.", "warning", 5000);
     return json;
 }
 
